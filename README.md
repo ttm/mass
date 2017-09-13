@@ -31,7 +31,7 @@ All these items are in this repository.
 The Appendices of the dissertation still have important information:
 * Appendix G holds information on related books and articles: descriptions,
 how they differ from and complement this work.
-* Appendix F holds descriptions of projects that were performed using the MASS framework.
+* Appendix F holds descriptions of projects that were accomplished using the MASS framework.
 * Appendix D holds considerations about AM and FM performed with logarithmic oscillations.
 
 ### contact
