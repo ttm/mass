@@ -33,3 +33,7 @@ The Appendices of the dissertation still have important information:
 how they differ from and complement this work.
 * Appendix F holds descriptions of projects that were performed using the MASS framework.
 * Appendix D holds considerations about AM and FM performed with logarithmic oscillations.
+
+### contact
+If you have any thoughts, questions, or want to report any usage of the MASS framework,
+please drop me a line at: renato [DOT] fabbri [AT] gmail [DOT] com
