@@ -19,6 +19,13 @@ MASS (Music and Audio in Sample Sequences) is a mathematical and computational f
   - src/pieces3/ holds scripts that render the musical pieces using the resources described in the third section of the article.
   - src/pieces4/ holds scripts that render the musical pieces using the resources described in the fourth section of the article.
 
+The PDF documentation holds considerations about the mathematical relations between musical elements and PCM samples,
+including subjects in musical theory, psychophysics and signal processing.
+The scripts are also part of the documentation, but are straightforward implementations of the equations in the PDF
+and further algorithms that realize the musical concepts that are not expressed as equations.
+As stated in the list above, the scripts also include routines that exemplify the achievement of musical pieces from
+the framework.
+
 ### related work
 This work is heavely influenced by this [MSc dissertation](http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf).
 
