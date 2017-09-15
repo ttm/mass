@@ -475,10 +475,10 @@ T^{f,\; \Delta}=\{t_{i \, \% \lambda_f} \}_0^{\Lambda-1}= \left \{t^f_{i \; \% \
 The note by itself does not specify a timbre. Nevertheless, it is necessary to choose a waveform for the samples $t_i$ to have a value. A unique period from one of the basic waveforms can be used to specify the note, where $\lambda_f=\frac{f_s}{f}$ is the number of samples at the period. Let $L^{f,\, \delta_f} $ be the sequence that describes a period of the waveform $L^f \in \{S^f,Q^f,T^f,D^f,R^f \}$ with duration $\delta_f=1/f$ (as given by Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square} and let $R_i^f$ be a sampled real waveform):
 
 \begin{equation}\label{periodoUnico}
-L^{f , \delta_f } = \left\{ l_i^f \right\}_0^{\delta_f . f_s -1}=\left\{ l_i^f \right\}_0^{\lambda_f-1}
+L^{f} = \left\{ l_i^f \right\}_0^{\delta_f . f_s -1}=\left\{ l_i^f \right\}_0^{\lambda_f-1}
 \end{equation}
 
-Therefore, the sequence $T_i$ will consist in a note of duration $\Delta$ and frequency $f$ if:
+Therefore, the sequence $T$ will consist in a note of duration $\Delta$ and frequency $f$ if:
 
 \begin{equation}\label{eq:notaBasicaTimbre}
 T^{f,\; \Delta}=\left\{t_i^f\right\}_0^{\lfloor f_s . \Delta \rfloor -1}=\left \{ l^f_{i\,\%\left(\frac{f_s}{f}\right)} \right \}_0^{\Lambda-1}

@@ -1,4 +1,3 @@
-# coding: utf-8
 import numpy as n
 from scipy.io import wavfile as w
 
@@ -23,6 +22,7 @@ def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_a=44
     s = n.int16(__n(sonic_array)*32767)
     w.write(filename, f_a, s)
 
+
 ############## Sec. 2.1 Duration
 # relation between the number of samples and the sound duration
 f_a = 44100  # sample rate
@@ -36,7 +36,7 @@ T = n.zeros(Lambda)  # silence with ~Delta, in seconds
 __s(T, 'silence.wav')
 
 ############## Sec. 2.2 Loudness
-Lambda = 100.  # 100 samples
+Lambda = 100  # 100 samples
 T = n.random.random(Lambda)  # 100 random samples
 
 ### Eq. 2 Power of wave
@@ -69,14 +69,15 @@ A = 10.**(V_dB/20.)
 
 
 ############## Sec. 2.3 Pitch
-f_0 = 441.
-lambda_0 = f_a/f_0
+f_0 = 441
+lambda_0 = f_a//f_0
 cycle = n.arcsin(n.random.random(lambda_0))  # random samples
 ### Eq. 8 Sound with fundamental frequency f_0
 Tf = n.array(list(cycle)*1000)  # 1000 cycles
 
 # normalizing to interval [-1, 1]
 __s(Tf,'f_0.wav')
+
 
 ############## Sec. 2.4 Timbre
 L = 100000.  # sample number of sequences (Lambda)
@@ -94,46 +95,44 @@ Qf = ((ii % lambda_f) < (lambda_f/2))*2-1
 
 Rf = w.read("22686__acclivity__oboe-a-440_periodo.wav")[1]
 ### Eq. 13 Sampled period
-Tf = Rf_i[n.int64(ii) % len(Rf_i)]
+Tf = Rf[n.int64(ii) % len(Rf)]
 
 
 ############## Sec. 2.5 The spectrum of sampled sound
-Lambda = 50.
-T_i = n.random.random(Lambda)*2.-1.
-C_k = n.fft.fft(T_i)
+Lambda = 50
+T = n.random.random(Lambda)*2.-1.
+C_k = n.fft.fft(T)
 A_k = n.real(C_k)
 B_K = n.imag(C_k)
 w_k = 2.*n.pi*n.arange(Lambda)/Lambda
-
 
 ### Eq .14 Spectrum recomposition in time
 def t(i):
     return (1./Lambda)*n.sum(C_k*n.e**(1j*w_k*i))
 
-
 ### Eq. 15 Real recomposition
 def tR(i):
     return (1./Lambda)*n.sum(n.abs(C_k)*n.cos(w_k*i-n.angle(C_k)))
 
-### 2.17 Number of paired spectrum coefficients
-tau = (Lambda - Lambda % 2)/2 + Lambda % 2-1
-### 2.18 Equivalent coefficients
-kk = n.arange(tau)
+### Eq. 16 Number of paired spectrum coefficients
+tau = int( (Lambda - Lambda % 2)/2 + Lambda % 2-1 )
+
+### Eq. 17 Equivalent coefficients
 F_k = C_k[1:tau+1]
 F2_k = C_k[Lambda-tau:Lambda][::-1]
 
-### 2.19 Equivalent coefficients: modules
+### Eq. 18 Equivalent modules of coefficients
 ab = n.abs(F_k)
 ab2 = n.abs(F2_k)
 MIN = n.abs(ab-ab2).sum()  # MIN ~ 0.0
-### 2.20 Equivalent coefficients: phases
+
+### Eq, 19 Equivalent phases of coefficients
 an = n.angle(F_k)
 an2 = n.angle(F2_k)
 MIN = n.abs(an+an2).sum()  # MIN ~ 0.0
 
-### 2.21 Components combination in each sample
+### Eq. 20 Components combination in each sample
 w_k = 2*n.pi*n.arange(Lambda)/Lambda
-
 
 def t_(i):
     return (1./Lambda)*(A_k[0]+2.*n.sum(n.abs(C_k[1:tau+1]) *
@@ -141,70 +140,78 @@ def t_(i):
                         (1-Lambda % 2)))
 
 
-############## 2.1.6 The basic note
+############## Sec. 2.6 The basic note
 f = 220.5  # Herz
 Delta = 2.5  # seconds
 Lambda = int(2.5*f_a)
 ii = n.arange(Lambda)
-Lf_i = Df_i  # We already calculaated Df_i
-### 2.24 Basic note
-TfD_i = Lf_i[ii % len(Lf_i)]
+
+### Eq. 21 Basic note (preliminary)
+ti_ = n.random.random(int(f_a/f))  # arbitrary sequence of samples
+TfD = ti_[ii % len(ti_)]
+
+### Eq. 22 Choose any waveform
+Lf = [Sf, Qf, Tf, Df, Rf][1]  # We already calculated these sequences
+
+### Eq. 23 Basic note
+TfD = Lf[ii % len(Lf)]
 
 
-############## 2.1.7 Spatial localization
+############## Sec. 2.7 Spatialization: localization and reverberation
 zeta = 0.215  # meters
 # considering any (x,y) localization
 x = 1.5  # meters
 y = 1.  # meters
-### 2.25 Distances of each ear
+### Eq. 24 Distances from each ear
 d = n.sqrt((x-zeta/2)**2+y**2)
 d2 = n.sqrt((x+zeta/2)**2+y**2)
-### 2.26 Distances of Interaural Time
-DTI = (d2-d)/343.2  # segundos
-### 2.27 Distances of Interaural Intensity
-DII = 20*n.log10(d/d2)  # dBs
+### Eq. 25 Interaural Time Difference
+ITD = (d2-d)/343.2  # segundos
+### Eq. 26 Interaural Intensity Difference
+IID = 20*n.log10(d/d2)  # dBs
 
-### 2.28 DTI and DII application in T_i
-Lambda_DTI = int(DTI*f_a)
-DII_a = d/d2
-T_i = 1-n.abs(2-(4./lambda_f)*(ii % lambda_f))  # triangular
-T2_i = n.hstack((n.zeros(Lambda_DTI), DII_a*T_i))
-T_i = n.hstack((T_i, n.zeros(Lambda_DTI)))
+### Eq. 27 DTI and DII application in a sample sequence (T)
+Lambda_ITD = int(ITD*f_a)
+IID_a = d/d2
+T = 1-n.abs(2-(4./lambda_f)*(ii % lambda_f))  # triangular
+T2 = n.hstack((n.zeros(Lambda_ITD), IID_a*T))
+T = n.hstack((T, n.zeros(Lambda_ITD)))
 
-som = n.vstack((T2_i, T_i)).T
-w.write('estereo.wav', f_a, som)
+som = n.vstack((T2, T)).T
+w.write('stereo.wav', f_a, som)
 # mirrored
-som = n.vstack((T_i, T2_i)).T
-w.write('estereo2.wav', f_a, som)
+som = n.vstack((T, T2)).T
+w.write('stereo2.wav', f_a, som)
 
-### 2.29 Object angle
+### Eq. 28 Object angle
 theta = n.arctan(y/x)
 
+### Reverberation is implemented in 3.py
+# because it makes use of knowledge of the next section
 
-############## 2.1.8 Musical uses
+
+############## Sec. 2.8 Musical uses
 Delta = 3.  # 3 seconds
 Lambda = int(Delta*f_a)
 f1 = 200.  # Hz
 foo = n.linspace(0., Delta*f1*2.*n.pi, Lambda, endpoint=False)
-T1_i = n.sin(foo)  # sinusoid of Delta seconds and freq  =  f1
+T1 = n.sin(foo)  # sinusoid of Delta seconds and freq  =  f1
 
 f2 = 245.  # Hz
 lambda_f2 = int(f_a/f2)
-T2_i = (n.arange(Lambda) % lambda_f < (lambda_f2/2))*2-1  # quadrada
+T2 = (n.arange(Lambda) % lambda_f < (lambda_f2/2))*2-1  # square
 
 f3 = 252.  # Hz
 lambda_f3 = f_a/f3
-T3_i = n.arange(Lambda) % lambda_f3  # Dente de serra
-T3_i = (T3_i/T3_i.max())*2-1
+T3 = n.arange(Lambda) % lambda_f3  # sawtooth
+T3 = (T3/T3.max())*2-1
 
-### 2.30 mixing
-T_i = T1_i+T2_i+T3_i
-# normalization
-T_i = ((T_i-T_i.min())/(T_i.max()-T_i.min()))*2-1
+### Eq. 29 mixing
+T = T1+T2+T3
 # writing file
-w.write('mixados.wav', f_a, T_i)
+__s(T, 'mixed.wav')
 
-### 2.31 concatenation
-T_i = n.hstack((T1_i, T2_i, T3_i))
+### Eq. 30 concatenation
+T = n.hstack((T1, T2, T3))
 # writing file
-w.write('concatenados.wav', f_a, T_i)
+__s(T, 'concatenated.wav')
