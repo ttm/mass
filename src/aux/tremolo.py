@@ -25,7 +25,7 @@ tv=10**(tab[gv%D]*mu/20) # desvio instantaneo de amplitude para cada amostra
 
 gi=n.array(ii*f*(Dv/float(fa)), n.int) # a movimentacao na tabela total, jah inteiro
 ti=tabv[gi%Dv]*tv
-p.plot(ti,label=r"$T_i^{tr(f'=1,5Hz)}=\{t_i.a_i\}_0^{\Lambda-1}$", linewidth=2)
+p.plot(ti,label=r"$T^{tr(f'=1,5Hz)}=\{t_i.a_i\}_0^{\Lambda-1}$", linewidth=2)
 ti=((ti-ti.min())/(ti.max()-ti.min()))*2-1 # normalizando
 # a.wavwrite(ti,"tremolo.wav",fa)
 
@@ -46,5 +46,5 @@ p.legend(loc="upper left")
 ltext = p.gca().get_legend().get_texts()
 p.setp(ltext[0], fontsize = 24)
 p.setp(ltext[1], fontsize = 24)
-p.savefig("../figures/tremolo_.png")
+p.savefig("../../doc/figures/tremolo_.png")
 p.show()

@@ -10,7 +10,7 @@ def __n(sonic_array):
     else:
         return ( (t-t.min()) / (t.max() -t.min()) )*2.-1.
 
-def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_a=44100):
+def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_s=44100):
     """A minimal approach to writing 16 bit WAVE files.
     
     One can also use, for example:
@@ -20,15 +20,15 @@ def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_a=44
     # to write the file using XX bits per sample
     # simply use s = n.intXX(__n(sonic_array)*(2**(XX-1)-1))
     s = n.int16(__n(sonic_array)*32767)
-    w.write(filename, f_a, s)
+    w.write(filename, f_s, s)
 
 
 ############## Sec. 2.1 Duration
 # relation between the number of samples and the sound duration
-f_a = 44100  # sample rate
+f_s = 44100  # sample rate
 Delta = 3.7   # duration of Delta in seconds
 
-Lambda = int(f_a*Delta)  # number of samples
+Lambda = int(f_s*Delta)  # number of samples
 ### Eq. 1
 T = n.zeros(Lambda)  # silence with ~Delta, in seconds
 
@@ -70,7 +70,7 @@ A = 10.**(V_dB/20.)
 
 ############## Sec. 2.3 Pitch
 f_0 = 441
-lambda_0 = f_a//f_0
+lambda_0 = f_s//f_0
 cycle = n.arcsin(n.random.random(lambda_0))  # random samples
 ### Eq. 8 Sound with fundamental frequency f_0
 Tf = n.array(list(cycle)*1000)  # 1000 cycles
@@ -83,9 +83,9 @@ __s(Tf,'f_0.wav')
 L = 100000.  # sample number of sequences (Lambda)
 ii = n.arange(L)
 f = 220.5
-lambda_f = f_a/f
+lambda_f = f_s/f
 ### Eq. 9 Sinusoid
-Sf = n.sin(2.*n.pi*f*ii/f_a)
+Sf = n.sin(2.*n.pi*f*ii/f_s)
 ### Eq. 10 Sawtooth
 Df = (2./lambda_f)*(ii % lambda_f)-1
 ### Eq. 11 Triangular
@@ -143,11 +143,11 @@ def t_(i):
 ############## Sec. 2.6 The basic note
 f = 220.5  # Herz
 Delta = 2.5  # seconds
-Lambda = int(2.5*f_a)
+Lambda = int(2.5*f_s)
 ii = n.arange(Lambda)
 
 ### Eq. 21 Basic note (preliminary)
-ti_ = n.random.random(int(f_a/f))  # arbitrary sequence of samples
+ti_ = n.random.random(int(f_s/f))  # arbitrary sequence of samples
 TfD = ti_[ii % len(ti_)]
 
 ### Eq. 22 Choose any waveform
@@ -171,17 +171,17 @@ ITD = (d2-d)/343.2  # segundos
 IID = 20*n.log10(d/d2)  # dBs
 
 ### Eq. 27 DTI and DII application in a sample sequence (T)
-Lambda_ITD = int(ITD*f_a)
+Lambda_ITD = int(ITD*f_s)
 IID_a = d/d2
 T = 1-n.abs(2-(4./lambda_f)*(ii % lambda_f))  # triangular
 T2 = n.hstack((n.zeros(Lambda_ITD), IID_a*T))
 T = n.hstack((T, n.zeros(Lambda_ITD)))
 
 som = n.vstack((T2, T)).T
-w.write('stereo.wav', f_a, som)
+w.write('stereo.wav', f_s, som)
 # mirrored
 som = n.vstack((T, T2)).T
-w.write('stereo2.wav', f_a, som)
+w.write('stereo2.wav', f_s, som)
 
 ### Eq. 28 Object angle
 theta = n.arctan(y/x)
@@ -192,17 +192,17 @@ theta = n.arctan(y/x)
 
 ############## Sec. 2.8 Musical uses
 Delta = 3.  # 3 seconds
-Lambda = int(Delta*f_a)
+Lambda = int(Delta*f_s)
 f1 = 200.  # Hz
 foo = n.linspace(0., Delta*f1*2.*n.pi, Lambda, endpoint=False)
 T1 = n.sin(foo)  # sinusoid of Delta seconds and freq  =  f1
 
 f2 = 245.  # Hz
-lambda_f2 = int(f_a/f2)
+lambda_f2 = int(f_s/f2)
 T2 = (n.arange(Lambda) % lambda_f < (lambda_f2/2))*2-1  # square
 
 f3 = 252.  # Hz
-lambda_f3 = f_a/f3
+lambda_f3 = f_s/f3
 T3 = n.arange(Lambda) % lambda_f3  # sawtooth
 T3 = (T3/T3.max())*2-1
 

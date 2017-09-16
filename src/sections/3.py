@@ -1,547 +1,571 @@
-#-*- coding: utf-8 -*-
 import numpy as n
 from scipy.io import wavfile as w
 
-f_a = 44100  # Hz, sample rate
+def __n(sonic_array):
+    """Normalize sonic_array to have values only between -1 and 1"""
 
-############## 2.2.1 Wave table (LUT)
-# table size: use even to do not end in conflict
-# and at least 1024
+    t = sonic_array
+    if n.all(sonic_array==0):
+        return sonic_array
+    else:
+        return ( (t-t.min()) / (t.max() -t.min()) )*2.-1.
+
+def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_s=44100):
+    """A minimal approach to writing 16 bit WAVE files.
+    
+    One can also use, for example:
+        import sounddevice as S
+        S.play(array) # the array must have values between -1 and 1"""
+
+    # to write the file using XX bits per sample
+    # simply use s = n.intXX(__n(sonic_array)*(2**(XX-1)-1))
+    s = n.int16(__n(sonic_array)*32767)
+    w.write(filename, f_s, s)
+
+
+f_s = 44100  # Hz, sample rate
+
+############## Sec. 3.1 Lookup table (LUT)
+# at least 1024 samples in the table
 Lambda_tilde = Lt = 1024
 
 # Sinusoid
 foo = n.linspace(0, 2*n.pi, Lt, endpoint=False)
-S_i = n.sin(foo)  # a sinusoid period with T samples
+S = n.sin(foo)  # a sinusoidal period with T samples
 
 # Square:
-Q_i = n.hstack((n.ones(Lt/2)*-1, n.ones(Lt/2)))
+Q = n.hstack((n.ones(Lt/2)*-1, n.ones(Lt/2)))
 
 # Triangular:
 foo = n.linspace(-1, 1, Lt/2, endpoint=False)
-Tr_i = n.hstack((foo, foo*-1))
+Tr = n.hstack((foo, foo*-1))
 
 # Sawtooth:
-D_i = n.linspace(-1, 1, Lt)
+D = n.linspace(-1, 1, Lt)
 
 # real sound, import period and
-# use the right T: number of samples in the period
-Rf_i = w.read("22686__acclivity__oboe-a-440_periodo.wav")[1]
+# use the number of samples in the period
+Rf = w.read("22686__acclivity__oboe-a-440_periodo.wav")[1]
 
 f = 110.  # Hz
 Delta = 3.4  # seconds
-Lambda = int(Delta*f_a)
+Lambda = int(Delta*f_s)
 
 # Samples:
 ii = n.arange(Lambda)
 
-### 2.32 LUT
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
-# It is possible to use S_i, Q_i, D_i or any other period of the real sound
+### Eq. 31 LUT
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
+# It is possible to use S, Q, D or any other period of a real sound
 # with a sufficient length
-L_i = Tr_i
-TfD_i = L_i[Gamma_i % Lt]
+L = Tr
+TfD = L[Gamma % Lt]
 
 
-############## 2.2.2 Incremental variations of frequency and amplitude
-# FREQUENCY VARIATIONS
+############## Sec. 3.2 Incremental variations of frequency and intensity
+# == FREQUENCY VARIATIONS ==
 f_0 = 100.  # initial freq in Hz
 f_f = 300.  # final freq in Hz
 Delta = 2.4  # duration
 
-Lambda = int(f_a*Delta)
+Lambda = int(f_s*Delta)
 ii = n.arange(Lambda)
-### 2.33 - linear variation
+### Eq. 32 linear variation
 f_i = f_0+(f_f-f_0)*ii/(float(Lambda)-1)
-### 2.34 coefficients for wavetable
-D_gamma_i = f_i*Lt/f_a
-Gamma_i = n.cumsum(D_gamma_i)
-Gamma_i = n.array(Gamma_i, dtype=n.int)
-### 2.35 resulting sound
-Tf0ff_i = L_i[Gamma_i % Lt]
+### Eq. 33 coefficients for LUT
+D_gamma = f_i*Lt/f_s
+Gamma = n.cumsum(D_gamma)
+Gamma = n.array(Gamma, dtype=n.int)
+### Eq. 34 resulting sound
+Tf0ff = L[Gamma % Lt]
 
-#### 2.36 - exponential variation
+### Eq. 35 exponential variation
 f_i = f_0*(f_f/f_0)**(ii/(float(Lambda)-1))
-### 2.37 coefficients for wavetable
-D_gamma_i = f_i*Lt/f_a
-Gamma_i = n.cumsum(D_gamma_i)
-Gamma_i = n.array(Gamma_i, dtype=n.int)
-### 2.38 resulting sound
-Tf0ff_i = L_i[Gamma_i % Lt]
+### Eq. 36 coefficients for the LUT
+D_gamma = f_i*Lt/f_s
+Gamma = n.cumsum(D_gamma)
+Gamma = n.array(Gamma, dtype=n.int)
+### Eq. 37 resulting sound
+Tf0ff = L[Gamma % Lt]
 
 
-# VARIAÇÕES DE AMPLITUDE
-# sintetizando um som qualquer para
-# a variação de amplitude
+# == INTENSITY VARIATIONS ==
+# First, make/have an arbitrary sound to
+# apply the variations in amplitude
 f = 220.  # Hz
-Delta = 3.9  # segundos
-Lambda = int(Delta*f_a)
+Delta = 3.9  # seconds
+Lambda = int(Delta*f_s)
 
-# Amostras:
+# Sample indexes:
 ii = n.arange(Lambda)
 
-# (como em 2.30)
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
-L_i = Tr_i  # pode-se usar igualmente S_i, Q_i, D_i ou
-# qualquer período de som real suficientemente grande
-T_i = TfD_i = L_i[Gamma_i % Lt]
+# (as in Eq. 31)
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
+L = Tr
+T = TfD = L[Gamma % Lt]
 
-a_0 = 1.  # razão da amplitude em que é iniciada a sequência
-a_f = 12.  # razão da amplitude em que é finalizada
-alpha = 1.  # índice de suavidade da transição
-### 2.39 envoltória exponencial para transição de amplitude
-A_i = a_0*(a_f/a_0)**((ii/float(Lambda))**alpha)
-### 2.40 aplicação da envoltória no som T_i
-T2_i = A_i*T_i
+a_0 = 1.  # starting fraction of the amplitude
+a_f = 12.  # ending fraction of the amplitude
+alpha = 1.  # index of transition smoothing
 
-### 2.41 envoltória linear de amplitude
-A_i = a_0+(a_f-a_0)*(ii/float(Lambda))
+### Eq. 38 exponential transition of amplitude
+A = a_0*(a_f/a_0)**((ii/float(Lambda))**alpha)
+### Eq. 39 applying envelope A to the sound
+T2 = A*T
 
-### 2.42 transição exponencial de V_dB
+### Eq. 40 linear transition of amplitude
+A = a_0+(a_f-a_0)*(ii/float(Lambda))
+
+### Eq. 41 exponential transition of V_dB decibels
 V_dB = 31.
-T2_i = T_i*((10*(V_dB/20.))**((ii/float(Lambda))**alpha))
+T2 = T*((10*(V_dB/20.))**((ii/float(Lambda))**alpha))
 
 
-############## 2.2.3 Aplicação de filtros digitais
-# VEJA iir.py para a geraçào da figura 2.17
-# T_i herdado
-# resposta ao impulso sintética (reverb)
-H_i = (n.random.random(10)*2-1)*n.e**(-n.arange(10))
+############## Sec 3.3 Application of digital filters
+# See src/aux/delays.py for generating Fig. 17
+# See src/aux/filters/iir.py for generating Fig. 18
 
-### 2.43 Convolução
-T2_i = n.convolve(T_i, H_i)
+# synthetic impulse response (for a "reverb", a better reverb is bellow in: Reverberation)
+H = (n.random.random(10)*2-1)*n.e**(-n.arange(10))
 
-### 2.44 veja linhas seguintes para aplicação da
-### equação a diferenças :-)
+### Eq. 42 Convolution (application of a FIR filter)
+T2 = n.convolve(T, H)  # T from above
+
+### Eq. 43  difference equation
+A = n.random.random(2)  # arbitrary coefficients
+B = n.random.random(3)  # arbitrary coefficients
+
+def applyIIR(signal, A, B):
+    signal_ = []
+    for i, sample in enumerate(signal):
+        samples_A = signal[i::-1][:len(A)]
+        A_coeffs = A[:i+1]
+        A_contrib = (samples_A*A_coeffs).sum()
+
+        samples_B = signal_[-1:-1-i:-1][:len(B)-1]
+        B_coeffs = B[1:i+1]
+        B_contrib = (samples_B*B_coeffs).sum()
+        t_i = (A_contrib + B_contrib)/B[0]
+        signal_.append(t_i)
+    return signal_
 
 fc = .1
-### 2.45 passa baixas de polo simples
-x = n.e**(-2*n.pi*fc)  # fc  = > freq de corte em 3dB
-# coeficientes
+### Eq. 44 low-pass IIR filter with a single pole
+x = n.e**(-2*n.pi*fc)  # fc => cutoff frequency where the resulting signal has -3dB
+# coefficients
 a0 = 1-x
 b1 = x
-# aplicação do filtro
-T2_i = [T_i[0]]
-for t_i in T_i[1:]:
-    T2_i.append(t_i*a_0+T2_i[-1]*b1)
+# applying the filter
+T2 = [T[0]]
+for t_i in T[1:]:
+    T2.append(t_i*a_0+T2[-1]*b1)
 
-### 2.46 passa altas de polo simples
-x = n.e**(-2*n.pi*fc)  # fc = > freq de corte em 3dB
+### Eq. 45 high-pass filter with a single pole
+x = n.e**(-2*n.pi*fc)  # fc => cutoff frequency where the resulting signal has -3dB
+# coefficients
 a0 = (1+x)/2
 a1 = -(1+x)/2
 b1 = x
 
-# aplicação do filtro
-T2_i = [a0*T_i[0]]
-last = T_i[0]
-for t_i in T_i[1:]:
-    T2_i += [a0*t_i + a1*last + b1*T2_i[-1]]
+# applying the filter
+T2 = [a0*T[0]]
+last = T[0]
+for t_i in T[1:]:
+    T2 += [a0*t_i + a1*last + b1*T2[-1]]
     last = n.copy(t_i)
 
 
-fc = .1
+fc = .1  # now fc is the center frequency
 bw = .05
-### 2.47 Variáveis auxiliares para os filtros nó
+### Eq. 46 Auxiliary variables for the notch filters
 r = 1-3*bw
 k = (1-2*r*n.cos(2*n.pi*fc)+r**2)/(2-2*n.cos(2*n.pi*fc))
 
-### 2.48 passa banda
-# coefs passa banda
+### Eq. 47 band-pass filter coefficients
 a0 = 1-k
 a1 = -2*(k-r)*n.cos(2*n.pi*fc)
 a2 = r**2 - k
 b1 = 2*r*n.cos(2*n.pi*fc)
 b2 = -r**2
 
-# aplicacao do filtro em T_i resultando em T2_i
-T2_i = [a0*T_i[0]]
-T2_i += [a0*T_i[1]+a1*T_i[0]+b1*T2_i[-1]]
-last1 = T_i[1]
-last2 = T_i[0]
-for t_i in T_i[2:]:
-    T2_i += [a0*t_i+a1*last1+a2*last2+b1*T2_i[-1]+b2*T2_i[-2]]
+# applying the filter
+T2 = [a0*T[0]]
+T2 += [a0*T[1]+a1*T[0]+b1*T2[-1]]
+last1 = T[1]
+last2 = T[0]
+for t_i in T[2:]:
+    T2 += [a0*t_i+a1*last1+a2*last2+b1*T2[-1]+b2*T2[-2]]
     last2 = n.copy(last1)
     last1 = n.copy(t_i)
 
-### 2.49 rejeita banda
-# coeficientes
+### Eq. 48 band-reject filter coefficients
 a0 = k
 a1 = -2*k*n.cos(2*n.pi*fc)
 a2 = k
 b1 = 2*r*n.cos(2*n.pi*fc)
 b2 = -r**2
 
-# aplicacao do filtro em T_i resultando em T2_i
-T2_i = [a0*T_i[0]]
-T2_i += [a0*T_i[1]+a1*T_i[0]+b1*T2_i[-1]]
-last1 = T_i[1]
-last2 = T_i[0]
-for t_i in T_i[2:]:
-    T2_i += [a0*t_i+a1*last1+a2*last2+b1*T2_i[-1]+b2*T2_i[-2]]
+# applying the filter
+T2 = [a0*T[0]]
+T2 += [a0*T[1]+a1*T[0]+b1*T2[-1]]
+last1 = T[1]
+last2 = T[0]
+for t_i in T[2:]:
+    T2 += [a0*t_i+a1*last1+a2*last2+b1*T2[-1]+b2*T2[-2]]
     last2 = n.copy(last1)
     last1 = n.copy(t_i)
 
 
-############## 2.2.4 Ruídos
-# VEJA ruidos.py para o script que gerou a figura 2.18
-Lambda = 100000  # Lambda sempre par
-# diferença das frequências entre coeficiêntes vizinhos:
-df = f_a/float(Lambda)
+############## Sec. 3.4 Noise
+# See src/filters/ruidos.py for rendering Figure 19
+Lambda = 100000  # Use an even Lambda for compliance with the following snippets
+# Separation between frequencies of neighbor spectral coefficients:
+df = f_s/float(Lambda)
 
-### 2.50 Ruido branco
-# geração de espectro com módulo 1 uniforme
-# e fase aleatória
+### Eq. 49 White noise
+# uniform moduli of spectrum and random phase
 coefs = n.exp(1j*n.random.uniform(0, 2*n.pi, Lambda))
-# real par, imaginaria impar
+
+f0 = 15.  # minimum frequency which we want in the sound
+i0 = n.floor(f0/df)  # first coefficient to be considered
+coefs[:i0] = n.zeros(i0)
+
+# coefficients have real part even and imaginary part odd
 coefs[Lambda/2+1:] = n.real(coefs[1:Lambda/2])[::-1] - 1j * \
     n.imag(coefs[1:Lambda/2])[::-1]
-coefs[0] = 0.  # sem bias
-coefs[Lambda/2] = 1.  # freq max eh real simplesmente
+coefs[0] = 0.  # no bias (no offset)
+coefs[Lambda/2] = 1.  # max freq is only real (as explained in Sec. 2.5)
 
-# as frequências relativas a cada coeficiente
-# acima de Lambda/2 nao vale
-fi = n.arange(coefs.shape[0])*df
-f0 = 15.  # iniciamos o ruido em 15 Hz
-i0 = n.floor(f0/df)  # primeiro coef a valer
-coefs[:i0] = n.zeros(i0)
-f0 = fi[i0]
-
-# obtenção do ruído em suas amostras temporais
+# Achievement of the temporal samples of the noise
 ruido = n.fft.ifft(coefs)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('branco.wav', f_a, r)
+__s(r, 'white.wav')
 
+# auxiliary variables to all the following noises
+fi = n.arange(coefs.shape[0])*df # frequencies related to the coefficients
+f0 = fi[i0] # first frequency to be considered 
 
-### 2.51 Ruído rosa
-# a cada oitava, perde-se 3dB
-fator = 10.**(-3/20.)
-alphai = fator**(n.log2(fi[i0:]/f0))
+### Eq. 50 Pink noise
+# the volume decreases by 3dB at each octave
+factor = 10.**(-3/20.)
+alphai = factor**(n.log2(fi[i0:]/f0))
 
 c = n.copy(coefs)
 c[i0:] = coefs[i0:]*alphai
-# real par, imaginaria impar
+# real is even, imaginary is odd
 c[Lambda/2+1:] = n.real(c[1:Lambda/2])[::-1] - 1j * \
     n.imag(c[1:Lambda/2])[::-1]
 
 ruido = n.fft.ifft(c)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('rosa.wav', f_a, r)
+__s(r, 'pink.wav')
 
 
-### 2.52 Ruído marrom
-# a cada oitava, perde-se 6dB
+### Eq. 51 Brown(ian) noise
+# the volume decreases by 6dB at each octave
 fator = 10.**(-6/20.)
 alphai = fator**(n.log2(fi[i0:]/f0))
 c = n.copy(coefs)
 c[i0:] = c[i0:]*alphai
 
-# real par, imaginaria impar
+# real is even, imaginary is odd
 c[Lambda/2+1:] = n.real(c[1:Lambda/2])[::-1] - 1j * \
     n.imag(c[1:Lambda/2])[::-1]
 
-# realizando amostras temporais do ruído marrom
 ruido = n.fft.ifft(c)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('marrom.wav', f_a, r)
+__s(r, 'brown.wav')
 
-ruido_marrom=n.copy(r) # será usado para a reverberação
+ruido_marrom = n.copy(r) # it will be used for reverberation
 
 
-### 2.53 Ruído azul
-# para cada oitava, ganhamos 3dB
+### Eq. 52 Blue noise
+# the volume increases by 3dB at each octave
 fator = 10.**(3/20.)
 alphai = fator**(n.log2(fi[i0:]/f0))
 c = n.copy(coefs)
 c[i0:] = c[i0:]*alphai
 
-# real par, imaginaria impar
+# real is even, imaginary is odd
 c[Lambda/2+1:] = n.real(c[1:Lambda/2])[::-1] - 1j * \
     n.imag(c[1:Lambda/2])[::-1]
 
-# realizando amostras temporais do ruído azul
 ruido = n.fft.ifft(c)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('azul.wav', f_a, r)
+__s(r, 'blue.wav')
 
 
-### 2.54 Ruido violeta
-# a cada oitava, ganhamos 6dB
+### Eq. 53 Violet noise
+# the volume increses by 6dB at each octave
 fator = 10.**(6/20.)
 alphai = fator**(n.log2(fi[i0:]/f0))
 c = n.copy(coefs)
 c[i0:] = c[i0:]*alphai
 
-# real par, imaginaria impar
+# real is even, imaginary is odd
 c[Lambda/2+1:] = n.real(c[1:Lambda/2])[::-1] - 1j * \
     n.imag(c[1:Lambda/2])[::-1]
 
 ruido = n.fft.ifft(c)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('violeta.wav', f_a, r)
+__s(r, 'violet.wav')
 
-### 2.55 Ruído preto
-# a cada oitava, perdemos mais que 6dB
+### Eq.54 Black noise
+# the volume decreases more than 6dB at each octave
 fator = 10.**(-12/20.)
 alphai = fator**(n.log2(fi[i0:]/f0))
 c = n.copy(coefs)
 c[i0:] = c[i0:]*alphai
 
-# real par, imaginaria impar
+# real is even, imaginary is odd
 c[Lambda/2+1:] = n.real(c[1:Lambda/2])[::-1] - 1j * \
     n.imag(c[1:Lambda/2])[::-1]
 
 ruido = n.fft.ifft(c)
 r = n.real(ruido)
-r = ((r-r.min())/(r.max()-r.min()))*2-1
-w.write('preto.wav', f_a, r)
+__s(r, 'black.wav')
 
 
-############## 2.2.5 Tremolo e vibrato, AM e FM
-# VEJA: vibrato.py e tremolo.py para as figuras 2.19 e 2.20
+############## Sec. 3.5 Tremolo e vibrato, AM e FM
+# See src/aux/vibrato.py and src/aux/tremolo.py for rendering Figures 20 and 21
 f = 220.
-Lv = 2048  # tamanho da tabela do vibrato
-fv = 1.5  # frequência do vibrato
-nu = 1.6  # desvio maximo em semitons do vibrato (profundidade)
-Delta = 5.2  # duração do som
-Lambda = int(Delta*f_a)
+Lv = 2048  # size of the table for the vibrato
+fv = 1.5  # vibrato frequency
+nu = 1.6  # maximum semitone deviation (vibrato depth)
+Delta = 5.2  # sound duration
+Lambda = int(Delta*f_s)
 
-# tabela do vibrato
+# Vibrato table
 x = n.linspace(0, 2*n.pi, Lv, endpoint=False)
-tabv = n.sin(x)  # o vibrato será senoidal
+tabv = n.sin(x)  # sinusoidal vibrato
 
 ii = n.arange(Lambda)  # índices
-### 2.56 índices da LUT para o vibrato
-Gammav_i = n.array(ii*fv*float(Lv)/f_a, n.int)  # índices para a LUT
-### 2.57 padrão de oscilação do vibrato para cada amostra
-Tv_i = tabv[Gammav_i % Lv]
-### 2.58 frequência em cada amostra
-F_i = f*(2.**(Tv_i*nu/12.))
-### 2.59 índices para LUT do som
-D_gamma_i = F_i*(Lt/float(f_a))  # movimentação na tabela por amostra
-Gamma_i = n.cumsum(D_gamma_i)  # a movimentação na tabela total
-Gamma_i = n.array(Gamma_i, dtype=n.int)  # já os índices
-### 2.60 som em si
-T_i = Tr_i[Gamma_i % Lt]  # busca dos índices na tabela
+### Eq. 55 indexes of the LUT for the vibrato
+Gammav = n.array(ii*fv*float(Lv)/f_s, n.int)
+### Eq. 56 samples of the oscillatory pattern of the vibrato
+Tv = tabv[Gammav % Lv]
+### Eq. 57 frequency at each sample
+F = f*(2.**(Tv*nu/12.))
+### Eq. 58 indexes of the LUT for the sound
+D_gamma = F*(Lt/float(f_s))  # displacement in the table for each sample
+Gamma = n.cumsum(D_gamma)  # total displacement at each sample
+Gamma = n.array(Gamma, dtype=n.int)  # final indexes
+### Eq. 59 the samples of the sound
+T = Tr[Gamma % Lt]  # Lookup
 
-w.write("vibrato.wav", f_a, T_i)  # escrita do som
-
-
-Tt_i = n.copy(Tv_i)
-### 2.61 Envoltória do tremolo
-V_dB = 12.  # decibels envolvidos na variação
-A_i = 10**((V_dB/20)*Tt_i)
-### 2.62 Aplicação na sequência T_i
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
-T_i = Tr_i[Gamma_i % Lt]
-T_i = T_i*A_i
-w.write("tremolo.wav", f_a, T_i)  # escrita do som
+__s(T, "vibrato.wav")
 
 
-### 2.63 - Espectro da FM, implementada em 2.66-70
-### 2.64 - Função de Bessel, foge ao escopo
-### 2.65 - Espectro da AM, implementada em 2.70,71 abaixo
+Tt = n.copy(Tv)  # same oscillatory pattern from the vibrato
+### Eq. 60 Envelope of the tremolo
+V_dB = 12.  # decibels variation involved in the tremolo (tremolo depth)
+A = 10**((V_dB/20)*Tt)  # amplitude multiplicative factors for each sample
+### Eq. 61 Application of the amplitude envelope to the original sample sequence T
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
+T = Tr[Gamma % Lt]
+T = T*A
+__s(T, "tremolo.wav")
 
-fv = 60.  # > 20Hz
-### 2.66 índices para a LUT da moduladora da FM
-Gammav_i = n.array(ii*fv*float(Lv)/f_a, n.int)
-### 2.67 padrão de oscilação da moduladora
-Tfm_i = tabv[Gammav_i % Lv]
+
+# the following equations are not used to synthesize sounds,
+# but only to express the spectrum resulting from FM and AM synthesis
+### Eq. 62 - FM spectrum, implemented in Eqs. 65-69
+### Eq. 63 - Bessel function
+### Eq. 64 - AM spectrum, implemented in Eqs. 70,71
+
+fv = 60.  # typically, fv > 20Hz (otherwise one might want to use the equations above for the vibrato)
+### Eq. 65 indexes of the LUT for the FM modulator
+Gammav = n.array( ii*fv*float(Lv)/f_s, n.int )
+### Eq. 66 oscillatory pattern (sample-by-sample) of the modulator
+Tfm = tabv[Gammav % Lv]
 f = 330.
 mu = 40.
-### 2.68 Frequência em cada amostra na FM
-f_i = f+Tfm_i*mu
-### 2.69 índices da LUT para síntese do som
-D_gamma_i = f_i*(Lt/float(f_a))  # movimentação na tabela por amostra
-Gamma_i = n.cumsum(D_gamma_i)  # a movimentação na tabela total
-Gamma_i = n.array(Gamma_i, dtype=n.int)  # já os índices
-### 2.70 FM
-T_i = S_i[Gamma_i % Lt]  # busca dos índices na tabela
+### Eq. 67 frequency at each sample
+F = f+Tfm*mu
+### Eq. 68 indexes of the LUT
+D_gamma = f_i*(Lt/float(f_s))  # displacement in the lookup between each sample
+Gamma = n.cumsum(D_gamma)  # total displacement in the lookup at each sample
+Gamma = n.array(Gamma, dtype=n.int)  # indexes
+### Eq. 69 FM
+T = S[Gamma % Lt]  # final samples
 
-w.write("fm.wav", f_a, T_i)  # escrita do som
+# writing the sound file
+__s(T, "fm.wav")
 
 
-Tam_i = n.copy(Tfm_i)
-V_dB = 12.
-alpha = 10**(V_dB/20.)  # profundidade da AM
-### 2.71 Envoltória para AM
-A_i = 1+alpha*Tam_i
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
+# AM
+Tam = n.copy(Tfm)
+V_dB = 12.  # am depth in decibels
+alpha = 10**(V_dB/20.)  # AM depth in amplitude
+### 2.71 AM envelope
+A = 1+alpha*Tam
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
 ### 2.70 AM
-T_i = Tr_i[Gamma_i % Lt]*(A_i)
-w.write("am.wav", f_a, T_i)  # escrita do som
+T = Tr[Gamma % Lt]*A
+__s(T, "am.wav")
 
 
-############## 2.2.5 Usos musicais
-### 2.73 Veja peça Tremolos, Vibratos e a Frequência
+############## Sec. 3.6 Usos musicais
+### Eq. 72 Relations between characteristics
+# See the musical piece Tremolos, vibratos and the frequency
+# in src/pieces3/bonds.py TremolosVibratosEaFrequencia.py
 
-### Efeito Doppler
-v_r= 10 # receptor se move em direção à fonte com v_r m/s
-v_s=-80. # emissor se move em direção ao receptor com -v_s m/s
+# Doppler effect
+v_r= 10 # receptor moves in the direction of the source with velocity v_r m/s
+v_s=-80. # source moves in the direction of receptor with velocity v_s m/s
 v_som=343.2
-f_0=1000 # frequencia do emissor
-# frequência com o efeito Doppler:
-### 2.74 Frequência por efeito Doppler
+f_0=1000 # frequency of the source
+
+### Eq. 73 Frequency resulting from the Doppler effect
 f=((v_som + v_r) / (v_som + v_s)) * f_0
-# a partir do cruzamento entre o emissor e o receptor:
+# after crossing of source and receptor:
 f_=((v_som - v_r) / (v_som - v_s)) * f_0
 
-# distâncias iniciais:
-x_0=0 # emissor à frente
-y_0=200 # distante y_0 metros
+# initial distances:
+x_0=0 # source at front of x_0
+y_0=200 # height of y_0 metros
 
-Delta=5. # duração em segundos
-Lambda=Delta*f_a # número de amostras
+Delta=5. # duration in seconds
+Lambda=Delta*f_s # number of samples
 # posições ao longo do tempo, X_i=n.zeros(Lambda)
-Y_i=y_0 - ((v_r-v_s)*Delta) * n.linspace(0,1,Lambda)
+Y=y_0 - ((v_r-v_s)*Delta) * n.linspace(0,1,Lambda)
 
-# A cada amostra, é preciso calcular a DTI e a DII com X_i e Y_i
-# No caso, DTI e DII são == 0 pois a fonte está no meio.
-### 2.75 Amplitude relativa ao efeito Doppler
-# Assumindo z_0 metros acima da cabeça:
+# At each sample, calculating ITD and IID as explained in the last section
+# In this case, ITD e IID are == 0 because the source is centered
+### Eq. 74 Amplitude resulting from the Doppler effect
+# Assume z_0 meters above receptor:
 z_0=2.
-D_i=( z_0**2+Y_i**2  )**0.5 # distância a cada amostra
-# Amplitude relativa do som em cada amostra devido à distância:
-A_i_=z_0/D_i 
-### Alteração da amplitude devido ao efeito Doppler:
-A_DP_i=( (v_r-v_s)/343.2+1 )**0.5
-A_DP_i_=( (-v_r+v_s)/343.2+1 )**0.5
-A_DP_i=(Y_i>0)*A_DP_i+(Y_i<0)*A_DP_i_
-A_i=A_i_ * A_DP_i
+D=( z_0**2+Y**2  )**0.5 # distance at each PCM sample
+# Amplitude of sound related to the distance:
+A_=z_0/D
+### Amplitude change factor resulting from the Doppler effect:
+A_DP=( (v_r-v_s)/343.2+1 )**0.5
+A_DP_=( (-v_r+v_s)/343.2+1 )**0.5
+A_DP=(Y>0)*A_DP+(Y<0)*A_DP_
+A=A_ * A_DP
 
-# Os sinais das velocidades se invertem
-# no caso da fonte passar o receptor.
-# Portanto:
-### 2.76 Progressão de frequência do efeito Doppler
-coseno_i=(Y_i)/((Y_i**2+z_0**2)**0.5)
-F_i=( ( 343.2+v_r*coseno_i ) / ( 343.2+v_s*coseno_i ) )*f_0
-# coeficientes para a LUT
-D_gamma_i = F_i*Lt/f_a
-Gamma_i = n.cumsum(D_gamma_i)
-Gamma_i = n.array(Gamma_i, dtype=n.int)
+# Upon crossing, the velocities change sign:
+### Eq. 75 Frequency progression
+coseno=(Y)/((Y**2+z_0**2)**0.5)
+F=( ( 343.2+v_r*coseno ) / ( 343.2+v_s*coseno ) )*f_0
+# coefficients of the LUT
+D_gamma = F*Lt/f_s
+Gamma = n.cumsum(D_gamma)
+Gamma = n.array(Gamma, dtype=n.int)
 
-L_i = Tr_i  # Onda triangular
-# Som:
-Tdoppler_i = L_i[Gamma_i % Lt]
-Tdoppler_i*=A_i
+L = Tr  # Triangular wave
+# Resulting sound:
+Tdoppler = L[Gamma % Lt]
+Tdoppler*=A
 
-# Normalizando e gravando:
-Tdoppler_i=((Tdoppler_i-Tdoppler_i.min()) / \
-            (Tdoppler_i.max()-Tdoppler_i.min()))*2.-1
-w.write('doopler.wav', f_a, Tdoppler_i)
+# normalizing and writing sound
+__s(Tdoppler, 'doppler.wav')
 
 
-######## Reverberação
-# O primeiro período da reverberação:
-Delta1 = 0.15 # tipicamente E [0.1,0.2]
-Lambda1= int(Delta1*f_a)
-Delta = 1.9 # duração total da reverberação
-Lambda=int(Delta*f_a)
+######## Reverberation
+# First reverberation period:
+Delta1 = 0.15 # typically E [0.1,0.2]
+Lambda1= int(Delta1*f_s)
+Delta = 1.9 # total duration of reverberation
+Lambda=int(Delta*f_s)
 
-# Probabilidades de reincidência do som no primeiro período:
+# Sound reincidence probability probability in the first period:
 ii=n.arange(Lambda)
-P_i = (ii[:Lambda1]/float(Lambda1))**2.
-# incidências:
-R1_i_=n.random.random(Lambda1)<P_i
-A_i=10.**((-50./20)*(ii/Lambda))
-### 2.77 - Primeiro período da reverberação:
-R1_i=R1_i_*A_i[:Lambda1]*ruido_marrom[:Lambda1] # Primeiras incidências
+P = (ii[:Lambda1]/float(Lambda1))**2.
+# incidences:
+R1_=n.random.random(Lambda1)<P
+A=10.**((-50./20)*(ii/Lambda))
+### Eq. 76 First period of reverberation:
+R1=R1_*A[:Lambda1]*ruido_marrom[:Lambda1] # first incidences
 
-# Ruído marrom em decaimento exponencial para o segundo período:
-# -120dB até o final:
-### 2.78 - Segundo período da reverberação:
-Rm_i=ruido_marrom[Lambda1:Lambda]
-R2_i=Rm_i*A_i[Lambda1:Lambda]
-### 2.79 - Resposta ao impulso da reverberação
-R_i=n.hstack((R1_i,R2_i))
-R_i[0]=1. # resposta ao impulso está pronta
+# Brown noise with exponential decay (of amplitude) for the second period:
+### Eq. 77 Second period of reverberation:
+Rm=ruido_marrom[Lambda1:Lambda]
+R2=Rm*A[Lambda1:Lambda]
+### Eq. 78 Impulse response of the reverberation
+R=n.hstack((R1,R2))
+R[0]=1.
 
-# Realização de um som para aplicar a reverberação:
-f_0 = 100.  # freq inicial em Hz
-f_f = 700.  # freq final em Hz
-Delta = 2.4  # duração
-Lambda = int(f_a*Delta)
+# Making an arbitrary sound to apply the reverberation:
+f_0 = 100.  # starting freq (Hz)
+f_f = 700.  # final freq (Hz)
+Delta = 2.4  # duration
+Lambda = int(f_s*Delta)
 ii = n.arange(Lambda)
 
-# (usando 2.36 - variação exponencial)
-f_i = f_0*(f_f/f_0)**(ii/(float(Lambda)-1))
-# (usando 2.37 coeficientes para a LUT)
-D_gamma_i = f_i*Lt/f_a
-Gamma_i = n.cumsum(D_gamma_i)
-Gamma_i = n.array(Gamma_i, dtype=n.int)
-# (usando 2.38 som resultante)
-Tf0ff_i = L_i[Gamma_i % Lt]
+# (using Eq. 35 for exponential variation)
+F = f_0*(f_f/f_0)**(ii/(float(Lambda)-1))
+# (using Eq. 36 for the LUT indexes)
+D_gamma = F*Lt/f_s
+Gamma = n.cumsum(D_gamma)
+Gamma = n.array(Gamma, dtype=n.int)
+# (using Eq. 2.37 for making the sound)
+Tf0ff = L[Gamma % Lt]
 
-# Aplicação da reverberação
-T_i_=Tf0ff_i
-T_i=n.convolve(T_i_,R_i)
-T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
-w.write('reverb.wav', f_a, T_i)
-w.write('RI_reverb.wav', f_a, R_i)
+# Applying the reverberation
+T_=Tf0ff
+T=n.convolve(T_,R)
+__s(T, "reverb.wav")
 
 
-### 2.80 ADSR - variação linear
-Delta = 5.  # duração total em segundos
-Delta_A = 0.1  # Ataque
+### Eq. 79 ADSR - linear variation
+Delta = 5.  # total duration in seconds
+Delta_A = 0.1  # Attack
 Delta_D = .3  # Decay
 Delta_R = .2  # Release
-a_S = .1  # nível de sustentação
+a_S = .1  # Sustain level
 
-Lambda = int(f_a*Delta)
-Lambda_A = int(f_a*Delta_A)
-Lambda_D = int(f_a*Delta_D)
-Lambda_R = int(f_a*Delta_R)
+Lambda = int(f_s*Delta)
+Lambda_A = int(f_s*Delta_A)
+Lambda_D = int(f_s*Delta_D)
+Lambda_R = int(f_s*Delta_R)
 
-# Realização da envoltória ADSR: A_i
+# Achievement of the ADRS envelope: A_
 ii = n.arange(Lambda_A, dtype=n.float)
 A = ii/(Lambda_A-1)
-A_i = A
+A_ = A
 ii = n.arange(Lambda_A, Lambda_D+Lambda_A, dtype=n.float)
 D = 1-(1-a_S)*((ii-Lambda_A)/(Lambda_D-1))
-A_i = n.hstack((A_i, D))
+A_ = n.hstack((A_, D))
 S = a_S*n.ones(Lambda-Lambda_R-(Lambda_A+Lambda_D), dtype=n.float)
-A_i = n.hstack((A_i, S))
+A_ = n.hstack((A_, S))
 ii = n.arange(Lambda-Lambda_R, Lambda, dtype=n.float)
 R = a_S-a_S*((ii-(Lambda-Lambda_R))/(Lambda_R-1))
-A_i = n.hstack((A_i, R))
+A_ = n.hstack((A_, R))
 
-### 2.81 Realização do som com a envoltória
+### Eq. 80 Achievement of a sound with the ADSR envelope
 ii = n.arange(Lambda, dtype=n.float)
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
-T_i = Tr_i[Gamma_i % Lt]*(A_i)
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
+T = Tr[Gamma % Lt]*(A_)
 
-w.write("adsr.wav", f_a, T_i)  # escrita do som em disco
+__s(T, "adsr.wav")
 
 
-### 2.80 ADSR - variação Exponencial
-xi = 1e-2  # -180dB para iniciar o fade in e finalizar o fade out
-De = 2*100.  # duracao total (\Delta)
-DA = 2*20.  # duracao do ataque \Delta_A
-DD = 2*20.  # duracao do decay \Delta_D
-DR = 2*20.  # duracao do release \Delta_R
-SS = .4  # fração da amplitude em que ocorre o sustain
+### Eq. 79 ADSR - exponential variation
+xi = 1e-2  # -180dB for starting fade in and ending in the fade out
+De = 2*100.  # total duration 
+DA = 2*20.  # attack duration
+DD = 2*20.  # decay duration
+DR = 2*20.  # release duration
+SS = .4  # fraction of amplitude in which sustain occurs
 
-Lambda = int(f_a*De)
-Lambda_A = int(f_a*DA)
-Lambda_D = int(f_a*DD)
-Lambda_R = int(f_a*DR)
+Lambda = int(f_s*De)
+Lambda_A = int(f_s*DA)
+Lambda_D = int(f_s*DD)
+Lambda_R = int(f_s*DR)
 
-A = xi*(1./xi)**(n.arange(Lambda_A)/(Lambda_A-1))  # amostras do ataque
-A_i = n.copy(A)
-# amostras do decay
-D = a_S**((n.arange(Lambda_A, Lambda_A+Lambda_D)-Lambda_A)/(Lambda_D-1))
-A_i = n.hstack((A_i, D))
-S = a_S*n.ones(Lambda-Lambda_R-(Lambda_A+Lambda_D))  # amostras do sustain
-A_i = n.hstack((A_i, S))
+A = xi*(1./xi)**(n.arange(Lambda_A)/(Lambda_A-1))  # attack samples
+A = n.copy(A)
+D = a_S**((n.arange(Lambda_A, Lambda_A+Lambda_D)-Lambda_A)/(Lambda_D-1)) # decay samples
+A = n.hstack((A, D))
+S = a_S*n.ones(Lambda-Lambda_R-(Lambda_A+Lambda_D))  # sustain samples
+A = n.hstack((A, S))
 R = (SS)*(xi/SS)**((n.arange(Lambda-Lambda_R, Lambda)+Lambda_R-Lambda)/(Lambda_R-1))  # release
-A_i = n.hstack((A_i,  R))
+A = n.hstack((A,  R))
 
-### 2.81 Realização do som com a envoltória
+### Eq. 80 Achievement of sound with ADSR envelope
 ii = n.arange(Lambda, dtype=n.float)
-Gamma_i = n.array(ii*f*Lt/f_a, dtype=n.int)
-T_i = Tr_i[Gamma_i % Lt]*(A_i)
+Gamma = n.array(ii*f*Lt/f_s, dtype=n.int)
+T = Tr[Gamma % Lt]*(A)
 
-w.write("adsr_exp.wav", f_a, T_i)  # escrita do som em disco
+__s(T, "adsr_exp.wav")

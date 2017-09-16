@@ -643,7 +643,7 @@ Let $\widetilde{\Lambda}$ be the wave period in samples and $\widetilde{L_i} = \
 
 \begin{equation}\label{eq:lut}
 \begin{split}
-T_i^{f,\,\Delta}=\left\{t_i^f\right\}_0^{\lfloor \, f_s . \Delta \, \rfloor -1} = \left\{ \, \widetilde{l}_{\gamma_i \% \widetilde{\Lambda} }\, \right\}_{0}^{\Lambda-1}\; , \quad \text{where} \;\; \gamma_i = \left \lfloor i f \frac{ \widetilde{\Lambda}}{f_s} \right \rfloor  
+T^{f,\,\Delta}=\left\{t_i^f\right\}_0^{\lfloor \, f_s . \Delta \, \rfloor -1} = \left\{ \, \widetilde{l}_{\gamma_i \% \widetilde{\Lambda} }\, \right\}_{0}^{\Lambda-1}\; , \quad \text{where} \;\; \gamma_i = \left \lfloor i f \frac{ \widetilde{\Lambda}}{f_s} \right \rfloor  
 \end{split}
 \end{equation}
 
@@ -666,7 +666,7 @@ For didactic reasons, and given its use in AM and FM synthesis (Section~\ref{sub
 Consider a note with duration $\Delta = \frac{\Lambda}{f_s}$, in which the frequency $f=f_i$ varies linearly from $f_0$ to $f_{\Lambda -1}$. Thus:
 
 \begin{equation}\label{freqLinear}
- F_i=\{f_i\}_0^{\Lambda-1}=\left\{f_0 + (f_{\Lambda-1}-f_0)\frac{i}{\Lambda-1} \right\}_0^{\Lambda-1}
+ F=\{f_i\}_0^{\Lambda-1}=\left\{f_0 + (f_{\Lambda-1}-f_0)\frac{i}{\Lambda-1} \right\}_0^{\Lambda-1}
 \end{equation}
 
 \begin{equation}\label{indiceLinear}
@@ -686,7 +686,7 @@ Therefore, $f_i=f_0 . 2^{\frac{i}{\Lambda-1}\log_2\frac{f_{\Lambda-1}}{f_0}}=
  f_0 \left ( \frac{f_{\Lambda-1}}{f_0} \right ) ^{\frac{i}{\Lambda -1}}$. Accordingly, the equations for linear pitch transition are:
 
 \begin{equation}\label{freqExponencial}
- F_i=\{f_i\}_0^{\Lambda-1}=  \left\{f_0 \left ( \frac{f_{\Lambda-1}}{f_0} \right ) ^{\frac{i}{\Lambda -1}} \right\}_0^{\Lambda-1}
+ F=\{f_i\}_0^{\Lambda-1}=  \left\{f_0 \left ( \frac{f_{\Lambda-1}}{f_0} \right ) ^{\frac{i}{\Lambda -1}} \right\}_0^{\Lambda-1}
 \end{equation}
 
 \begin{equation}\label{indiceExponencial}
@@ -720,7 +720,7 @@ where $a_0=1$. And, therefore:
 
 \begin{equation}\label{transAmp}
 \begin{split}
- T_i^{'}=T_i \odot A_i = & \{t_i . a_i\}_0^{\Lambda-1} \\ = & \left \{ t_i . (a_{\Lambda-1} )^{\left ( \frac{i}{\Lambda-1} \right )^\alpha} \right \}_0^{\Lambda-1}
+ T^{'}=T \odot A = \{t_i . a_i\}_0^{\Lambda-1} = \left \{ t_i . (a_{\Lambda-1} )^{\left ( \frac{i}{\Lambda-1} \right )^\alpha} \right \}_0^{\Lambda-1}
 \end{split}
 \end{equation}
 
@@ -739,7 +739,7 @@ a_i=a_0 + (a_{\Lambda-1}-a_0)\frac{i}{\Lambda-1}
 Here the conversion between decibels and amplitude is convenient, with Equations~\ref{ampDec} and~\ref{transAmp} specifying a transition of $V_{dB}$ decibels:
 
 \begin{equation}\label{seqAmpDB}
-T_i^{'}=\left\{ t_i 10^{\frac{V_{dB}}{20}\left( \frac{i}{\Lambda-1} \right)^\alpha} \right\}_0^{\Lambda-1}
+T^{'}=\left\{ t_i 10^{\frac{V_{dB}}{20}\left( \frac{i}{\Lambda-1} \right)^\alpha} \right\}_0^{\Lambda-1}
 \end{equation}
 
 \noindent for the general case of amplitude variations following a geometric progression. The greater the value of $\alpha$, the smoother the sound introduction and more intense its end. $\alpha>1$ results in loudness transitions commonly called \emph{slow fade}, while $\alpha<1$ results in \emph{fast fade}\cite{guillaume}.
@@ -802,7 +802,7 @@ Both alternatives are explored by~\cite{JOSFM,smith}, and by the collection of f
 \begin{figure*}
     \centering
         \includegraphics[width=\textwidth]{figures/iir__}
-    \caption{Modules for the frequency response (a), (b), (c) and (d) for IIR filters of Equations~\ref{eq:passa-baixas},~\ref{eq:passa-altas},~\ref{eq:passa-banda} and~\ref{eq:rejeita-banda} respectively, considering different cutoff frequencies, center frequencies and band width.}
+    \caption{Moduli for the frequency response (a), (b), (c) and (d) for IIR filters of Equations~\ref{eq:passa-baixas},~\ref{eq:passa-altas},~\ref{eq:passa-banda} and~\ref{eq:rejeita-banda} respectively, considering different cutoff frequencies, center frequencies and band width.}
         \label{fig:iir}
 \end{figure*}
 
@@ -957,7 +957,7 @@ A vibrato can be achieved by:
 \end{equation}
 
 \begin{equation}\label{vbrT}
- T_i^{f, vbr(f',\,\nu)}=\left\{ t_i^{f,vbr(f',\,\nu)} \right\}_0^{\Lambda-1}=\left\{ \widetilde{l}_{\gamma_i \%\; \widetilde{\Lambda} } \right\}_0^{\Lambda-1}
+ T^{f, vbr(f',\,\nu)}=\left\{ t_i^{f,vbr(f',\,\nu)} \right\}_0^{\Lambda-1}=\left\{ \widetilde{l}_{\gamma_i \%\; \widetilde{\Lambda} } \right\}_0^{\Lambda-1}
 \end{equation}
 
 \begin{figure}[h!]
@@ -988,7 +988,7 @@ The amplitude sequence to be multiplied by the original sequence $t_i$ is:
 
 \begin{equation}\label{trT}
 \begin{split}
- T_i^{tr(f')}=\left \{ t_i^{tr(f')} \right \}_0^{\Lambda-1}=\{ t_i . a_i \}_0^{\Lambda-1}= \left \{t_i .10^{t_i' \frac{V_{dB}}{20}}    \right \}_0^{\Lambda-1}=\left\{t_i . a_{\text{max}}^{t_i'} \right\}_0^{\Lambda-1}
+ T^{tr(f')}=\left \{ t_i^{tr(f')} \right \}_0^{\Lambda-1}=\{ t_i . a_i \}_0^{\Lambda-1}= \left \{t_i .10^{t_i' \frac{V_{dB}}{20}}    \right \}_0^{\Lambda-1}=\left\{t_i . a_{\text{max}}^{t_i'} \right\}_0^{\Lambda-1}
 \end{split}
 \end{equation}
 
@@ -1077,7 +1077,7 @@ f_i=f + \mu . t_i'
 \end{equation}
 
 \begin{equation}\label{fmT}
-T_i^{f,\, FM(f',\,\mu)}=\left\{ t_i^{f,\,FM(f',\,\mu)} \right\}_0^{\Lambda-1}=\left\{\,\widetilde{l}_{\gamma_i \%\; \widetilde{\Lambda} } \,\right\}_0^{\Lambda-1}
+T^{f,\, FM(f',\,\mu)}=\left\{ t_i^{f,\,FM(f',\,\mu)} \right\}_0^{\Lambda-1}=\left\{\,\widetilde{l}_{\gamma_i \%\; \widetilde{\Lambda} } \,\right\}_0^{\Lambda-1}
 \end{equation}
 
 
@@ -1089,9 +1089,9 @@ To perform AM, the signal $\{t_i\}$ needs to be modulated with $\{t_i'\}$ using 
 a_i=1 + \alpha . t_i'
 \end{equation}
 
-\begin{multline}\label{amT}
-T_i^{f,\,AM(f',\,\alpha)}=\left\{ t_i^{f,\,AM(f',\,\alpha)} \right\}_0^{\Lambda-1}=\{ t_i . a_i \}_0^{\Lambda-1}= \\ \{t_i . (1 + \alpha . t_i')    \}_0^{\Lambda-1}
-\end{multline}
+\begin{equation}\label{amT}
+T^{f,\,AM(f',\,\alpha)}=\left\{ t_i^{f,\,AM(f',\,\alpha)} \right\}_0^{\Lambda-1}=\{ t_i . a_i \}_0^{\Lambda-1}= \{t_i . (1 + \alpha . t_i')    \}_0^{\Lambda-1}
+\end{equation}
 
 \subsection{Musical usages}\label{subsec:mus2}
 At this point the musical possibilities are very wide. All characteristics, like pitch (given by frequency), timbre (achieved by waveforms, filters and noise), loudness (manipulated by intensity) and duration (given by the number of samples), can be considered in an absolute form or varied during the duration of the sound (clearly, with the exception of duration itself). The following musical usages comprehend a collection of possibilities with the purpose of exemplifying types of sound manipulations that result in musical material. Some of them are discussed in depth in the next section.
