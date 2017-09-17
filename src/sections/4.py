@@ -6,11 +6,13 @@ Lambda_tilde = Lt = 1024.
 foo = n.linspace(0, 2*n.pi, Lt, endpoint=False)
 S_i = n.sin(foo)  # a sinusoid period of T samples
 
+H = n.hstack
 
-def v(f=200, d=2., tab=S_i, fv=2., nu=2., tabv=S_i):
-    Lambda = n.floor(f_a*d)
-    ii = n.arange(Lambda)
-    Lv = float(len(S_i))
+# using the content from the previous sections,
+# this is a very simple synthesizer of notes
+def v(f=200, d=1., tab=S_i, fv=2., nu=2., tabv=S_i):
+    Lambda = n.floor(f_a*d) ii = n.arange(Lambda)
+    Lv = float(len(T))
 
     Gammav_i = n.floor(ii*fv*Lv/f_a)  # indexes for LUT
     Gammav_i = n.array(Gammav_i, n.int)
@@ -27,18 +29,49 @@ def v(f=200, d=2., tab=S_i, fv=2., nu=2., tabv=S_i):
     return tab[Gamma_i % int(Lt)]  # looking for indexes in table
 
 
-############## 2.3.1 Tuning, intervals, scales and chords
+############## Sec. 4.1 Tuning, intervals, scales and chords
+just_ratios = [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/3, 2]
+pythagorean_ratios = [1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2]
+equal_temperament_ratios = [2**(i/12) for i in range(12)]
 
-### Microtonality of tone quarters
-### and octave sevenths
-# with
+f = 220  # an arbitrary frequency
+just_scale = [i*f for i in just_intonations]
+pythagorean_scale = [i*f for i in pythagorean_ratios]
+equal_temperament_scale = [i*f for i in equal_temperament_ratios]
+
+js = H([v(i) for i in just_scale])
+__s(js, "just_scale.wav")
+ps = H([v(i) for i in pythagorean_scale])
+__s(js, "pythagorean_scale.wav")
+es = H([v(i) for i in equal_temperament_scale])
+__s(js, "equal_temperament_scale.wav")
+
+### Microtonality
+# quarter tones
 epslon = 2**(1/12.)
-s1 = [0., 0.25, 1.75, 2., 2.25, 4., 5., 5.25]
-# or
-epslon = 2**(1/7.)
-s2 = [0., 1., 2., 3., 4., 5., 6.]
+s1 = [0., 1.25, 1.75, 2., 2.25, 4., 5., 5.25]
+factors = [epslon**i for i in s1]
+scale = H([v(f*i) for i in factors])
+__s(scale, "quarter_tones1.wav")
 
-### Table 2.22: Intervals
+epslon = 2**(1/24.)
+factors = [epslon**i for i in range(24)]
+scale = H([v(f*i) for i in factors])
+__s(scale, "quarter_tones2.wav")
+
+# Octave sevenths
+epslon_ = 2**(1/7.)
+s2 = [0., 1., 2., 3., 4., 5., 6., 7.]
+factors = [epslon_**i for i in s2]
+scale = H([v(f*i) for i in factors])
+__s(scale, "octave_sevenths.wav")
+
+### Eq. 81 relating note grids
+# expressing octave sevenths in the quarter tone grid:
+s2_ = [i*24/7 for i in s2]
+
+### Table 1: Intervals
+# using epsilon = 2**(1/12)
 I1j = 0.
 I2m = 1.
 I2M = 2.
@@ -54,9 +87,17 @@ I7M = 11.
 I8J = 12.
 I_i = n.arange(13.)
 
+perfect_consonances = [0, 7, 12]
+imperfect_consonances = [3, 4, 8, 9]
+weak_dissonances = [2, 10]
+strong_dissonances = [1, 11]
+special_cases = [5, 6]
 
-# the interval sums nine nomenclature for inversion, but always sums 12
+# the interval sums nine for inversion by traditional nomenclature
+# fifth is inverted into a fourth (5+4 = 9)
+# but always sums 12
 # at inversions of semitones
+# fifth (7) is inverted into a fourth (5) (7+5 = 12)
 def inv(I):
     """Returns inversed interval of I: 0< =  I < = 12"""
     return 12-I
@@ -71,59 +112,66 @@ def intervaloHarmonico(f, I):
 def intervaloMelodico(f, I):
     return n.hstack((v(f), v(f*2.**(I/12.))))
 
-### 2.82 Symmetric scales
-Ec_i = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11.]
-Et_i = [0., 2., 4., 6., 8., 10.]
-Etm_i = [0., 3., 6., 9.]
-EtM_i = [0., 4., 8.]
-Ett_i = [0., 6.]
+### Eq. 82 Symmetric scales
+Ec = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11.]
+Ewt = [0., 2., 4., 6., 8., 10.]
+Etm = [0., 3., 6., 9.]
+EtM = [0., 4., 8.]
+Ett = [0., 6.]
 
-### 2.83 Diatonic scales
-Em_i = [0., 2., 3., 5., 7., 8., 10.]
-Emlo_i = [1., 3., 5., 6., 8., 10.]
-EM_i = [0., 2., 4., 5., 7., 9., 11.]
-Emd_i = [0., 2., 3., 5., 7., 9., 10.]
-Emf_i = [0., 1., 3., 5., 7., 8., 10.]
-Eml_i = [0., 2., 4., 6., 7., 9., 11.]
-Emmi_i = [0., 2., 4., 5., 7., 8., 10.]
+### Eq. 83 Diatonic scales
+Em = [0., 2., 3., 5., 7., 8., 10.]
+Emlo = [1., 3., 5., 6., 8., 10.]
+EM = [0., 2., 4., 5., 7., 9., 11.]
+Emd = [0., 2., 3., 5., 7., 9., 10.]
+Emf = [0., 1., 3., 5., 7., 8., 10.]
+Eml = [0., 2., 4., 6., 7., 9., 11.]
+Emmi = [0., 2., 4., 5., 7., 8., 10.]
 
-### 2.84 Diatonic pattern
-E_i_ = n.roll(n.array([2.,2.,1.,2.,2.,2.,1.]), n.random.randint(7.))
-E_i = n.cumsum(E_i_)-E_i_[0.]
-
-
-### 2.85 Harmonic and melodic minor scales
-Em_i = [0., 2., 3., 5., 7., 8., 10.]
-Emh_i = [0., 2., 3., 5., 7., 8., 11.]
-Emm_i = [0.,2.,3.,5.,7.,9.,11.,12.,10.,8.,7.,5.,3.,2.,0.]
+### Eq. 84 Diatonic pattern
+E_ = n.roll(n.array([2.,2.,1.,2.,2.,2.,1.]), n.random.randint(7.))
+E = n.cumsum(E_)-E_[0.]
 
 
-### 2.86 Triads
-AM_i = [0., 4., 7.]
-Am_i = [0., 3., 7.]
-Ad_i = [0., 3., 6.]
-Aa_i = [0., 4., 8.]
+### Eq. 85 Harmonic and melodic minor scales
+Em = [0., 2., 3., 5., 7., 8., 10.]
+Emh = [0., 2., 3., 5., 7., 8., 11.]
+Emm = [0.,2.,3.,5.,7.,9.,11.,12.,10.,8.,7.,5.,3.,2.,0.]
 
-def comSetimam(A): return A+[10.]
-def comSetimaM(A): return A+[11.]
+### Eq. 86 Harmonic series
+H = [ 0, 12, 19+0.02, 24, 28-0.14, 31+0.2, 34-0.31,
+      36, 38+0.04, 40-0.14, 42-0.49, 43+0.02,
+      44+0.41, 46-0.31, 47-0.12,
+      48, 49+0.05, 50+0.04, 51-0.02, 52-0.14 ]
+
+### Eq. 86 Triads
+AM = [0., 4., 7.]
+Am = [0., 3., 7.]
+Ad = [0., 3., 6.]
+Aa = [0., 4., 8.]
+
+def withMinorSeventh(A): return A+[10.]
+def withMajorSeventh(A): return A+[11.]
 
 
-
-############## 2.3.2 Atonal and tonal harmonies, expansion and modulation
+############## Sec. 4.2 Atonal and tonal harmonies, harmonic expansion and modulation
 ### Table 2.23
 def relativa(TT):
-    """TT is major and minor triad at closed and fundamental positions."""
+    """Returns the relative chord.
+    
+    TT is a major or minor triad at a closed and fundamental position."""
     T = n.copy(TT)
-    if T[1]-T[0] == 4.:  # ac is major
-        T[2] = 9.  # returns down minor chord
-    elif T[1]-T[0] == 3.:  # ac is minor
-        T[0] = 10.  # returns up major chord
+    if T[1]-T[0] == 4:  # TT is major
+        T[2] = 9.  # returns minor chord a minor third bellow
+    elif T[1]-T[0] == 3:  # TT is minor
+        T[0] = 10.  # returns major chord a major third above
     else:
         print("send me only minor or major perfect triads")
     return T
 
 
 def antiRelativa(TT):
+    """Returns the anti-relative chord."""
     T = n.copy(TT)
     if T[1]-T[0] == 4.:  # major
         T[0] = 11.  # returns up minor
@@ -131,66 +179,64 @@ def antiRelativa(TT):
         T[2] = 8.  # returns down major
     return T
 
+### Medians
+def sup(TT):
+    T = n.copy(TT)
+    if T[1]-T[0] == 4.:  # major
+        T[0] = 11.
+        T[2] = 8.  # returns major
+    if T[1]-T[0] == 3.:  # minor
+        T[0] = 10.
+        T[2] -= 1.  # returns minor
+    return T
 
-class Mediana:
-    def sup(self, TT):
-        T = n.copy(TT)
-        if T[1]-T[0] == 4.:  # major
-            T[0] = 11.
-            T[2] = 8.  # returns major
-        if T[1]-T[0] == 3.:  # minor
-            T[0] = 10.
-            T[2] -= 1.  # returns minor
-        return T
+def inf(TT):
+    T = n.copy(TT)
+    if T[1]-T[0] == 4.:  # major
+        T[2] = 9
+        T[0] = 1.  # returns major
+    if T[1]-T[0] == 3.:  # minor
+        T[2] = 8.
+        T[0] = 11.  # returns minor
+    return T
 
-    def inf(self, TT):
-        T = n.copy(TT)
-        if T[1]-T[0] == 4.:  # major
-            T[2] = 9
-            T[0] = 1.  # returns major
-        if T[1]-T[0] == 3.:  # minor
-            T[2] = 8.
-            T[0] = 11.  # returns minor
-        return T
+def supD(TT):
+    T = n.copy(TT)
+    if T[1]-T[0] == 4.:  # major
+        T[0] = 10.
+        T[1] = 3.  # returns major
+    if T[1]-T[0] == 3.:  # minor
+        T[0] = 11.
+        T[1] = 4.  # returns minor
+    return T
 
-    def supD(self, TT):
-        """Preserves the fifth and first triad in third."""
-        T = n.copy(TT)
-        if T[1]-T[0] == 4.:  # major
-            T[0] = 10.
-            T[1] = 3.  # returns major
-        if T[1]-T[0] == 3.:  # minor
-            T[0] = 11.
-            T[1] = 4.  # returns minor
-        return T
+def infD(TT):
+    T = n.copy(TT)
+    if T[1]-T[0] == 4.:  # major
+        T[1] = 3.
+        T[2] = 8.  # returns major
+    if T[1]-T[0] == 3.:  # minor
+        T[1] = 4.
+        T[2] = 9.  # returns minor
+    return T
 
-    def infD(self, TT):
-        T = n.copy(TT)
-        if T[1]-T[0] == 4.:  # major
-            T[1] = 3.
-            T[2] = 8.  # returns major
-        if T[1]-T[0] == 3.:  # minor
-            T[1] = 4.
-            T[2] = 9.  # returns minor
-        return T
-
-### Main functions
-tonicaM = [0., 4., 7.]
-tonicam = [0., 3., 7.]
+### Main tonal functions
+tonicM = [0., 4., 7.]
+tonicm = [0., 3., 7.]
 subM = [0., 5., 9.]
 subm = [0., 5., 8.]
-dom = [2., 7., 11.]
-Vm = [2., 7., 10.]  # fifth minor grade is not dominant
+dominant = [2., 7., 11.]
+Vm = [2., 7., 10.]  # minor chord is not dominant
 
 
-############## 2.3.3 Counterpoint
+############## Sec. 4.3 Counterpoint
 def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
                                      5,4,4,4,0,2,4,5,5,5]):
-    """Does the independence routine of voices
+    """Returns a melody given input melody
     
-    Limited in 1 up and down octave"""
-    primeiraNota=alturas[0]+(7,12)[n.random.randint(2)]
-    contra=[primeiraNota]
+    Limited in 1 octave"""
+    first_note = alturas[0]+(7,12)[n.random.randint(2)]
+    contra = [first_note]
 
     i=0
     cont=0 # parallels counter
@@ -229,7 +275,7 @@ def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
         for nota,mt in zip(possiveis,movt):
 
             if mt == "direto": # direct movement
-                # does not accepts perfect intervals
+                # does not accept perfect consonances
                 if nota-seguinte_cf in (0,7,8,12):
                     possiveis.remove(nota)
         ok=0
@@ -252,18 +298,28 @@ def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
     return contra
 
 
-############## 2.3.4 Rhythm
-### See Poli Hit Mia music piece at Appendix B
+############## Sec. 4.4 Rhythm
+### See Poli Hit Mia musical piece
 
 
-############## 2.3.5 Repetition and variation: motifs and larger unities
-### Ubique concepts
+############## Sec 4.5 Repetition and variation: motifs and larger units
+### Ubiquitous concepts
+# examples
+S = [1, 2, 1.5, 3]  # a sequence of parameters, e.g. durations
+S1 = S[::-1]  # reversion
+S2 = [i*4 for i in S]  # expansion
+S3 = [i*.5 for i in S]  # contraction
+S4 = S[2:] + S[:2]
+
+# now suppose that S is a sequence of pitches
+S5 = [i+7 for i in S]  # transposition
+S6 = [i-12 for i in S]  # interval inversion
 
 
-############## 2.3.6 Directional structures
-### See Dirracional music piece at Appendix B
+############## Sec 4.6 Directional structures
+### See Dirracional musical piece
 
 
-############## 2.3.7 Cyclic structures
-### See 3 Trios music pieces at Appendix B
-### and the PPEPPS at Appendix C
+############## Sec. 4.7 Cyclic structures
+### See 3 Trios musical pieces
+### and the PPEPPS

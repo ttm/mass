@@ -1,24 +1,20 @@
-#-*- coding: utf-8 -*-
 import numpy as n
 from scipy.io import wavfile as w
 
-# Peça musical baseada em sons estáticos
-# são mixagens de sons básicos apresentados na seção 2.1
-
-f_a = 44100  # 44.1kHz, frequência de amostragem de CDs
-Delta = 180.  # cada quadro terá Delta segundos
-Lambda = int(Delta*f_a)  # número de amostras
+f_a = 44100  # 44.1kHz, sample rate
+Delta = 180.  # each sonic picture will have Delta seconds
+Lambda = int(Delta*f_a)  # number of samples
 
 ii = n.linspace(0, Delta*2*n.pi, Lambda, endpoint=False)
 
-# frequências que dividem f_a
+# frequencies
 fs = []
-for i in xrange(1, f_a/2+1):
+for i in range(1, f_a/2+1):
     if f_a/float(i) == int(f_a/i):
         fs.append(i)
 
-### Quadro 1: senoides no grave em batimento e
-### no agudo uma dente de serra bem suave
+### Picture 1: sinusoids that make beating in the low frequencies
+### and in the high frequencies a sawtooth
 f1 = 100
 f2 = 100.5
 
@@ -26,19 +22,19 @@ som = n.sin(ii*f1)+n.sin(ii*f2)
 dente_aguda = (n.arange(Lambda) % 4-2)
 som += dente_aguda/80
 
-# normalição no intervalo [-1,1]
+# normalization for samples to be within [-1,1]
 som = ((som - som.min())/(som.max()-som.min()))*2-1
 
 # most music players read only 16-bit wav files, so let's convert the array
 som = n.int16(som * float(2**15))
 
-w.write("quadro1.wav",f_a,som)
+w.write("picture1.wav",f_a,som)
 
-print(u"quadro 1 feito em quadro1.wav (mono), são %i amostras \
-em uma frequência de amostragem de %iHz" % (len(som), f_a))
+print(u"picture 1 written in picture1.wav(mono), %i samples \
+in a sample rate of %iHz" % (len(som), f_a))
 
 
-### Quadro 2: 3 conjuntos separados de triangulares
+### Picture 2:: 3 sets of triangular waves
 fs2 = fs[20:21]+fs[65:70]+fs[77:]
 som = n.zeros(Lambda)
 ii = n.arange(Lambda)
@@ -46,20 +42,18 @@ for f in fs2:
     lambda_f = f_a/f
     som += (1-n.abs(2-(4./lambda_f)*(ii % lambda_f)))*(1./f**1.2)
 
-# normalizando no intervalo [-1,1]
 som = ((som - som.min())/(som.max()-som.min()))*2-1
 
-# most music players read only 16-bit wav files, so let's convert the array
 som = n.int16(som * float(2**15))
 
-w.write("quadro2.wav", f_a, som)
-print("quadro 2 feito em quadro2.wav (mono), são %i amostras \
-em uma frequência de amostragem de %iHz" % (len(som), f_a))
+w.write("picture2.wav", f_a, som)
+print("picture 2 written in picture2.wav (mono), %i samples \
+in a sample rate of %iHz" % (len(som), f_a))
 
 
-### Quadro 3: estereofonia alternada no espectro harmônico
+### Picture 3: alternated stereophony in the harmonic spectrum
 f = 50.
-fs3 = [f*i for i in xrange(1, 7)]  # 6 harmônicos
+fs3 = [f*i for i in xrange(1, 7)]  # 6 harmonics
 som_d = n.zeros(Lambda)
 som_e = n.zeros(Lambda)
 ii = n.linspace(0, Delta*2*n.pi, Lambda, endpoint=False)
@@ -71,17 +65,15 @@ for f in fs3:
         som_e += n.sin(f*ii)*(1./f)
     i += 1
 som = n.vstack((som_d, som_e)).T
+
 som = ((som - som.min())/(som.max()-som.min()))*2-1
-
-# most music players read only 16-bit wav files, so let's convert the array
 som = n.int16(som * float(2**15))
+w.write("picture3.wav", f_a, som)
+print("picture 3 written in picture3.wav (stereo), %i samples \
+in a sample rate of %iHz" % (len(som), f_a))
 
-w.write("quadro3.wav", f_a, som)
-print("quadro 3 feito em quadro3.wav (estéreo), são %i amostras \
-em uma frequência de amostragem de %iHz" % (len(som), f_a))
 
-
-### Quadro 4: batimentos intercalados por ouvido e com defasagens
+### Picture 4: beatings interspersed by side and with lags
 fs4 = n.array([50, 51.01, 52.01, 53])
 som_d = n.zeros(Lambda)
 som_e = n.zeros(Lambda)
@@ -106,19 +98,18 @@ for f in fs4:
     else:
         som_e += n.sin(f*ii)*(1./f)
     i += 1
+som_d = ((som_d - som_d.min())/(som_d.max()-som_d.min()))*2-1
+som_e = ((som_e - som_e.min())/(som_e.max()-som_e.min()))*2-1
 som += n.vstack((som_d, som_e)).T/60
-som = ((som - som.min())/(som.max()-som.min()))*2-1
 
-# most music players read only 16-bit wav files, so let's convert the array
 som = n.int16(som * float(2**15))
+w.write("picture4.wav", f_a, som)
+print("picture 4 written in picture4.wav (stereo), %i samples \
+in a sample rate of %iHz" % (len(som), f_a))
 
-w.write("quadro4.wav", f_a, som)
-print("quadro 4 feito em quadro4.wav (estéreo), são %i amostras \
-em uma frequência de amostragem de %iHz" % (len(som), f_a))
 
-
-### Quadro 5: Dente de serra grave bate com harmônico em cada lado
-f = 42.  # Hz, freq da dente
+### Picture 5: Low-frequency sawtooth with beating in each side (L-R)
+f = 42.
 lambda_f = 44100/f
 dente = ((n.arange(float(Lambda)) % lambda_f)/lambda_f)*2-1
 
@@ -129,9 +120,7 @@ som_e = dente+n.sin(ii*43) + n.sin(ii*126.3)
 som = n.vstack((som_d, som_e)).T
 som = ((som - som.min())/(som.max()-som.min()))*2-1
 
-# most music players read only 16-bit wav files, so let's convert the array
 som = n.int16(som * float(2**15))
-
-w.write("quadro5.wav", f_a, som)
-print("quadro 5 feito em quadro5.wav (estéreo), são %i amostras \
-em uma frequência de amostragem de %iHz" % (len(som), f_a))
+w.write("picture5.wav", f_a, som)
+print("picture 5 written in picture5.wav (stereo), %i samples \
+in a sample frequency of %iHz" % (len(som), f_a))

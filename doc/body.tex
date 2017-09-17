@@ -1223,7 +1223,7 @@ The ADSR envelope with durations $\Delta_A$, $\Delta_D$ and $\Delta_R$, with tot
 
 \noindent with $\Lambda_X=\lfloor \Delta_X . f_s \rfloor\;\;\forall\;\; X \; \in
 (A,D,R\;)$ with $\xi$ being a small value that provides a satisfactory \emph{fade in} and \emph{fade out}, e.g.\ $\xi=10^{\frac{-80}{20}}=10^{-4}\;$ or $\;\xi=10^{\frac{-40}{20}}=10^{-2}$. The lower the $\xi$, the slower the \emph{fade}, like the $\alpha$ illustrated in Figure~\ref{fig:transicao}. The right side of Equations~\ref{eq:adsr} can cater for both introduction and ending of sound from zero intensity because they are linear. Schematically, Figure~\ref{fig:adsr} shows the ADSR envelope in a classical implementation that supports many variations. For example, between attack and decay it is possible to add an extra partition where the maximum amplitude remains for more than a peak. Another common example is the use of more elaborated outlines of attack or decay. The music piece \emph{ADa and SaRa}, available 
-in \massa, explores many configurations of the ADSL envelope.
+in \massa, explores many configurations of the ADSR envelope.
 
 \begin{equation}\label{eq:adsrApl}
 \left\{t_i^{ADSR}\right\}_0^{\Lambda-1} =\{t_i . a_i\}_0^{\Lambda-1}
@@ -1269,7 +1269,7 @@ octave, equivalent to the human ear. In other words, if $f=2^{\frac{1}{12}}f_0$,
 $f_0$ and $f$.
 
 This absolute accuracy is usual in computational implementations. Real music instruments, however, often present semitones that are not exactly $2^{\frac{1}{12}}$ because the (real) harmonics of the notes are not perfect multiples of the fundamental frequency. The fixed interval $\varepsilon=2^{\frac{1}{12}}$ characterizes an equally tempered tuning but there are other tunings. The first formalizations of tunings (that the scientific tradition has repported) date from around two thousand years before the advent of the equal temperament~\cite{Roederer}.
-). Two emblematic tunings are:
+Two emblematic tunings are:
 \begin{itemize}
     \item The {\bf just intonation}, defined by association of intervals with ratios of low-order integers, as found in the harmonic series. E.g. the white piano keys from C to C are achieved by the ratios of frequency: 1, 9/8, 5/4
     4/3, 3/2, 5/3, 15/8, 2/1. The following intervals are also often considered: the semitone 16/15, the 'minor tone' 10/9, and the 'major tone' 9/8. There are many ways to perform the division of the 12 notes in the just intonation.
@@ -1281,11 +1281,21 @@ than one semitone and has ornamental and structuring functionalities in music. T
 which allows intervals quite different than those found when $\varepsilon=2^{\frac{1}{12}}$~\cite{Wisnick}.} non-integer real values can be used as factors of $\varepsilon=2^{\frac{1}{12}}$ between frequencies, or one can maintain integer values and change $\varepsilon$. For example, a tuning that approximates the harmonic series
 is proposed with the equal division of the octave in $53$ notes:
 $\varepsilon=2^{\frac{1}{53}}$.~\cite{microtonalidade}
-Note that if $S_i$ is a pitch sequence related by means of $\varepsilon_1$, the sequence with the same notes, but related by $\varepsilon_2$, is 
-$S_i'=\left\{s_i'\right\}=\left\{
-s_i \frac{\varepsilon_1}{\varepsilon_2}\right\}$. The music piece \emph{Micro
-tone} uses microtonal features and its code
-is part of \massa\ toolbox.
+Note that if $S=\{s_i\}$ is a pitch sequence related by means of $\varepsilon=2^{1/\eta}$, the sequence $S'$ with the same notes, but related by $\varepsilon'=2^{1/\eta'}$, is 
+$S'=\left\{s_i'\right\}=\left\{
+s_i \frac{\eta'}{\eta}\right\}$ because:
+
+\begin{equation}\label{eq:micro}
+\begin{split}
+    F   & = \{f_i\}\\
+    S   & = \{s_i\} \Rightarrow f_i = 2^{s_i/\eta}\\
+    S'  & = \{s'_i\} \Rightarrow f_i = 2^{s'_i/\eta'}\\
+    f_i & =  2^{s_i/\eta} = 2^{s'_i/\eta'} \Rightarrow s'_i = s_i\frac{\eta'}{\eta} 
+\end{split}
+\end{equation}
+
+The music piece \emph{Micro
+tone} uses microtonal features.
 
 \subsubsection{Intervals}\label{subsec:intervalos}
 Using the ratio $\varepsilon=2^{\frac{1}{12}}$ between note frequencies (i.e.\ one semitone) the intervals in the twelve note system can be represented by integers. Table~\ref{eq:intervalos} summarizes the intervals: traditional notation, qualifications of consonance and
@@ -1366,11 +1376,11 @@ where $f_0$ is any fixed frequency.
 The symmetric scales mentioned above can be expressed as:
 \begin{equation}\label{escSim}
 \begin{aligned}
-	\text{chromatic}    & = E_i^c    & = \{e_i^c\}_0^{11}   & =  \{0,1,2,3,4,5,6,7,8,9,10,11\} & = \{i\}_0^{11}\\
-	\text{whole tones}  & = E_i^{wt} & = \{e_i^{wt}\}_0^{5} & = \{0,2,4,6,8,10\}               & = \{2.i\}_0^{5} \\
-	\text{minor thirds} & = E_i^{mt} & = \{e_i^{mt}\}_0^{3} & = \{0,3,6,9\}                    & = \{3.i\}_0^3 \\
-	\text{major thirds} & = E_i^{Mt} & = \{e_i^{Mt}\}_0^{2} & = \{0,4,8\}                      & = \{4.i\}_0^2\\
-	\text{tritones}     & = E_i^{tt} & = \{e_i^{tt}\}_0^{1} & = \{ 0, 6 \}                     & = \{6.i\}_0^1
+	\text{chromatic}    & = E^c    & = \{e_i^c\}_0^{11}   & =  \{0,1,2,3,4,5,6,7,8,9,10,11\} & = \{i\}_0^{11}\\
+	\text{whole tones}  & = E^{wt} & = \{e_i^{wt}\}_0^{5} & = \{0,2,4,6,8,10\}               & = \{2.i\}_0^{5} \\
+	\text{minor thirds} & = E^{mt} & = \{e_i^{mt}\}_0^{3} & = \{0,3,6,9\}                    & = \{3.i\}_0^3 \\
+	\text{major thirds} & = E^{Mt} & = \{e_i^{Mt}\}_0^{2} & = \{0,4,8\}                      & = \{4.i\}_0^2\\
+	\text{tritones}     & = E^{tt} & = \{e_i^{tt}\}_0^{1} & = \{ 0, 6 \}                     & = \{6.i\}_0^1
 \end{aligned}
 \end{equation}
 
@@ -1383,14 +1393,14 @@ The \emph{diatonic scales} are scales with seven notes in which the sequence con
 \begin{equation}\label{eq:escalas}
 \begin{aligned}
 	\text{aeolian}    & = \text{natural minor scale}  & = & \\
-			  & = E_i^m = \{e_i^m\}_0^6       & = & \{0,2,3,5,7,8,10\} \\
-	\text{locrian}    & = E_i^{lo} = \{e_i^{lo}\}_0^6 & = & \{0,1,3,5,6,8,10\} \\ 
+			  & = E^m = \{e_i^m\}_0^6       & = & \{0,2,3,5,7,8,10\} \\
+	\text{locrian}    & = E^{lo} = \{e_i^{lo}\}_0^6 & = & \{0,1,3,5,6,8,10\} \\ 
 	\text{ionian}     & = \text{major scale}          & = &  \\
-			  & = E_i^M = \{e_i^M\}_0^6       & = & \{0,2,4,5,7,9,11\} \\
-	\text{dorian}     & = E_i^{d} = \{e_i^{d}\}_0^6   & = & \{0,2,3,5,7,9,10\} \\
-	\text{phrygian}   & = E_i^{p} = \{e_i^{p}\}_0^6   & = & \{0,1,3,5,7,8,10\} \\
-	\text{lydian}     & = E_i^{l}=\{e_i^{l}\}_0^6     & = & \{0,2,4,6,7,9,11\} \\
-	\text{mixolydian} & = E_i^{mi} = \{e_i^{mi}\}_0^6 & = & \{0,2,4,5,7,9,10\}
+			  & = E^M = \{e_i^M\}_0^6       & = & \{0,2,4,5,7,9,11\} \\
+	\text{dorian}     & = E^{d} = \{e_i^{d}\}_0^6   & = & \{0,2,3,5,7,9,10\} \\
+	\text{phrygian}   & = E^{p} = \{e_i^{p}\}_0^6   & = & \{0,1,3,5,7,8,10\} \\
+	\text{lydian}     & = E^{l}=\{e_i^{l}\}_0^6     & = & \{0,2,4,6,7,9,11\} \\
+	\text{mixolydian} & = E^{mi} = \{e_i^{mi}\}_0^6 & = & \{0,2,4,5,7,9,10\}
 \end{aligned}
 \end{equation}
 
@@ -1421,11 +1431,11 @@ The minor scale have two additional forms, named harmonic and melodic:
 
 \begin{equation}\label{eq:escalasMenores}
 \begin{split}
-\text{natural minor}&  = E_i^m = \{e_i^m\}_0^6 = \\
+\text{natural minor}&  = E^m = \{e_i^m\}_0^6 = \\
                                            &  = \{0,2,3,5,7,8,10\} \\
-\text{harmonic minor}                      &  = E_i^{mh} = \{e_i^{mh}\}_0^6 = \\
+\text{harmonic minor}                      &  = E^{mh} = \{e_i^{mh}\}_0^6 = \\
                                            &  = \{0,2,3,5,7,8,11\} \\
-\text{melodic minor}                       &  = E_i^{mm} = \{e_i^{mm}\}_0^{14} = \\
+\text{melodic minor}                       &  = E^{mm} = \{e_i^{mm}\}_0^{14} = \\
                                            &  = \{0,2,3,5,7,9,11,12,10,8,7,5,3,2,0\} \\
 \end{split}
 \end{equation}
@@ -1439,7 +1449,7 @@ The harmonic scale presents the modified seventh degree but does not avoid the a
 Although it is not a traditional scale, the harmonic series is often used as such:
 \begin{equation}\label{eq:serieHarmonica}
 \begin{split}
-H_i = & \{h_i\}_0^{19}= \\
+H = & \{h_i\}_0^{19}= \\
     =  & \{ 0,12,19+0.02,  24,28-0.14, 31+0.2, 34-0.31, \\
                      & 36, 38+0.04,40-0.14, 42-0.49, 43+0.02, \\
                      & 44+0.41, 46-0.31, 47-0.12, \\
@@ -1465,10 +1475,10 @@ notes~\cite{Lacerda}, any non-closed position is an open position. In closed and
 and with the fundamental in $0$, triads can be expressed as:
 \begin{equation}\label{triades}
 \begin{split}
-\text{major triad} = A_i^M= \{a_i^M\}_0^2=\{0,4,7\} \\ 
-\text{minor triad} = A_i^m = \{a_i^m\}_0^2=\{0,3,7\} \\
-\text{diminished triad} = A_i^d = \{a_i^d\}_0^2=\{0,3,6\} \\
-\text{augmented triad} = A_i^a = \{a_i^a\}_0^2=\{0,4,8\}
+\text{major triad} = A^M= \{a_i^M\}_0^2=\{0,4,7\} \\ 
+\text{minor triad} = A^m = \{a_i^m\}_0^2=\{0,3,7\} \\
+\text{diminished triad} = A^d = \{a_i^d\}_0^2=\{0,3,6\} \\
+\text{augmented triad} = A^a = \{a_i^a\}_0^2=\{0,4,8\}
 \end{split}
 \end{equation}
 
@@ -1660,7 +1670,7 @@ The transition span in Table~\ref{tab:duracoes} is minimized because the limits
 are not well defined. In fact, the duration where someone begins to perceive a
 fundamental frequency or a separation between occurrences, depends on the
 listener and sonic characteristics~\cite{microsound,Roederer}. The rhythmic metric is commonly based on a basic duration called pulse, whose typical durations range between $0.25 and 1.5s$ ($240$
-and $40 BPM$, respectively~\footnote{BPM stands for Beats Per Minute and is just a frequency measure like Herz, but is the number of incidences per minute intead of second. BPM is often used as a measure of musical tempo and of heart rate.}). In music education and cognitive studies, it is common to associate this range of frequencies with the durations of the heart beat, movements of respiration and steps of a walking or running person~\cite{Lacerda,Roederer}.
+and $40 BPM$, respectively~\footnote{BPM stands for Beats Per Minute and is just a frequency measure like Herz, but is the number of incidences per minute instead of second. BPM is often used as a measure of musical tempo and of heart rate.}). In music education and cognitive studies, it is common to associate this range of frequencies with the durations of the heart beat, movements of respiration and steps of a walking or running person~\cite{Lacerda,Roederer}.
 
 The pulse is subdivided into equal parts and is also repeated in sequence. These relations (division and concatenation) usually follow relations of small
 integers. By far, the most often musical pulse divisions (and their sequential groupings), in written and ethnic
@@ -1693,7 +1703,7 @@ An accent in the weak beat is the `backbeat', whereas a note starting in a weak 
 These are often found in ethnic and popular music and was used with parsimony in classical music before the XX century.
 
 Notes can occur inside and outside of these \emph{'musical metric'} divisions. In most well-behaved cases, notes occur exactly on these divisions, with greater incidence on strong beats.
-In extreme cases, rythmic metric cannot be perceived~\cite{Roederer}. 
+In extreme cases, rhythmic metric cannot be perceived~\cite{Roederer}. 
 Small variations along the temporal grid are crucial for musical interpretation and
 styles~\cite{Cook}.
 
@@ -1768,11 +1778,11 @@ for variation.
 		less than 9 occurrences each second (see Table~\ref{tab:duracoes}).}
 
         \item Interval inversion is either: 1) the inversion of note pitch order, within octave equivalence, such as described in Section~\ref{subsec:intervalos}, and $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{\varepsilon. f_0}\right\}$ with selective $s_j=2,\;1/2,\;\text{or}\;1$; or 2) the inversion of interval orientation. In the former case, the number of semitones
-        is preserved in the ``strict invertion'':
+        is preserved in the ``strict inversion'':
         $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{-\varepsilon_j . f_0}\right\}$, where
         $\varepsilon_j$ is the factor between the frequency of event $s_j$ and the
         frequency of $s_0$. The inversion is said tonal if the distances are
-        considered in terms of the diaonic scale $E_k$:
+        considered in terms of the diatonic scale $E_k$:
         $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{2^{\left(\frac{12-e_{\left(7-j_e\right)}}{12}\right)}
         . f_0}\right\}_0^{H-1}$ where $j_e$ is the index in
         $E_k$ of the note $s_j$.
@@ -2012,7 +2022,7 @@ is the result of chosen materials together with variation techniques and
 relations established between elements along a music piece. In these matters,
 dichotomies are prominent, as explained in Section~\ref{subsec:motivos}:
 repetition and variation, relaxation and tension, stability and instability, consonance and dissonance, etc.
-A thorough discussion of what can be considered a musical language is out of the scope of this article, but this brief consideration of the subject is useful as a onvergence of all the previous content.
+A thorough discussion of what can be considered a musical language is out of the scope of this article, but this brief consideration of the subject is useful as a convergence of all the previous content.
 
 \subsection{Musical usages}\label{subsec:usosmusicais3}
 First, the basic note was defined and characterized in quantitative terms in Section~\ref{sec:notaDisc}.
@@ -2106,7 +2116,7 @@ of musical pieces and open experiments to be studied with EEG recordings, and fu
 elements in the discrete-time representation of sound as feedback is received from the community.
 
 \begin{acks}
-This work was supported by CNPq and FAPESP (Brazil).
+This work was supported by Capes, CNPq and FAPESP.
 \end{acks}
 
 % Bibliography

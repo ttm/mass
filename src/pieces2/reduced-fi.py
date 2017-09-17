@@ -1,12 +1,4 @@
-#! /usr/bin/python
-
-# Rode com:
-# ./reduced-fi.py
-# ou
-# python reduced-fi.py
-
-import math as m
-import random as r
+import math as m, random as r
 
 def p(freq):
     return 2*m.pi*freq/44100
@@ -64,16 +56,16 @@ ss+=s(100,1.5)
 
 #############################
 seq=ss
-#### Gravando em disco
+#### Writing sound file
 import wave, struct
 smin=min(seq); smax=max(seq)
-seq= [(-.5+(i-smin)/(smax-smin)) for i in seq] # normalizando
-sound = wave.open('musica.wav','w')
+seq= [(-.5+(i-smin)/(smax-smin)) for i in seq] # normalizing
+sound = wave.open('music.wav','w')
 sound.setframerate(44100)
-sound.setsampwidth(2) # sempre 16bit/sample (2 bytes)
+sound.setsampwidth(2) # 16bit/sample (2 bytes)
 sound.setnchannels(1) # mono
-sonic_vector=[i*(2**15-1) for i in seq] # 16 bit com sinal
+sonic_vector=[i*(2**15-1) for i in seq] # signed 16 bit
 sound.writeframes(struct.pack('h'*len(sonic_vector),\
                       *[int(i) for i in sonic_vector]))
 sound.close()
-print "arquivo musica.wav gravado"
+print("file musica.wav has been written")
