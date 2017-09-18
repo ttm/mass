@@ -126,9 +126,3 @@ aa = n.int16(aa * float(2**15))
 
 print("BellaRugosiSdadE.wav escrito")
 w.write("BellaRugosiSdadE.wav", f_a, aa)
-
-
-
-
-
-

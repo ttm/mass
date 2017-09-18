@@ -15,7 +15,6 @@
 }
 %
 \usepackage{graphicx} %allows for including images
-\usepackage{biblatex}
 
 \newcommand{\massa}{{\large \textsc{mass}}}
 
@@ -205,7 +204,7 @@ All these equations are implemented in file \texttt{src/sections/4.py}.}
 All these equations are implemented in files \texttt{src/aux/*}.}
 \begin{tabular}{ c | p{12cm} }
    Number & Description \\\hline
- \reff{fig:PCM} & PCM PCM audio (discrete and digital) samples \\
+ \reff{fig:PCM} & PCM audio (discrete and digital) samples \\
  \reff{fig:formasDeOnda} & synthetic and sampled waveforms \\
  \reff{fig:espectroDeOndas} & spectrum of basic waveforms \\
  \reff{fig:espectroOboe} & spectrum of a real note and of one derived from one sampled period \\
@@ -259,7 +258,7 @@ All these equations are implemented in files \texttt{src/aux/*}.}
    Filename & Description \\\hline
   \texttt{src/sections/2.py} & implementation of all the equations for the basic note in PCM audio in Section~\ref{sec:discNote} \\
   \texttt{src/sections/3.py} & implementation of all the equations for variations within a note described in Section~\ref{sec:varInternas} \\
-  \texttt{src/sections/4.py} & implementation of all the techniques for assembling notes into music described in Section~\ref{sec:notesMusic} \\
+  \texttt{src/sections/4.py} & implementation of techniques for assembling notes into music described in Section~\ref{sec:notesMusic} \\
 \end{tabular}
 \end{table*}
 
@@ -309,7 +308,7 @@ All these equations are implemented in files \texttt{src/aux/*}.}
 
 \clearpage
 \subsection{To render the figures used in the article}
-The files \texttt{src/aux/*} render each of the figures (listed above in Section~\ref{sec:lfigures}.
+The files \texttt{src/aux/*} render each of the figures (listed above in Section~\ref{sec:lfigures}).
 
 \clearpage
 \section{Other documents}
@@ -319,4 +318,12 @@ The script \texttt{src/aux/iso226.py} can generate the Equal Loudness Contour as
 
 The article is largely based on the MSc dissertation~\cite{dissertacao}.
 
+% \bibliography{sample-bibliography}
+\begin{thebibliography}{9}
+    \bibitem{dissertacao}
+    Fabbri (2013). M\'usica no \'audio digital : descri\c{c}\~ao psicof\'isica e caixa de ferramentas. MSc dissertation. Available at: \url{http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf}
+
+\bibitem{iso226}
+    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+\end{thebibliography}
 \end{document}
