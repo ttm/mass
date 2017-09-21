@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 import numpy as n
 import random as r
 from scipy.io import wavfile as w

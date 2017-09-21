@@ -1,6 +1,9 @@
 import numpy as n
 from scipy.io import wavfile as w
 
+# auxiliary functions __n and __s.
+# These only normalize the sonic vectors and
+# write them as 16 bit, 44.1kHz WAV files.
 def __n(sonic_array):
     """Normalize sonic_array to have values only between -1 and 1"""
 

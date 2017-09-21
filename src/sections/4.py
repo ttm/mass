@@ -1,7 +1,30 @@
-#-*- coding: utf-8 -*-
 import numpy as n
 
-f_a = 44100.  # Hz, sample rate
+# auxiliary functions __n and __s.
+# These only normalize the sonic vectors and
+# write them as 16 bit, 44.1kHz WAV files.
+def __n(sonic_array):
+    """Normalize sonic_array to have values only between -1 and 1"""
+
+    t = sonic_array
+    if n.all(sonic_array==0):
+        return sonic_array
+    else:
+        return ( (t-t.min()) / (t.max() -t.min()) )*2.-1.
+
+def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_s=44100):
+    """A minimal approach to writing 16 bit WAVE files.
+    
+    One can also use, for example:
+        import sounddevice as S
+        S.play(array) # the array must have values between -1 and 1"""
+
+    # to write the file using XX bits per sample
+    # simply use s = n.intXX(__n(sonic_array)*(2**(XX-1)-1))
+    s = n.int16(__n(sonic_array)*32767)
+    w.write(filename, f_s, s)
+
+f_s = 44100.  # Hz, sample rate
 Lambda_tilde = Lt = 1024.
 foo = n.linspace(0, 2*n.pi, Lt, endpoint=False)
 S_i = n.sin(foo)  # a sinusoid period of T samples
@@ -11,10 +34,10 @@ H = n.hstack
 # using the content from the previous sections,
 # this is a very simple synthesizer of notes
 def v(f=200, d=1., tab=S_i, fv=2., nu=2., tabv=S_i):
-    Lambda = n.floor(f_a*d) ii = n.arange(Lambda)
+    Lambda = n.floor(f_s*d) ii = n.arange(Lambda)
     Lv = float(len(T))
 
-    Gammav_i = n.floor(ii*fv*Lv/f_a)  # indexes for LUT
+    Gammav_i = n.floor(ii*fv*Lv/f_s)  # indexes for LUT
     Gammav_i = n.array(Gammav_i, n.int)
     # variation pattern of vibrato for each sample
     Tv_i = tabv[Gammav_i % int(Lv)]
@@ -22,7 +45,7 @@ def v(f=200, d=1., tab=S_i, fv=2., nu=2., tabv=S_i):
     # frequency in Hz for each sample
     F_i = f*(2.**(Tv_i*nu/12.))
     # movement inside table for each sample
-    D_gamma_i = F_i*(Lt/float(f_a))
+    D_gamma_i = F_i*(Lt/float(f_s))
     Gamma_i = n.cumsum(D_gamma_i)  # movement in the total table
     Gamma_i = n.floor(Gamma_i)  # the indexes
     Gamma_i = n.array(Gamma_i, dtype=n.int)  # the indexes

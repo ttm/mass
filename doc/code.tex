@@ -1,0 +1,144 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{beramono}
+% \renewcommand*\familydefault{\ttdefault}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{color}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\lstset{
+  extendedchars=\true,
+  inputencoding=utf8x,
+  language=Python,
+  %showstringspaces=false,
+  formfeed=\newpage,
+  tabsize=4,
+  %commentstyle=\itshape,
+  basicstyle=\ttfamily,
+  basicstyle={\small\fontfamily{fvm}\fontseries{m}\selectfont},
+  lineskip={-1.5pt},
+  belowskip=0pt,
+  aboveskip=0pt,
+  commentstyle=\color{Apricot}\bfseries,
+  %commentstyle=\color{red}\itshape,
+  stringstyle=\color{red},
+  identifierstyle=\color{PineGreen},
+  showstringspaces=false,
+  keywordstyle=\color{blue}\bfseries,
+  moredelim=[il][\large\textbf]{\#\# },
+  morekeywords={models,range},
+  numbers=left,
+  numberstyle=\tiny,%\color{blue}\bfseries,
+  literate=%
+  {ã}{{\~a}}1
+  {â}{{\^a}}1
+  {õ}{{\~o}}1
+  {á}{{\'a}}1
+  {ú}{{\'u}}1
+  {í}{{\'i}}1
+  {é}{{\'e}}1
+  {Ç}{{\c{C}}}1
+  {Õ}{{\~O}}1
+  {Ê}{{\^E}}1
+  {ó}{{\'o}}1
+  {à}{{\`a}}1
+  {Â}{{\^A}}1
+  {ô}{{\^o}}1
+  {ê}{{\^e}}1
+  {ç}{{\c{c}}}1
+}
+ 
+\newcommand{\code}[2]{
+% \hrulefill[*]
+%  \bigskip % 1
+%  \centerline{********} % 1
+
+%\sepline
+
+
+
+% \sepstars
+
+ \subsubsection*{#1}
+ \lstinputlisting{#2}
+}
+
+\begin{document}
+
+\title{Code in the MASS framework}
+\author{\\\\\\ Renato Fabbri (USP),\\
+Vilson Vieira da Silva Junior (Cod.ai),\\
+Ant\^onio Carlos Silvano Pessotti (Unimep),\\
+D\'ebora Cristina Corr\^ea,\\
+Osvaldo N. Oliveira Jr. (USP)
+}
+
+\maketitle
+
+\begin{abstract}
+This document displays the Python code in the MASS
+framework.
+The code is accessible as Python scripts in the main repository~\cite{massRepo},
+and this PDF is made available because it might facilitate
+browsing the implementations.
+Check the final consideration in this document for further directions.
+\end{abstract}
+
+\section{Sections}
+Here is the code related to each section of the MASS article~\cite{massArticle}.
+
+% \lstinputlisting[language=Python]{../src/sections/2.py}
+\code{Python implementation of equations in Section 2}{../src/sections/2.py}
+
+\clearpage
+\code{Python implementation of equations in Section 3}{../src/sections/3.py}
+
+\clearpage
+\code{Python implementation of equations in Section 4}{../src/sections/4.py}
+
+\clearpage
+\section{Musical pieces}
+The code for the musical pieces are omitted from this PDF because
+it would make the document lengthy.
+Please see~\cite{massListings} and~\cite{massRepo}
+to know what are the available scripts for rendering musical pieces
+and reach them.
+
+\section{Auxiliary files}
+The code for the auxiliary files (e.g. to render the figures in the article~\cite{massArticle}
+are omitted from this PDF because
+it would make the document lengthy.
+Please see~\cite{massListings} and~\cite{massRepo}
+to know what are the available auxiliary scripts
+and reach them.
+
+\section{Final considerations}
+This document exhibits the code that implements the relations
+in the sections of~\cite{massArticle}.
+All this scripts are available in~\cite{massRepo} with
+other documentations and further scripts e.g. to render musical
+pieces and the figures in~\cite{massArticle}.
+One should also reach~\cite{massListings} to know
+about the resources in the MASS framework.
+This document should be available at~\cite{massCode}.
+
+\begin{thebibliography}{9}
+    \bibitem{massRepo}
+    Fabbri (2017). M\'usica no \'audio digital : descri\c{c}\~ao psicof\'isica e caixa de ferramentas. MSc dissertation. Available at: \url{http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf}
+
+\bibitem{massArticle}
+    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+
+\bibitem{massListings}
+    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+
+\bibitem{massCode}
+    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+\end{thebibliography}
+
+\end{document}
