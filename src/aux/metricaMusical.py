@@ -4,7 +4,7 @@ import numpy as n, pylab as p
 resolucao=9*8 # 72
 #axL = p.subplot(2,1,1)
 fig = p.figure(figsize=(10.,5.))
-p.subplots_adjust(left=0.21,bottom=0.08,right=0.92,top=0.99)
+p.subplots_adjust(left=0.23,bottom=0.08,right=0.92,top=0.99)
 ax1=fig.add_subplot(111)
 ax2=ax1.twinx()
 
@@ -20,10 +20,10 @@ for i in range(9):
     for j in range(i+1):
         p.plot((j*resolucao/(i+1), (j+1)*resolucao/(i+1)-2),(ordem[i],ordem[i]),c=colors[i%len(colors)], linewidth=3)
 
-p.plot((-1000,-1000),'r',linewidth=3,label=u'composed measures, ternary divisions, perfect mode')
+p.plot((-1000,-1000),'r',linewidth=3,label=u'compound measures, ternary divisions, perfect mode')
 p.plot((-1000,-1000),'b',linewidth=3,label=u'simple measures, binary divisions, imperfect mode')
 p.plot((-1000,-1000),'k',linewidth=3,label=u'complex measures in 5 and 7, triplets of 5 and 7')
-p.legend(loc="upper center")
+p.legend(loc="upper center", fontsize=14)
 
 
 ax1.set_ylim(-2.5,8.8)
@@ -51,6 +51,6 @@ ax2.set_yticklabels((r"$\binom{7}{4}$",r"$\binom{5}{4}$",r"$\binom{1}{4}$",r"$\b
 
 #p.ylabel(r"amplitude $\rightarrow$")
 ax1.set_xlabel(r"time $\rightarrow$",fontsize=22)
-p.savefig("../figures/metricaMusical__.png")
+p.savefig("../../doc/figures/metricaMusical__.png")
 p.show()
 

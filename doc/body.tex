@@ -1595,13 +1595,18 @@ In the minor mode, there is a change in $\hat{7}$ by an ascending semitone to ac
 Each chord can be stressed and developed by performing their individual dominant or subdominant, which are the triads based
 on a fifth above or a fifth below, respectively. These individual dominants and subdominants,
 in the same way, have also subdominants and individual dominants of their own. Given a tonality, any chord can occur, no matter
-how distant it is from the most basic chords and from the notes of the scale. The unique condition is that the occurrence presents a coherent trajectory of dominants and subdominants (or their relatives and counter-relatives) to the original tonality.
+how distant it is from the most basic chords and from the notes of the scale.
+The unique (theoretical) condition is that the occurrence presents a coherent trajectory of dominants and subdominants (or their relatives and counter-relatives) to the original tonality.
 
 There are two mediants, or 'chromatic mediants', for each chord: the upper
 mediant, formed with the root at the third of original chord; and the lower mediant, formed by the fifth at the third of original chord.
-Both chords also are formed by a third, but with a chromatic alteration regarding the original chord. If two chromatic alterations exist, i.e.\ two notes altered by one semitone each regarding the original chord, it is a 'doubly chromatic mediant'. Again, there are two forms for each chord: the upper form, with a third in the fifth of the original triad; and the lower form, with a third in the root
+Both chords have roots a third apart from the original chord, as do relatives and counter-relatives,
+but with a chromatic alteration regarding the original chord.
+If two chromatic alterations exist, i.e.\ two notes altered by one semitone,
+it is a 'doubly chromatic mediant'.
+Again, there are two forms: the upper form, with a third in the fifth of the original triad; and the lower form, with a third in the root
 of the original triad. A major chord has major chromatic and doubly chromatic mediants. A minor chord has minor chromatic and doubly chromatic mediants. (Recall that relatives and counter-relatives have opposite major-minor quality.)
-This relation between chords is considered advanced tonalism, sometimes even considered as an expansion and dissolution of tonalism,
+This relation between chords is considered of advanced tonalism, sometimes even considered as an expansion and dissolution of tonalism,
 with strong and impressive effects although they are simple, consonant triads. Chromatic mediants are used since the end of Romanticism by Wagner, Lizt, Richard Strauss, among others~\cite{Harmonia,Salzer}. 
 
 
@@ -1617,8 +1622,8 @@ Keys are always (thought of as) related by fifths and their relatives and counte
     \item Use of chromatic alterations to reach a chord in the new key by starting from a chord in the previous key. Called chromatic modulation.
     \item Featuring a unique note, possibly repeated or suspended with no accompaniment, common to start and end keys, it constitutes a peculiar way
     to introduce the new harmonic field.
-    \item Changing the function, without changing the notes, of a chord to
-    contemplate a new key. This procedure is called enharmony.
+    \item Changing the function, without changing the notes, of a chord.
+        This procedure is called enharmony.
     \item Maintaining the tonal center and changing the key quality from major to minor
     (or vice-versa) is a `parallel modulation'. Keys with same tonic but
 		different (major/minor) qualities are known as homonyms.
@@ -1626,12 +1631,12 @@ Keys are always (thought of as) related by fifths and their relatives and counte
 
 The dominant has great importance and is a natural pivot in modulations,
 a fact that leads to the circle of fifths~\cite{Harmonia,Salzer,Koellheuteur,Harmony}.
-Other inventive ways to modulate are possible, to point but one common example, the minor thirds tetrad ($E_i^{tm}$ in Equations~\ref{escSim}) can be sustained to bridge to other tonalities, with the ease of its both tritones.
-The music piece \emph{Acorde cedo} explores these chord relations, and is implemented online as part of \massa\ toolbox~\cite{MASSA}.
+Other inventive ways to modulate are possible, to point but one common example, the minor thirds tetrad ($E_i^{tm}$ in Equations~\ref{escSim}) can be sustained to bridge between tonalities, with the facility that both its tritones can be resolved in a number of ways.
+The music piece \emph{Acorde cedo} explores these chord relations~\cite{MASSA}.
 
 \subsection{Counterpoint}\label{subsec:contraponto}
 Counterpoint is the conduction of simultaneous melodic lines, or ``voices''. The bibliography covers systematic ways to conduct voices, leading to scholastic genres like canons, inventions and fugues~\cite{Fux,SchoenbergContra}. It is possible to
-summarize counterpoint rules, and it is known that Beethoven --
+summarize the rules of scholastic counterpoint, and it is known that Beethoven --
 among others -- also outlined such a digest of counterpoint.
 
 \begin{figure}[h!]
@@ -1652,14 +1657,16 @@ when ending in a perfect consonance. The parallel motion should occur only betwe
 imperfect consonances and no more than three consecutive times. Dissonances can be forbidden or used when followed and preceded by consonances of neighbor
 degrees, i.e.\ adjacent notes in a scale. The motions that lead to a
 neighbor note in the scale sound coherent and are prioritized. When having 3 or more voices, the melodic
-importance lies mainly in the highest and then in the lowest of the voices~\cite{Fux,Tragtenberg,SchoenbergContra}.
+relevance lies mainly in the highest and then in the lowest of the voices~\cite{Fux,Tragtenberg,SchoenbergContra}.
 
-These rules were used in the music piece \emph{Conta ponto}, whose source code is
-available online in \massa\ toolbox.
+These rules were used in the musical piece \emph{Conta ponto}~\cite{MASSA}.
 
 \subsection{Rhythm}\label{subsec:ritmo}
-Rhythmic notion is dependent on events separated by durations~\cite{Lacerda}, which can be heard individually if spaced by at least $50-63ms$. For the temporal separation between them to be perceived as duration, the period should even a bit larger, around $100ms$~\cite{microsound}.
-It is possible to summarize the durations heard as rhythm or pitch, and its transition,
+Rhythmic notion is dependent on events separated by durations~\cite{Lacerda}.
+Such events can be heard individually if their onsets are spaced by at least $50-63ms$.
+For the temporal separation between them to be perceived as a duration,
+the period should even a bit larger, around $100ms$~\cite{microsound}.
+It is possible to summarize the durations heard as rhythm or pitch
 as in Table~\ref{tab:duracoes}~\cite{Alfaix, microsound}.
 
 \begin{table*}[htp!]
@@ -1693,15 +1700,16 @@ frequency (Hz) & & {\bf 40}   & {\bf 80}   & {\bf 160}   & {\bf 320}   & {\bf 64
 
 The transition span in Table~\ref{tab:duracoes} is minimized because the limits
 are not well defined. In fact, the duration where someone begins to perceive a
-fundamental frequency or a separation between occurrences, depends on the
-listener and sonic characteristics~\cite{microsound,Roederer}. The rhythmic metric is commonly based on a basic duration called pulse, whose typical durations range between $0.25 and 1.5s$ ($240$
+fundamental frequency, or a separation between occurrences, depends on the
+listener and sonic characteristics~\cite{microsound,Roederer}.
+The rhythmic metric is commonly based on a basic duration called pulse, which typically is between $0.25$ and $1.5s$ ($240$
 and $40 BPM$, respectively~\footnote{BPM stands for Beats Per Minute and is just a frequency measure like Herz, but is the number of incidences per minute instead of second. BPM is often used as a measure of musical tempo and of heart rate.}). In music education and cognitive studies, it is common to associate this range of frequencies with the durations of the heart beat, movements of respiration and steps of a walking or running person~\cite{Lacerda,Roederer}.
 
 The pulse is subdivided into equal parts and is also repeated in sequence. These relations (division and concatenation) usually follow relations of small
 integers. By far, the most often musical pulse divisions (and their sequential groupings), in written and ethnic
 music, are: 2, 4 and 8; 3, 6 (two groups of 3 or 3 groups of 2), 9 and 12 (three and 4 groups of 3). At last, the prime numbers 5 and 7, completing
 1-9 and 12. Other metrics are less common, like division or grouping in 13, 17, etc, and are mainly used in experimental music or classical music of the XX and XXI centuries. No matter how complex they seem, metrics are almost always compositions and decompositions of 1-9 equal parts~\cite{Gramani,Roederer}.
-A schematic illustration is shown in Figure~\ref{fig:pulsoSubAgl}.
+This is illustrated in Figure~\ref{fig:pulsoSubAgl}.
 
 \begin{figure*}
     \centering
@@ -1712,24 +1720,26 @@ A schematic illustration is shown in Figure~\ref{fig:pulsoSubAgl}.
         \label{fig:pulsoSubAgl}
 \end{figure*}
 
-Binary divisions are frequent in dance rhythms and celebrations, and are called ``imperfect''. Ternary relations are common in
-ritualistic music and is related to the sacred, and are called ``perfect''. Strong units (accents) fall in the `head' of the units (the first subdivision) and are called downbeats. In binary divisions (2, 4
+Binary divisions are frequent in dance rhythms and celebrations, and are called ``imperfect''.
+Ternary relations are typical of
+ritualistic and sacred music and are called ``perfect''.
+Strong units (accents) fall in the `head' of the units (the first subdivision) and are called downbeats. In binary divisions (2, 4
 and 8), strong units alternate with weak units
 (e.g.\ division in 4 is: strong, weak, average strong, weak). In ternary divisions
 (3, 6 and 9) two weak units succeed the downbeat (e.g.\ division in 3 is:
 strong, weak, weak). Division in 6 is considered compound but can also
 occur as a binary division. Binary division units which suffer a ternary division yields two units divided into three units each: strong (subdivided in strong,
 weak, weak) and weak (also subdivided in strong, weak, weak). Another way to perform
-the division in 6 is ternary division units that subdivides as binary,
+the division in 6 is with a ternary division whose units subdivide as binary,
 resulting in: a strong unit (subdivided in strong and weak) and two weak units
 (subdivided in strong and weak each).
 
-An accent in the weak beat is the `backbeat', whereas a note starting in a weak beat persisting across the strong beat is a `syncope'.
+An accent in the weak beat is a `backbeat', whereas a note starting on a weak beat and persisting across a strong beat is a `syncope'.
 These are often found in ethnic and popular music and was used with parsimony in classical music before the XX century.
 
-Notes can occur inside and outside of these \emph{'musical metric'} divisions. In most well-behaved cases, notes occur exactly on these divisions, with greater incidence on strong beats.
+Notes can occur inside and outside of these divisions of the \emph{'musical metric'}. In most well-behaved cases, notes occur exactly on these divisions, with greater incidence on strong beats.
 In extreme cases, rhythmic metric cannot be perceived~\cite{Roederer}. 
-Small variations along the temporal grid are crucial for musical interpretation and
+Noteworthy is that (usually small) variations along the temporal grid are crucial for musical interpretation
 styles~\cite{Cook}.
 
 Let the pulse be the grouping level $j=0$, the first pulse subdivision be level $j=-1$,
@@ -1738,11 +1748,12 @@ $P^{-1}_2$ is the second part of pulse subdivision. The limits of $j$ are of spe
 by $P^{min(j)}_i$, $\forall \; i$, should be greater than $50 ms$ and the durations
 summed together $\sum_{\forall i}P^{\text{max}(j)}_i$ should be less than a few
 minutes or, at most, a few hours.
+These limits might be extrapolated in extreme cases and with aesthetic goals.
 
 Each level $j$ has some parts $i$. When $i$ has three different
-values (or multiple of three) there is a perfect (i.e. ternary) relation. When $i$ has only
-two, four or eight possible values, than there is an imperfect relation,
-as shown in Figure~\ref{fig:pulsoSubAgl}. Any unit (note) of a given musical sequence with a time metric can be unequivocally
+values (or multiple of three) there is a perfect (i.e. ternary or compound) relation. When $i$ has only
+two, four or eight possible values, than there is an imperfect relation (i.e. binary or simple),
+as shown in Figure~\ref{fig:pulsoSubAgl}. Any unit can be
 specified as:
 
 \begin{equation}\label{eq:rhythmicUnit}
@@ -1752,21 +1763,23 @@ P^{ \{ j_k \} }_{ \{ i_{k} \}}
 \noindent where $j_k$ is the grouping level and $i_k$ is the unit itself.
 
 As an example, consider $P^{-1,0,1}_{3,2,2}$ as the third subdivision $P^{-1}_3$ of the
-second pulse $P^0_2$ and of the second pulse group $P^1_2$ (possibly second measure). Each unit $P_i^j$ can be associated with a sequence of temporal samples $T_i$ that constitutes a
-note. The music piece \emph{Poli Hit Mia} uses different metrics (available as part of \massa\ toolbox).
+second pulse $P^0_2$ and of the second pulse group $P^1_2$ (possibly second measure).
+Each unit $P_i^j$ can be associated with a sequence of temporal samples $T$ that constitutes e.g. a
+note. The music piece \emph{Poli Hit Mia} uses different metrics~\cite{MASSA}.
 
 \subsection{Repetition and variation: motifs and larger units}\label{subsec:motivos}
 Given the basic musical structures, both frequential (chords and scales) and rhythmic (simple, compound and complex beat divisions and agglomerations), it is
-natural to present these structures in a coherent and meaningful way~\cite{Boulez}. The concept of arcs is essential in this context: by departing from a place and returning, an arc is made. One important case is the arc from and to the absence of a unit: from the beginning to the end. The audition of melodic and harmonic lines is permeated by
+natural to present these structures in a coherent and meaningful way~\cite{Boulez}. The concept of arcs is essential in this context:
+by departing from a context and returning, an arc is made. One important case is the arc from and to the absence of a unit: from the beginning to the end. The audition of melodic and harmonic lines is permeated by
 arcs due to the cognitive nature of the musical hearing: as the mind divides an excerpt, and groups excerpts, each of the units yields an arc.
 Accordingly, the note can be considered the smallest (relevant) arc, and each motif and melody as an arc as well.
-Each beat and subdivision, each measure and music
+Each beat and subdivision, each measure and musical
 section, constitutes an arc. Music in which the arcs do not present consistency with one another can be understood as music with no coherence. Coherence impression
 comes, mostly, from the skilled handling of arcs in a music piece.
 
 Musical arcs are abstract structures and amenable to basic operations. A spectral arc, like a chord, can be inverted, magnified and permuted, to mention just a few possibilities. Temporal arcs, like a melody, a motif, a measure or a note, are also
 prone to variations. Let
-$S=\left\{s_j=T_i^j=\{t_i^{j}\}_0^{\Lambda_j-1}\right\}_0^{H-1}$ be a sequence
+$S=\left\{s_j=T^j=\{t_i^{j}\}_0^{\Lambda_j-1}\right\}_0^{H-1}$ be a sequence
 of $H$ musical events $s_j$, each event with its $\Lambda_j$ samples $t_i^j$
 (refer to the beginning of this Section~\ref{notasMusica} if needed). Bellow is a list of basic techniques
 for variation.
@@ -1776,8 +1789,8 @@ for variation.
     of the music. It is a variation that changes temporal localization in
     a music:
     $\left\{s_j'\right\}=\left\{s_j^{\Gamma'}\right\}=\left\{s_j^{\Gamma+\delta}\right\}$
-    where $\Gamma$ is the duration between the beginning of the piece (or considered
-    section) and the first event $s_0$ of original structure $S$, and
+    where $\Gamma$ is the duration between the beginning of the piece (or another reference)
+        and the first event $s_0$ of the original structure $S$, and
     $\delta$ is the time offset of the displacement.
 
     \item Temporal expansion or contraction is a change in duration of each
@@ -1787,35 +1800,33 @@ for variation.
     \item Temporal reversion consists on generating a sequence with elements
     in the reverse order of the original sequence $S$, thus: $S'=\left\{s_j'\right\}_0^{H-1}=\left\{s_{(H-j-1)}\right\}_0^{H-1}$.
 
-    \item Pitch translation, or transposition, is a displacement $\tau$ of the material to a
-        different pitch $\Xi=\Xi_0 + \tau$. It is a variation that changes pitch
-        localization of material:
+    \item Pitch translation, or transposition, is a displacement $\tau$ of pitches of the material.
+        It is a variation that changes pitch
+        localization:
         $\left\{s_j'\right\}=\left\{s_j^{\Xi'}\right\}=\left\{s_j^{\Xi+\tau}\right\}$
-        where $\Xi_0$ is a reference value, such as the pitch of a section $S$ or of the first event $s_0$.
-        If $\tau$ is given in semitones, the displacement in
-        frequency is $\tau_f=f_0.2^{\frac{\tau}{12}}$ where $f_0$ is the
-        reference frequency value: $f_0=\Xi_{f_0}Hz\;\sim \Xi$ absolute value of pitch. The frequency of any pitch value is $f=f_0.2^{\frac{\tau}{12}}$s; 
-        and the pitch of any frequency is: $\Xi=\Xi_0 +12
-		\log_2\left(\frac{f}{f_0}\right)$.\footnote{In the MIDI protocol, $\Xi_{f_0}=55Hz$ when pitch $\Xi_0=33$
-	(an \textit{A1} note). Another good MIDI reference is $\Xi_{f_0}=440Hz$ and
-		$\Xi_0=69$ (\textit{A4}). The difference ($\Xi_1 - \Xi_2$) is in semitones.
+        where $\Xi$ is a reference value, such as the pitch of a section $S$ or of the first event $s_0$.
+        If $\tau$ is given in semitones, the transposition displaces a
+        frequency $f$ to $\tau_f=f2^{\frac{\tau}{12}}$.
+        and the pitch $Xi_i$ to $\Xi'_i=\Xi_i +12
+		\log_2\left(\frac{f'_i}{f_i}\right)$.\footnote{In the MIDI protocol, $\Xi_{f}=55Hz$ when pitch $\Xi=33$
+	(an \textit{A1} note). Another good MIDI reference is $\Xi_{f}=440Hz$ and
+		$\Xi=69$ (\textit{A4}). The difference ($\Xi_1 - \Xi_2$) is in semitones.
         $\Xi$ is not a measure in semitones: $\Xi=1$ is not a semitone, it is a note with an audible frequency as rhythm, with
 		less than 9 occurrences each second (see Table~\ref{tab:duracoes}).}
 
-        \item Interval inversion is either: 1) the inversion of note pitch order, within octave equivalence, such as described in Section~\ref{subsec:intervalos}, and $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{\varepsilon. f_0}\right\}$ with selective $s_j=2,\;1/2,\;\text{or}\;1$; or 2) the inversion of interval orientation. In the former case, the number of semitones
-        is preserved in the ``strict inversion'':
-        $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{-\varepsilon_j . f_0}\right\}$, where
-        $\varepsilon_j$ is the factor between the frequency of event $s_j$ and the
-        frequency of $s_0$. The inversion is said tonal if the distances are
+        \item Interval inversion is either: 1) the inversion of note pitch order, within the octave equivalence,
+            such as described in Section~\ref{subsec:intervalos};
+            or 2) the inversion of interval orientation. In the former case, the number of semitones
+        is preserved in the ``strict inversion'': $f'_i = 2^{-e} f_i$ where $e$ is a positive constant;
+        the inversion is said tonal if the distances are
         considered in terms of the diatonic scale $E_k$:
-        $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{2^{\left(\frac{12-e_{\left(7-j_e\right)}}{12}\right)}
-        . f_0}\right\}_0^{H-1}$ where $j_e$ is the index in
-        $E_k$ of the note $s_j$.
+        $f'_i = f.2^{\left(\frac{12-e_{\left(7-j_e\right)}}{12}\right)}$
+        where $j_e$ is the index in $E$ (as in Equation~\ref{eq:relacaoDia}).
 
         \item Rotation of musical elements is the translation of all elements
         a number of positions ahead or behind, with the care to fill empty positions
         with events which are out of the slots. Thus, a
-        rotation of $\tilde{n}$ positions is $S'_n=S_{(n+\tilde{n})\%H}$. If
+        rotation of $\tilde{n}$ positions is $s'_n=s_{(n+\tilde{n})\%H}$. If
         $\tilde{n}<0$, it is sufficient to use $\tilde{n}'=H-\tilde{n}$. It is
         usual to associate $\tilde{n}<0$ (events advance) with the clockwise rotation and
         $\tilde{n}<0$ (elements delay) with the anti-clockwise rotation.
@@ -1824,30 +1835,32 @@ for variation.
         \item The insertion and removal of material in $S$ can be
     ornamental or structural: $S'=\{s_j'\}=\{s_j \text{ if condition A,
     otherwise } r_j\}$, for any music material $r_j$, including silence.
-    Elements of $R_j$ can be inserted at the beginning, like a prefix
-    in $S$; at the end, as a suffix; or in the middle, dividing $S$ and making
-    it the prefix and suffix. Both materials can be mixed in a variety of ways.
+    Elements can be inserted at the beginning, like a prefix
+    for $S$; at the end, as a suffix; or in the middle, splitting $S$ into both
+    a prefix and a suffix. Both materials can be mixed in a variety of ways.
 
     \item Changes in articulation, orchestration and spatialization, or
     $s_j'=s_j^{*_j}$, where $*_j$ is the new characteristic incorporated by 
     element $s_j'$.
     
-    \item Accompaniment. Both orchestration and melodic lines present when $S$ occurs can suffer modifications and be considered as a variation of $S$ itself.
+    \item Accompaniment.
+        Musical material presented when $S$ occurs can be modified to yield a variation.
 \end{itemize}
 
-From these processes, many others are derived, such as the inverted retrograde, the temporal contraction with an external suffix, etc. Variations are often thought about in the terms above but are also often very loose, such as an arbitrary shuffle of the notes in a melody which the composer finds interesting. As a result, a whole process of mental and neurological activity is unleashed for relating the arcs, responsible for feelings, memories and imaginations, typical of a diligent music listening. This cortical activity is critical to
+From these processes, many others are derived, such as the inverted retrograde, the temporal contraction with an external suffix, etc. Variations are often thought about in the terms above but are also often very loose, such as an arbitrary shuffle of the notes in a melody which the composer finds interesting. As a result, a whole process of mental and neurological activity is unleashed for relating the arcs, responsible for feelings, memories and imaginations, typical of a diligent musical listening. This cortical activity is critical to
 musical therapy, known by its utility in cases of depression and neurological injury. Also, it is known that regions of the human brain responsible for sonic processing are also used for other activities, such as for performing verbal discourse and mathematics~\cite{Sacks,Roederer}.
 
 Paradigmatic structures guide the creation of new musical material.
-One of the most central is the tension/relaxation dipole. Traditional dipoles are tonic/dominant, repetition/variation,
+One of the most established structures is the tension/relaxation dipole.
+Other traditional dipoles include tonic/dominant, repetition/variation,
 consonance/dissonance, coherence/rupture, symmetry/asymmetry,
-equivalence/difference, arrival/departure, near/far, stationary/moving,
-etc. All these dipoles are often thought of as parallel or even as equivalent. Ternary relations tend to relate to the circle and to unification. The
+equivalence/difference, arrival/departure, near/far, and stationary/moving.
+All these dipoles are often thought of as parallel or even as equivalent.
+Ternary constructions tend to relate to the circle and to unification. The
 lucid ternary communion, `modus perfectus', opposes to the passionate
-dichotomic, `modus imperfectus'. Hereafter, there is a description dedicated to
-directional and cyclic arcs.
-
-For a scholastic discussion on the composition of motives, phrases, melodies, themes and music form (such as rondo, ternary, theme and variations) see~\cite{Schoenberg}.
+dichotomic, `modus imperfectus'.
+For a scholastic discussion on the composition of motives,
+phrases, melodies, themes and music form (such as rondo, ternary, theme and variations) see~\cite{Schoenberg}.
 % melody, answer and reply, motives, etc
 
 \subsection{Directional structures}\label{subsec:dir}
