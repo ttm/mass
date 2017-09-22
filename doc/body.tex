@@ -1249,36 +1249,57 @@ in \massa, explores many configurations of the ADSR envelope.
 
 
 \section{Organization of notes in music}\label{notasMusica} \label{sec:notesMusic}
-Consider $S_j=\left\{  s_j=T_i^j=\{t_i^j\}_{i=0}^{\Lambda_j-1} \right\}_{j=0}^{H-1}$, the sequence $S_j$ of $H$ musical events $s_j$. Let $S_j$ be a `musical structure', composed by events $s_j$ which are musical structures themselves, e.g.\ notes. This section is dedicated to techniques that make $S_j$ interesting and enjoyable for audition. More specifically, what follows is a summary of academic music composition theory and praxis.
+Consider $S=\left\{  s_j=T_i^j=\{t_i^j\}_{i=0}^{\Lambda_j-1} \right\}_{j=0}^{H-1}$, the sequence $S$ of $H$ musical events $s_j$. Let $S$ be a `musical structure', composed by events $s_j$ which are musical structures themselves, e.g.\ notes. This section is dedicated to techniques that make $S$ interesting and enjoyable for audition. More specifically, what follows is a summary of academic music composition theory and praxis.
 This section does not benefit from equations that dictate the amplitude of each sample as deeply as the previous sections.
-Even so, we understand that this content is very useful for synthesizing music given all the content above.
+Even so, we understand that this content is very useful for synthesizing music and is not trivially integrated to Sections~\ref{sec:discNote}
+and~\ref{sec:varInternas}.
 The concepts are given algorithmic implementations in \mass~\cite{SI} and can be further formalized~\cite{topos},
-although at a cost of intelligibility which we chose to avoid in this exposition.
+although at a cost of prompt intelligibility which we chose to avoid in this exposition.
 
-The elements of $S_j$ can be overlapped by mixing them together, as in
+The elements of $S$ can be overlapped by mixing them together, as in
 Equation~\ref{eq:mixagem} and Figure~\ref{fig:mixagem}, for building intervals and chords. This reflects the `vertical thought' in music. On the other hand, the concatenation of events
-in $S_j$, as in Equation~\ref{eq:concatenacao} and in Figure~\ref{fig:concatenacao}, builds melodic sequences and rhythms, which are associated with the `horizontal thought'. The fundamental frequency $f$ and the starting moment
-(attack) are generally the most important characteristics of the elements $s_j$ in $S_j$. This makes it possible to create music made by pitches (both harmony and melody) and by temporal metrics and rhythms.
-We will start by considering these aspects of musical organization as they are more traditional in music theory and usually easier to understand.
+in $S$, as in Equation~\ref{eq:concatenacao} and in Figure~\ref{fig:concatenacao}, builds melodic sequences and rhythms, which are associated with the `horizontal thought'. The fundamental frequency $f$ and the starting moment
+(attack) are generally considered the most important characteristics of the elements $s_j$.
+These observations are convenient to describe and create music constituted by pitches and by temporal metrics and rhythms.
+We will start by considering such aspects of musical organization as they are more traditional in music theory and usually easier to understand.
 
 \subsection{Tuning, intervals, scales and chords}\label{subsec:afinacao}
 \subsubsection{Tuning}
-Doubling the frequency is equivalent to ascending one octave ($f=2f_0$). The octave division in twelve steps is the canon of classical western music. Its usage has also been observed
-outside western tradition, e.g. in ceremonial/religious and ethnic contexts~\cite{Wisnick}. The semitones need not to be equivalent, as will become clear in the next paragraphs, but, roughly, the factor given by $\varepsilon=2^{\frac{1}{12}}$ defines a semitone. This entails a note grid along the spectrum in which, given the frequency $f$, all the possible fundamental frequencies are separated by intervals which are multiples of $\varepsilon$. Twelve successive semitones (or half steps), equidistants to the human ear, yield an
-octave, equivalent to the human ear. In other words, if $f=2^{\frac{1}{12}}f_0$, there is a semitone between
+Doubling the frequency is equivalent to ascending one octave ($f=2f_0$).
+The octave division in twelve pitches is the canon for classical western music.
+Its usage has also been observed
+outside western tradition, e.g. in ceremonial/religious and ethnic contexts~\cite{Wisnick}.
+The intervals between the pitches need not to be equivalent,
+as will become clear in the next paragraphs, but, roughly,
+the factor given by $\varepsilon=2^{\frac{1}{12}}$ defines a semitone,
+i.e. if $f=2^{\frac{1}{12}}f_0$, there is a semitone between
 $f_0$ and $f$.
+This entails a note grid along the spectrum in which, given a frequency $f$,
+any other fundamental frequency $f'$ is related to $f$ by $f'= \varepsilon^i f$ where $i$ is an integer.
+Twelve successive semitones yield an
+octave.
+Notice that equivalences of semitones and octaves are not absolute:
+2 pitches related by an octave ($f_2 = 2f_1$) are different at least because one is higher than the other,
+but are equivalent in the sense that they have similar uses and might be added or substituted
+in a sound without introducing much novelty or change.
+Semitones might involve higher or lower frequencies and might not be perceived as equivalent "distances"
+(this is dependent on context and listener), but are equivalent e.g. for transposing melodies, harmonies
+and other pitch-related structures.
 
-This absolute accuracy is usual in computational implementations. Real music instruments, however, often present semitones that are not exactly $2^{\frac{1}{12}}$ because the (real) harmonics of the notes are not perfect multiples of the fundamental frequency. The fixed interval $\varepsilon=2^{\frac{1}{12}}$ characterizes an equally tempered tuning but there are other tunings. The first formalizations of tunings (that the scientific tradition has repported) date from around two thousand years before the advent of the equal temperament~\cite{Roederer}.
+The absolute accuracy of $\varepsilon=2^\frac{1}{12}$ is usual in computational implementations.
+Performances with real musical instruments, however, often present semitones that are not exactly $2^{\frac{1}{12}}$
+because the pitches yield by such grid do not match the harmonics,
+although (real) harmonics of the notes are not perfect multiples of the fundamental frequency. The fixed interval $\varepsilon=2^{\frac{1}{12}}$ characterizes an equally tempered tuning but there are other tunings. The first formalizations of tunings (that the scientific tradition has reported) date from around two thousand years before the advent of the equal temperament~\cite{Roederer}.
 Two emblematic tunings are:
 \begin{itemize}
     \item The {\bf just intonation}, defined by association of intervals with ratios of low-order integers, as found in the harmonic series. E.g. the white piano keys from C to C are achieved by the ratios of frequency: 1, 9/8, 5/4
     4/3, 3/2, 5/3, 15/8, 2/1. The following intervals are also often considered: the semitone 16/15, the 'minor tone' 10/9, and the 'major tone' 9/8. There are many ways to perform the division of the 12 notes in the just intonation.
-    \item The {\bf Pythagorean tuning}, based on the interval 3/2 (perfect fifth). The 'white piano keys' become: 1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2/1. Also often used are the 'minor second´ 256/243, the 'minor third' 32/27, the 'augmented fourth' 729/512, the 'diminished fifth' 1024/729, the 'minor sixth' 128/81 and the 'minor seventh' 16/9. 
+    \item The {\bf Pythagorean tuning}, based on the interval 3/2 (perfect fifth). The 'white piano keys' become: 1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2/1. Also often used are the 'minor second' 256/243, the 'minor third' 32/27, the 'augmented fourth' 729/512, the 'diminished fifth' 1024/729, the 'minor sixth' 128/81 and the 'minor seventh' 16/9. 
 \end{itemize}
 
 In order to account for micro-tonality\footnote{Micro-tonality is the use of intervals smaller
 than one semitone and has ornamental and structuring functionalities in music. The division of the octave in $12$ notes has physical grounds but is still a \emph{convention} adopted by western classical music. Other tunings are incident, e.g. a traditional Thai music style uses an octave division in seven notes equally spaced ($\varepsilon=2^{\frac{1}{7}}$),
-which allows intervals quite different than those found when $\varepsilon=2^{\frac{1}{12}}$~\cite{Wisnick}.} non-integer real values can be used as factors of $\varepsilon=2^{\frac{1}{12}}$ between frequencies, or one can maintain integer values and change $\varepsilon$. For example, a tuning that approximates the harmonic series
+which allows intervals quite different than those found when $\varepsilon=2^{\frac{1}{12}}$~\cite{Wisnick}.}, non-integer values can be used as factors of $\varepsilon=2^{\frac{1}{12}}$ between frequencies, or one can maintain integer values and change $\varepsilon$. For example, a tuning that approximates the harmonic series
 is proposed with the equal division of the octave in $53$ notes:
 $\varepsilon=2^{\frac{1}{53}}$.~\cite{microtonalidade}
 Note that if $S=\{s_i\}$ is a pitch sequence related by means of $\varepsilon=2^{1/\eta}$, the sequence $S'$ with the same notes, but related by $\varepsilon'=2^{1/\eta'}$, is 
@@ -1295,15 +1316,16 @@ s_i \frac{\eta'}{\eta}\right\}$ because:
 \end{equation}
 
 The music piece \emph{Micro
-tone} uses microtonal features.
+tone} exemplifies the use of microtonal features.
 
 \subsubsection{Intervals}\label{subsec:intervalos}
-Using the ratio $\varepsilon=2^{\frac{1}{12}}$ between note frequencies (i.e.\ one semitone) the intervals in the twelve note system can be represented by integers. Table~\ref{eq:intervalos} summarizes the intervals: traditional notation, qualifications of consonance and
+Using the ratio $\varepsilon=2^{\frac{1}{12}}$ between note frequencies (i.e.\ one semitone)
+the intervals in the twelve tone system can be represented by integers. Table~\ref{eq:intervalos} summarizes the intervals: traditional notation, qualifications of consonance and
 dissonances, and number of semitones.
 
 \begin{table*}[htp!]
 \centering
-\caption{Music intervals together with their traditional notation, basic classification for dissonances and consonances, and number of semitones. Unison, fifth and octave are the perfect (P) consonances. Major (M) and minor (m) thirds and sixths are the imperfect consonances. Minor seconds and major sevenths are the harsh dissonances. Major seconds and minor sevenths are the mild dissonances. Perfect fourth is a special case, as it is a perfect consonance when considered as an inversion of the perfect fifth and a dissonance or an imperfect consonance otherwise. Another special case is the tritone (A4 or aug4, d5 or dim5, tri or TT). This interval is consonant in some cultures.
+    \caption{Musical intervals: traditional notation, basic classification for dissonances and consonances, and number of semitones. Unison, fifth and octave are the perfect (P) consonances. Major (M) and minor (m) thirds and sixths are the imperfect consonances. Minor seconds and major sevenths are the harsh (also strong or sharp) dissonances. Major seconds and minor sevenths are the mild (also weak) dissonances. Perfect fourth is a special case, as it is a perfect consonance when considered as an inversion of the perfect fifth and a dissonance or an imperfect consonance otherwise. Another special case is the tritone (A4 or aug4, d5 or dim5, tri or TT). This interval is consonant in some cultures.
 	For tonal music, the tritone indicates dominant (chord or harmonic field, see Section~\ref{subsec:harmonia}) and seeks urgent resolution into a third or sixth. Due to this instability it is considered a dissonant interval.}
 \begin{tabular}{ c | c | c }\hline
     \multicolumn{3}{c}{\bf consonances}  \\\hline
@@ -1325,47 +1347,49 @@ The nomenclature, based on conveniences for tonal music and practical aspects of
 as follows~\cite{Roederer,Wisnick}:
 
 \begin{itemize}
-	\item Intervals are inspected first by the number of steps between notes. The simple intervals are: first (unison), second, third, fourth, fifth, sixth, seventh and eighth (octave).
+    \item Intervals are inspected first by the number of steps between notes. The simple intervals (intervals which are at most an octave wide) are: first (unison), second, third, fourth, fifth, sixth, seventh and eighth (octave).
 		Each of these intervals are related to one step less the their names suggest: a third is an interval with two steps.
 		As can be noticed in Table~\ref{eq:intervalos}, one step is not one semitone.
 		A step, in this sense, is yield by two consecutive notes in a musical scale.
 		A scale for now can be regarded as any arbitrary monotonic sequence of pitches and will be discussed in the next section.
-	\item The intervals are represented by numeric digits, e.g. 1, 3, 5 are a unison, a third and a fifth, respectively.
-	\item Qualities of each interval: perfect consonances --
+            \item The intervals are represented by numeric digits, e.g. 1, 3, 5 are a unison, a third and a fifth, respectively\footnote{Integers might also be used to express the number of semitones in an interval.}.
+	\item An interval wider than an octave (e.g. ninth, tenth, eleventh) is called a 'compound interval' and is classified in terms of the simple interval between the same notes but in the same octave. Their notation can be achieved by adding a multiple of
+                7 to the simple interval: P11 is an octave plus a forth ($7 + P4 = P11$), M9 is an octave plus a major second ($7 + M2 = M9$),
+                m16 is two octaves and a minor second ( $2\times 7 + m2 = m16$).
+	\item Quality of each interval: perfect consonances --
                 i.e.\ unison, fourth, fifth and octave -- are 'perfect'. The imperfect consonances -- i.e.\ thirds and sixths -- and dissonances -- i.e.\ seconds and sevenths -- can be major and minor. The tritone is an exception to this rule because it is a dissonant interval and cannot be major or minor.
 	\item The perfect fourth can be a perfect consonance or a dissonance according to the context and theoretical background. As a general rule, it can be considered a consonance except when it is followed by a third or a fifth by the movement one of the notes.
-	\item Tritone is a dissonance in Western music because
-		it characterizes the ``dominant'' chord in the tonal system (see Section~\ref{subsec:harmonia}) and represents (or yields) instability. Some cultures considers the interval a consonance, using it in melodies and chants as a stable interval.
+	\item The tritone is a dissonance in Western music because
+		it is typical of the ``dominant'' chord (see Section~\ref{subsec:harmonia}) and represents (or yields) instability.
+                Some cultures consider the interval a consonance and use it as a stable interval.
 	\item A major interval decreased by one semitone results in a minor interval. A minor interval increased by one semitone results in a major interval.
 	\item A perfect interval (P1, P4, P5, or P8), or a major interval (M2, M3, M6 or M7), increased
 by one semitone results in an augmented interval (e.g.\
 aug3 has five semitones). The augmented forth
-is also called tritone (aug4 ~ tri ~ TT).
+is also called tritone (aug4, tri, or TT).
 	\item A perfect interval or a minor interval (m2, m3, m6 or m7), decreased by one semitone results in a diminished interval. The
-diminished fifth is also called tritone (dim5 ~ tri ~ TT).
+diminished fifth is also called tritone (dim5, tri, or TT).
 
-	\item An augmented interval increased by one semitone results in a `doubly augmented' interval and a diminished interval decreased by one semitone results in a `doubly diminished' interval.
-	\item Notes played simultaneously yields a harmonic interval.
-	\item Notes played as a sequence in time yields a
+	\item An augmented interval increased by one semitone results in a `doubly augmented' interval; a diminished interval decreased by one semitone results in a `doubly diminished' interval.
+	\item Notes played simultaneously yield a harmonic interval.
+	\item Notes played as a sequence in time yield a
                 melodic interval.  When the lowest note comes first there is an ascending interval, while a descending interval is observed when the highest comes note first. 
 	\item A simple interval is inverted if the lower pitch is raised one octave, or if
                 the upper pitch is lowered one octave. The sum of an interval and its inversion is
                 9 (e.g.\ m7 is inverted to M2: $m7+M2=9$). An inverted major
                 interval results in a minor interval and vice-versa. An
                 inverted augmented interval results in a diminished interval
-                and vice-versa (inverting a doublyi-augmented results in a
+                and vice-versa (inverting a doubly-augmented results in a
                 doubly-diminished and vice-versa, etc).
                 An inverted perfect interval is a perfect interval as well.
-	\item An interval wider than an octave (e.g. ninth, tenth, eleventh) is called a 'compound interval' and is classified in terms of the interval between the same notes but in the same octave. Their notation can be achieved by adding a
-                7 to the interval: P11 is an octave plus a forth ($7 + P4 = P11$), M9 is an octave plus a major second ($7 + M2 = M9$).
 \end{itemize}
 
 The augmented/diminished intervals and the doubly augmented/doubly diminished intervals have the same number of semitones of other intervals (e.g. minor, major or perfect) and are consequences of the tonal system.
 Scale notes are in fact different pitches, with specific uses and functions. Henceforth, in a \textit{C flat} major scale, the tonic -- first degree -- is \textit{C flat}, not \textit{B}, and the leading tone -- seventh degree -- is \textit{B flat}, not \textit{A sharp} or \textit{C double flat}.
-To grasp what this entails for intervals, let the second degree (second note) of a scale to be one semitone from the first degree. Let also the leading tone (i.e. the seventh degree at one ascending semitone from the first degree). There is a diminished third between the seventh and second scale degrees~\cite{Lacerda}.
+To grasp what this entails for intervals, let the second degree (second note) of a scale to be one semitone from the first degree. Consider also the leading tone (i.e. the seventh degree at one ascending semitone from the first degree). There is a diminished third between the seventh and second scale degrees~\cite{Lacerda}.
 Notice that the dim3 is only two semitones wide, as is the major second (or e.g. an doubly-augmented unisson!).
 
-This description summarizes the traditional theory of musical intervals~\cite{Lacerda}. The music piece \emph{Intervalos entre alturas} explores these intervals in both independent and related manners. The source code is available online in the \massa\ toolbox~\cite{MASSA}.
+This description summarizes the traditional theory of musical intervals~\cite{Lacerda}. The music piece \emph{Intervalos entre alturas} explores these intervals in both independent and interrelated ways~\cite{MASSA}.
 
 \subsubsection{Scales}\label{subsec:escalas}
 A scale is an ordered set of pitches. Strictly speaking, any (ordered) set of pitches can be considered a scale. The complexity about musical scales lean on the tradition, i.e. on the scales and their uses which result from practice throughout history. Usually, scales repeat at each octave. The ascending sequence with all notes from the octave division in 12 equal intervals ($\varepsilon=2^{\frac{1}{12}}$) is known as the chromatic scale within the equal temperament. There are 5 perfectly symmetric divisions of the octave within the chromatic scale. These divisions are often regarded as scales themselves owing to the easy and peculiar uses they entail.
@@ -1385,10 +1409,10 @@ The symmetric scales mentioned above can be expressed as:
 \end{equation}
 
 For example, the third note of the whole tone scale with $f_0=200Hz$ is $f_3=\varepsilon^{e_2^{wt}}. f_0 = 2^{\frac{4}{12}} . 200 \approxeq 251.98
-Hz$. These `scales', or patterns, generate stable structures by their internal symmetries and can be repeated in a sustained way which are musically effective. Section~\ref{estCic} discusses symmetries.
-The music piece \emph{Cristais} uses each one of these scales, in both melodic and harmonic counterpart and their source code is part of \massa\ toolbox.
+Hz$. These `scales', or patterns, generate stable structures by their internal symmetries and can be repeated in a sustained way which is musically effective. Section~\ref{estCic} discusses symmetries.
+The musical piece \emph{Cristais} uses each one of these scales, in both melodic and harmonic counterpart.
 
-The \emph{diatonic scales} are scales with seven notes in which the sequence consists of five whole tones and two semitones (in each octave). There are seven of them:
+The \emph{diatonic scales} are scales with seven notes in which the consecutive intervals include five whole tones\footnote{A (whole) tone is an interval that is two semitones wide: $f'=2^{\frac{2}{12}}f$.} and two semitones (in each octave). There are seven of them:
 
 \begin{equation}\label{eq:escalas}
 \begin{aligned}
@@ -1423,9 +1447,9 @@ e_i & =d_{(i+\kappa)\%7}+e_{i-1} \quad for \;\;  i > 0
 \end{split}
 \end{equation}
 
-\noindent with $\kappa \in \mathbb{N}$. For each mode there is only one value for $\kappa \in [0,6]$ by which $\{e_i\}$ matches. 
+\noindent with $\kappa \in \mathbb{N}$. For each mode there is only one $\kappa \in [0,6]$ for which $\{e_i\}$ matches. 
 For example, a brief inspection reveals that
-$e_i^{l}=d_{(i+2)\%7}+e_{i-1}^{l}$. Then, $\kappa=2$ for the lydian scale.
+$e_i^{l}=d_{(i+2)\%7}+e_{i-1}^{l}$. Thus, $\kappa=2$ for the lydian scale.
 
 The minor scale have two additional forms, named harmonic and melodic:
 
@@ -1440,7 +1464,7 @@ The minor scale have two additional forms, named harmonic and melodic:
 \end{split}
 \end{equation}
 
-The different ascending and descending contour of the melodic minor scale is required in tonal harmony contexts.
+The different ascending and descending contours of the melodic minor scale is required in tonal music contexts.
 The minor scale has one whole tone between the seventh and eigth (or first) degrees but
 the separation by one semitone is critical to the polarization of the first degree.
 This is not necessary in the descending trajectory, and therefore the scale recovers the standard form.
@@ -1472,7 +1496,7 @@ The word \emph{mode} can also be used to mean two other things:
 A musical chord is implied by the simultaneous occurrence of three or more notes. Chords are often based on triads, especially in tonal music. Triads are built by two successive thirds
 within 3 notes: root, third and fifth. If the lower note of a chord is the root, the chord is in the root position, otherwise it is an inverted chord. A closed position is any in which no chord note fits between two consecutive
 notes~\cite{Lacerda}, any non-closed position is an open position. In closed and fundamental positions,
-and with the fundamental in $0$, triads can be expressed as:
+and with the fundamental denoted by $0$, triads can be expressed as:
 \begin{equation}\label{triades}
 \begin{split}
 \text{major triad} = A^M= \{a_i^M\}_0^2=\{0,4,7\} \\ 
@@ -1482,7 +1506,7 @@ and with the fundamental in $0$, triads can be expressed as:
 \end{split}
 \end{equation}
 
-To have another third superimposed to the fifth, it is sufficient to add $10$ as the highest note in order to form a tetrad with minor seventh, or add $11$ in order to form a tetrad with major
+It is commonplace to consider another successive third: it is sufficient to include $10$ as the highest note to achieve a tetrad with a minor seventh, or include $11$ in order to achieve a tetrad with a major
 seventh. Inversions and open positions can be obtained with the 
 addition of $\pm 12$ to the selected component. Incomplete triadic chords, with extra notes ('dirty' chords), and non-triadic
 are also common.
@@ -1498,15 +1522,15 @@ For general guidance:
         \item Every tritone, especially if built between a major third and a minor seventh, tends to resolve into a third or a sixth.
         \item Note duplication is avoided. If duplication is needed, the preference is, in descending order: the root, fifth, third and seventh.
         \item Note omission is avoided in the triad. If needed, the fifth is first considered for omission, then third and then the fundamental.
-        \item It is possible to build chords with notes different from triads, particularly if they obey a recurrent logic or musical concatenation that justifies these different notes.
+        \item It is possible to build chords with notes different from triads, particularly if they obey a recurrent logic or sequence that justifies these different notes.
         \item Chords built by successive intervals different from thirds -- such as fourths and seconds -- are recurrent in compositions of advanced tonalism or experimental character.
         \item The repetition of chord successions (or of characteristics they hold) fixes a trajectory and makes it possible to 
-introduce exotic arrangements without implying musical incoherence.
+introduce exotic arrangements without implying in musical incoherence.
 \end{itemize}
 
 \subsection{Atonal and tonal harmonies, harmonic expansion and modulation}\label{subsec:harmonia}
 Omission of basic tonal structures is the key to achieving modal and atonal harmonies. In the absence of minimal tonal organization,
-harmony is (usually) considered modal if the notes match with some diatonic scale (see Equations~\ref{eq:escalas}) or if there is only a small number of notes. If basic tonal progressions are absent and notes do not match any diatonic scale and are enough diverse and dissonant (between themselves) to avoid reduction of the notes by polarization\footnote{By polarization we mean having some notes that are way more important than others and to which the other notes are ornaments or subordinates.}, the harmony is atonal. In this classification, the modal harmony is not tonal or atonal and is reduced to the incidence of notes within a (most often diatonic) scale and to the absence of tonal structures. Following this concept, one observes that atonal harmony is hard to be realized and, indeed, no matter how dissonant and diverse
+harmony is (usually) considered modal if the notes match some diatonic scale (see Equations~\ref{eq:escalas}) or if there is only a small number of notes. If basic tonal progressions are absent and notes do not match any diatonic scale and are sufficiently diverse and dissonant (between themselves) to avoid reduction of the notes by polarization\footnote{By polarization we mean having some notes that are way more important than others and to which the other notes are ornaments or subordinates.}, the harmony is atonal. In this classification, the modal harmony is not tonal or atonal and is reduced to the incidence of notes within a (most often diatonic) scale and to the absence of tonal structures. Following this conceptualization, one observes that atonal harmony is hard to be realized and, indeed, no matter how dissonant and diverse
 a set of notes is, tonal harmonies arise very easily if not avoided~\cite{harmEXT}.
 
 \subsubsection{Atonal harmony}\label{sec:atonal}
@@ -1514,9 +1538,9 @@ In fact, atonal music techniques avoid that a direct relation of the notes with 
 order. In this context, the tonic becomes difficult to be established. Nevertheless, the western listener automatically searches for tonal elements in music and obstinately finds them by unexpected and tortuous paths. The use of dissonant intervals (especially tritones) without resolution reinforces the absence of tonality. In this context, while creating a musical
 piece, it is possible to:
 \begin{itemize}
-     \item Repeat notes. By considering immediate repetition as an extension of the previous incidence, the use of the same note in sequence does not add relevant information.
-     \item To play adjacent notes (e.g. of a dodecafonic progression) at the same time, making harmonic intervals and chords.
-     \item Use durations and pauses with liberty, respecting notes order.
+     \item Repeat pitches. By considering immediate repetition as an extension of the previous incidence, the use of the same pitch in sequence does not add relevant information.
+     \item To play adjacent pitches (e.g. of a dodecafonic progression) at the same time, making harmonic intervals and chords.
+     \item Use durations and pauses with freedom, respecting notes order.
      \item Vary note sequences by temporal magnification and translation or pitch transposition and by pitch sequence inversion, retrograde and retrograde inversion. See Sections~\ref{subsec:motivos}
      and~\ref{subsec:usosmusicais3} for what these terms mean.
      \item Make variations in orchestration, articulation, spatialization, among other possibilities in presenting the same notes.
@@ -1527,21 +1551,22 @@ e.g. Alban Berg and even Schoenberg, had the purpose of mixing tonal and atonal 
 Most frequently, atonal music is not strictly dodecafonic, but "serial", i.e. they use the same kind of techniques based in a sequence of notes (called the series or row).
 
 \subsubsection{Tonal harmony}
-In the XX century, music with emphasis on sonorities/timbres and rhythm, extended the concepts of tonality and harmony. Even so, tonal harmony is very often in artistic movements and commercial venues. In addition, dodecafonism itself is sometimes considered of tonal nature because it was conceived to deny tonal characteristics of polarization.
+In the XX century, music with emphasis on sonorities/timbres, and rhythm, extended the concepts of tonality and harmony. Even so, tonal harmony is very often in artistic movements and commercial venues. In addition, dodecafonism itself is sometimes considered of tonal nature because it was conceived to deny tonal characteristics of polarization.
 In tonal or modal music, chords -- like the ones listed in
-Equations~\ref{triades}-- built on the root note of each degree of a scale  -- such as listed in Equations~\ref{eq:escalas} --  form the pillars of harmony. Tonal (and modal) harmony aims at understanding the incidence of chord progressions and chaining rules.
+Equations~\ref{triades}-- built with the root on each degree of a scale  -- such as listed in Equations~\ref{eq:escalas} --  form the pillars of harmony. Tonal (and modal) harmony deals with chord progressions and chaining rules.
 Even a monophonic melody entails harmonic fields, making it possible to perceive the chord progression even in unaccompanied melodies.
 
 In the traditional tonal music, a scale has its tonic (first
-degree) on any note, and can be major (with the same notes of Ionian mode) or minor (same notes as Eolian mode, 'natural minor', which has both harmonic and melodic versions, as in Equations~\ref{eq:escalasMenores}). The
+degree) on any note, and can be major (with the same notes of the Ionian mode) or minor (same notes of the Eolian mode, the 'natural minor', which has both harmonic and melodic versions, as in Equations~\ref{eq:escalasMenores}). The
 scale is the base for triads, each with its root in a degree: $\hat{1},\hat{2},\hat{3},\hat{4},\hat{5},\hat{6},\hat{7}$.
-To build triads, the third and the fifth notes above the root are taken together with the root (or fundamental).
+To build triads, the third and the fifth notes above the root are considered together with the root (or fundamental).
 $\hat{1},\hat{3},\hat{5}$ is the first degree chord,
- built on top of the scale's first degree and central for tonal music. The chords of the fifth degree $\hat{5},\hat{7},\hat{2}$ ($\hat{7}$ sharp when in a minor scale) and of the forth degree $\hat{4},\hat{6},\hat{1}$ are also important. The triads build on the other degrees less important then these and are usually understood in relation to them. The `traditional harmony' comprises conventions and stylistic techniques to create progressions with such chords~\cite{Harmonia}. 
+ built on top of the scale's first degree and central for tonal music. The chords of the fifth degree $\hat{5},\hat{7},\hat{2}$ ($\hat{7}$ sharp when in a minor scale) and of the forth degree $\hat{4},\hat{6},\hat{1}$ are also important.
+ The triads build on the other degrees are less important then these and are usually understood in relation to them. The `traditional harmony' comprises conventions and stylistic techniques to create progressions with such chords~\cite{Harmonia}. 
 
-The `functional harmony' ascribes functions to the three main chords and tries to understand their use by means of these functions. The chord built on top of the first degree is the \textbf{tonic} chord (\textit{T} or \textit{t} for a major or minor tonic, respectively) and its function (role) consists on maintaining a center, usually referred to as a ``ground'' for the music. The chord built on the fifth degree is the \textbf{dominant} (\textit{D}, the dominant is always major) and its function is to lean for the tonic
+The `functional harmony' ascribes functions to the three main chords and describes their use by means of these functions. The chord built on top of the first degree is the \textbf{tonic} chord (\textit{T} or \textit{t} for a major or minor tonic, respectively) and its function (role) consists on maintaining a center, usually referred to as a ``ground'' for the music. The chord built on the fifth degree is the \textbf{dominant} (\textit{D}, the dominant is always major) and its function is to lean for the tonic
 (the dominant chord asks for a conclusion and this conclusion is the tonic). Thus, the dominant chord guides the music to the tonic. The triad built under the fourth degree is the \textbf{subdominant} (\textit{S} or \textit{s} for a major or minor
-subdominant, respectively) and its function is to deviate the music from the tonic. The tonal discourse aims at confirming the tonic using tonic-dominant-tonic chains which are expanded by using other chords in numerous ways.
+subdominant, respectively) and its function is to deviate the music from the tonic. The tonal discourse aims at confirming the tonic using tonic-dominant-tonic chains which are expanded by using other chords in various ways.
 
 The remaining triads are associated to these three most important chords. In the major scale, the associated relative (relative tonic \textit{Tr}, relative
 subdominant \textit{Sr} and relative dominant \textit{Dr}) is the triad built a third below, and the associated counter-relative (counter-relative tonic \textit{Ta}, counter-relative subdominant \textit{Sa} and the counter-relative dominant \textit{Da}) is the triad built in a third above. In the minor scale the same happens, but the triad a third below is called counter-relative (tA, sA) and the triad a third above is called relative (tR,
@@ -1551,8 +1576,8 @@ controversial but are basically the same as the chords they are associated to. T
 \begin{table}[htp!]
 \centering
 \caption{Summary of tonal harmonic functions on the major scale. Tonic is the musical center, the dominant goes to the tonic and the subdominant moves the music away from
-the tonic. The three chords can, in principle, be freely replaced by their
-respective relative or counter-relatives.}
+the tonic. The three chords can, in principle, be replaced by their
+respective relative or counter-relative.}
 \begin{tabular}{l | c | r}
 relative & main chord of the function & counter-relative \\\hline\hline
 $\hat{6},\hat{1},\hat{3}$ & tonic:       $\hat{1},\hat{3},\hat{5}$ & $\hat{3}, \hat{5},      \hat{7}$ \\
@@ -1564,7 +1589,7 @@ $\hat{2},\hat{4},\hat{6}$ & subdominant: $\hat{4},\hat{6},\hat{1}$ & $\hat{6},\h
 
 The dominant counter-relative should form a minor chord. It explains the change in the forth degree by a semitone above $\hat{4}\#$. The diminished chord
 $\hat{7},\hat{2},\hat{4}$, is generally considered a `dominant seventh chord with the root omitted'~\cite{Koellheuteur}.
-In the minor mode, there is a change in $\hat{7}$ by an ascending semitone to achieve a separation between $\hat{7}$ and $\hat{1}$ of a semitone. This is important for the dominant function (which should lean to the tonic). In this way, the dominant is always major, for both major and minor scale and, therefore, even in a minor tone the relative dominant remains a third below, and the counter-relative remains a third above.
+In the minor mode, there is a change in $\hat{7}$ by an ascending semitone to achieve a separation between $\hat{7}$ and $\hat{1}$ of a semitone. This is important for the dominant function (which should lean to the tonic). In this way, the dominant is always major, for both major and minor scales and, therefore, in a minor scale the relative dominant remains a third below, and the counter-relative remains a third above.
 
 \subsubsection{Tonal expansion: individual functions and chromatic mediants}
 Each chord can be stressed and developed by performing their individual dominant or subdominant, which are the triads based
@@ -1741,7 +1766,7 @@ comes, mostly, from the skilled handling of arcs in a music piece.
 
 Musical arcs are abstract structures and amenable to basic operations. A spectral arc, like a chord, can be inverted, magnified and permuted, to mention just a few possibilities. Temporal arcs, like a melody, a motif, a measure or a note, are also
 prone to variations. Let
-$S_j=\left\{s_j=T_i^j=\{t_i^{j}\}_0^{\Lambda_j-1}\right\}_0^{H-1}$ be a sequence
+$S=\left\{s_j=T_i^j=\{t_i^{j}\}_0^{\Lambda_j-1}\right\}_0^{H-1}$ be a sequence
 of $H$ musical events $s_j$, each event with its $\Lambda_j$ samples $t_i^j$
 (refer to the beginning of this Section~\ref{notasMusica} if needed). Bellow is a list of basic techniques
 for variation.
@@ -1752,7 +1777,7 @@ for variation.
     a music:
     $\left\{s_j'\right\}=\left\{s_j^{\Gamma'}\right\}=\left\{s_j^{\Gamma+\delta}\right\}$
     where $\Gamma$ is the duration between the beginning of the piece (or considered
-    section) and the first event $s_0$ of original structure $S_j$, and
+    section) and the first event $s_0$ of original structure $S$, and
     $\delta$ is the time offset of the displacement.
 
     \item Temporal expansion or contraction is a change in duration of each
@@ -1760,13 +1785,13 @@ for variation.
     $\mu_j=\mu$ is constant.
 
     \item Temporal reversion consists on generating a sequence with elements
-    in the reverse order of the original sequence $S_j$, thus: $S_j'=\left\{s_j'\right\}_0^{H-1}=\left\{s_{(H-j-1)}\right\}_0^{H-1}$.
+    in the reverse order of the original sequence $S$, thus: $S'=\left\{s_j'\right\}_0^{H-1}=\left\{s_{(H-j-1)}\right\}_0^{H-1}$.
 
     \item Pitch translation, or transposition, is a displacement $\tau$ of the material to a
         different pitch $\Xi=\Xi_0 + \tau$. It is a variation that changes pitch
         localization of material:
         $\left\{s_j'\right\}=\left\{s_j^{\Xi'}\right\}=\left\{s_j^{\Xi+\tau}\right\}$
-        where $\Xi_0$ is a reference value, such as the pitch of a section $S_j$ or of the first event $s_0$.
+        where $\Xi_0$ is a reference value, such as the pitch of a section $S$ or of the first event $s_0$.
         If $\tau$ is given in semitones, the displacement in
         frequency is $\tau_f=f_0.2^{\frac{\tau}{12}}$ where $f_0$ is the
         reference frequency value: $f_0=\Xi_{f_0}Hz\;\sim \Xi$ absolute value of pitch. The frequency of any pitch value is $f=f_0.2^{\frac{\tau}{12}}$s; 
@@ -1777,13 +1802,13 @@ for variation.
         $\Xi$ is not a measure in semitones: $\Xi=1$ is not a semitone, it is a note with an audible frequency as rhythm, with
 		less than 9 occurrences each second (see Table~\ref{tab:duracoes}).}
 
-        \item Interval inversion is either: 1) the inversion of note pitch order, within octave equivalence, such as described in Section~\ref{subsec:intervalos}, and $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{\varepsilon. f_0}\right\}$ with selective $s_j=2,\;1/2,\;\text{or}\;1$; or 2) the inversion of interval orientation. In the former case, the number of semitones
+        \item Interval inversion is either: 1) the inversion of note pitch order, within octave equivalence, such as described in Section~\ref{subsec:intervalos}, and $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{\varepsilon. f_0}\right\}$ with selective $s_j=2,\;1/2,\;\text{or}\;1$; or 2) the inversion of interval orientation. In the former case, the number of semitones
         is preserved in the ``strict inversion'':
-        $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{-\varepsilon_j . f_0}\right\}$, where
+        $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{-\varepsilon_j . f_0}\right\}$, where
         $\varepsilon_j$ is the factor between the frequency of event $s_j$ and the
         frequency of $s_0$. The inversion is said tonal if the distances are
         considered in terms of the diatonic scale $E_k$:
-        $S_j'=\{s_j'\}_0^{H-1}=\left\{s_j^{2^{\left(\frac{12-e_{\left(7-j_e\right)}}{12}\right)}
+        $S'=\{s_j'\}_0^{H-1}=\left\{s_j^{2^{\left(\frac{12-e_{\left(7-j_e\right)}}{12}\right)}
         . f_0}\right\}_0^{H-1}$ where $j_e$ is the index in
         $E_k$ of the note $s_j$.
 
@@ -1796,18 +1821,18 @@ for variation.
         $\tilde{n}<0$ (elements delay) with the anti-clockwise rotation.
         Additional information about rotations is given in Section~\ref{estCic}.
 
-        \item The insertion and removal of material in $S_j$ can be
-    ornamental or structural: $S_j'=\{s_j'\}=\{s_j \text{ if condition A,
+        \item The insertion and removal of material in $S$ can be
+    ornamental or structural: $S'=\{s_j'\}=\{s_j \text{ if condition A,
     otherwise } r_j\}$, for any music material $r_j$, including silence.
     Elements of $R_j$ can be inserted at the beginning, like a prefix
-    in $S_j$; at the end, as a suffix; or in the middle, dividing $S_j$ and making
+    in $S$; at the end, as a suffix; or in the middle, dividing $S$ and making
     it the prefix and suffix. Both materials can be mixed in a variety of ways.
 
     \item Changes in articulation, orchestration and spatialization, or
     $s_j'=s_j^{*_j}$, where $*_j$ is the new characteristic incorporated by 
     element $s_j'$.
     
-    \item Accompaniment. Both orchestration and melodic lines present when $S_j$ occurs can suffer modifications and be considered as a variation of $S_j$ itself.
+    \item Accompaniment. Both orchestration and melodic lines present when $S$ occurs can suffer modifications and be considered as a variation of $S$ itself.
 \end{itemize}
 
 From these processes, many others are derived, such as the inverted retrograde, the temporal contraction with an external suffix, etc. Variations are often thought about in the terms above but are also often very loose, such as an arbitrary shuffle of the notes in a melody which the composer finds interesting. As a result, a whole process of mental and neurological activity is unleashed for relating the arcs, responsible for feelings, memories and imaginations, typical of a diligent music listening. This cortical activity is critical to
