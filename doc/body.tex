@@ -1860,7 +1860,7 @@ Ternary constructions tend to relate to the circle and to unification. The
 lucid ternary communion, `modus perfectus', opposes to the passionate
 dichotomic, `modus imperfectus'.
 For a scholastic discussion on the composition of motives,
-phrases, melodies, themes and music form (such as rondo, ternary, theme and variations) see~\cite{Schoenberg}.
+phrases, melodies, themes and musical form (such as rondo, ternary, theme and variations) see~\cite{Schoenberg}.
 % melody, answer and reply, motives, etc
 
 \subsection{Directional structures}\label{subsec:dir}
@@ -1876,26 +1876,27 @@ the arc consists only of a reference structure~\cite{Schoenberg}\footnote{A case
         \includegraphics[width=.8\columnwidth]{figures/climax_}
         \caption{Canonical distinctions of musical climax in a given melody and
         other arcs. The possibilities considered are: climax at the beginning, at the first half, in the middle, in the second half and 
-        at the end. The x and y-axis are not properly specified since the parameters can be non-existent, as in a reference structure.}
+        at the end. The x and y-axis parameters can be non-existent and yield only a reference structure.}
         \label{fig:climax}
 \end{figure}
 
-Consider the $S_i=\{s_i\}_0^{H-1}$ increasing sequence. The sequence
-$R_i=\{r_i\}_0^{2H -2}=\left\{s_{(H-1-|H-1-i|)}\right\}_0^{2H-2}$
+Consider the $S=\{s_i\}_0^{H-1}$ sequence with a monotonic variation of a characteristic.
+The sequence
+$R=\{r_i\}_0^{2H -2}=\left\{s_{(H-1-|H-1-i|)}\right\}_0^{2H-2}$
 presents perfect specular symmetry, i.e.\ the second half is the
 mirrored version of the first. In musical terms, the climax is
 in the middle of the sequence. It is possible to modify this
 by using sequences with different sizes. All the mathematics of
 sequences, already well established and taught routinely in calculus courses, can be used to generate these arcs~\cite{Guidorizzo,Schoenberg}.
 Theoretically, when applied to any characteristic of musical events,
-these sequences produce arcs, since they imply a deviation and return of an initial parametrization.
+these sequences produce arcs, since they imply a deviation and return of an initial context (parametrization, state, etc).
 Henceforth, it is possible for a given sequence to have
 numerous distinct arcs, with different sizes and climax. 
 This is an interesting and useful resource, and the correlation of arcs yields coherence~\cite{Salzer}.
 
 In practice, and historically, there is special incidence and use of the golden ratio.
-The Fibonacci sequence might be generalized as follows in order for any two numbers be used
-to approach the golden ratio.
+The Fibonacci sequence might be generalized as follows in order for any two numbers to be used
+and approximate the golden ratio.
 Given any two numbers $x_0$
 and $x_1$, define the elements of the sequence $\{x_n\}$ as: $x_n=x_{n-1}+x_{n-2}$.
 The greater $n$ is, the more $\frac{x_{n}}{x_{n_1}}$ approaches the golden ratio
@@ -1910,18 +1911,20 @@ presents the same error progression, but starts at the second step of a more dis
 One might benefit from the On-Line Encyclopedia of Integer Sequences (OEIS~\cite{oeis})
 for exploring various sequences.
 
-The music piece \emph{Dirracional} uses arcs into directional structures. Its source code is available online as part
-of \massa\ toolbox~\cite{MASSA}.
+The music piece \emph{Dirracional} uses arcs into directional structures~\cite{MASSA}.
 
 \subsection{Cyclic structures}\label{estCic}
-The philosophical understanding that human thought is founded on the concept of similarities and differences (e.g. perceived in stimuli), places symmetries
-at the core of cognition~\cite{Deleuze}. Mathematically, symmetries are algebraic groups, and a finite group is always isomorphic to a permutation
+The philosophical understanding that human thought is founded on the recognition of similarities and differences (e.g. as perceived in stimuli), places symmetries
+at the core of cognition~\cite{Deleuze}.
+Mathematically, it is commonplace to express symmetries as algebraic groups, and a finite group is always isomorphic to a permutation
 group (by Cayley's theorem).
 In a way, this states that permutations can express any symmetry in a
 finite system~\cite{gruposFascination}.
 In music, permutations are ubiquitous in scholastic techniques,
  which confirms their central role.
-The successive application of permutations generates cyclic arcs~\cite{change,Zamacois,permMusic}. Two academic studies were dedicated to generating musical structures using permutation groups~\cite{figgusOriginal, figgusEspacializacao}. Any permutation set can be used as a generator of algebraic groups~\cite{permMusic}.
+The successive application of permutations generates cyclic arcs~\cite{change,Zamacois,permMusic} and
+e.g. these two academic documents report on the generation of musical structures using permutation groups~\cite{figgusOriginal, figgusEspacializacao}.
+Any permutation set can be used as a generator of algebraic groups~\cite{permMusic}.
 The properties defining a group $G$ are:
 
 \begin{equation}\label{eq:groups}
@@ -1940,10 +1943,11 @@ The properties defining a group $G$ are:
 From the first property follows that two permutations act as one permutation. In fact, it is possible to apply a
 permutation $p_1$ and another permutation $p_2$, and, comparing both initial and final orderings, observe another permutation $p_3$. Every element $p$ operated with itself a sufficient number of times $n$ reaches the identity element $p^n=e$ (otherwise the group generated by $p$ would be infinite). The lower $n\;:\;p^n=e$ is the element order. Thus, a finite
 permutation $p$, successively applied, reaches the initial ordering of its
-elements, and makes a cycle. This cycle, if used for parameters of notes or other musical structures,
+elements, and yields a cycle. This cycle, if used for parameters of notes or other musical structures,
 yields a cyclic arc.
 
-These arcs can be established by using a set of permutations. As a historic
+These arcs can be established by using one or a set of permutations.
+As a historical
 example, the \emph{change ringing} tradition conceives music through
 bells played one after another and then played again, but in a different
 order. This process is repeated until it reaches the initial ordering. The sequence of
@@ -1951,12 +1955,11 @@ different orderings is a \emph{peal}. Table~\ref{tab:change}
 presents a traditional \emph{peal}, named ``Plain Change''~\cite{change}, for 3 bells (\textcolor{red}{1}, \textcolor{blue}{2} and \textcolor{green}{3}), which explores
 all possible orderings. Each line indicates one bell ordering to be
 played. Permutations occur between each line. In this case, the musical structure
-consists of permutations and some different permutations add into a
-cyclic behavior.
+consists of permutations that entail a cyclic behavior.
 
 \begin{table}[htp!]
 \centering
-\caption{Change Ringing: Traditional \emph{peal} for 3 bells. Permutations
+\caption{Change Ringing: a traditional \emph{peal} for 3 bells. Permutations
 occur between each line. Each line is a bell ordering and each ordering is played at a time.} 
 \begin{tabular}{l c r}
 \textcolor{red}{1} & \textcolor{blue}{2} & \textcolor{green}{3} \\
@@ -1971,49 +1974,53 @@ occur between each line. Each line is a bell ordering and each ordering is playe
 \end{table}
 
 The use of permutations in music can be summarized in the following way:
-with $S_i=\{s_i\}$ a sequence of musical events $s_i$ (e.g.\ notes), and a
-permutation $p$. $S_i'=p(S_i)$ comprises the same elements of $S_i$ but in a
+let $S=\{s_i\}$ be sequence of musical events $s_i$ (e.g.\ notes), and $p$ a
+permutation. $S'=p(S_i)$ comprises the same elements of $S$ but in a
 different order. Permutations have two notations: cyclic and
-natural. The natural notation basically indicates the order of the resulting indexes from
+natural. The natural notation basically indicates the original indexes in the order that results from
 the permutation. Thus, given the original ordering of the sequence by its indexes $[0\;1\;2\;3\;4\;5\;...]$, the permutation is noted by the sequence of indexes it
-produces (ex. $[1\;3\;7\;0\;...]$). In the cyclic notation, a permutation consists
-of swaps by elements and its successors, and the last element by the first one.
+produces (e.g. $[1\;3\;7\;0\;...]$).
+In the cyclic notation, a permutation is expressed
+by swaps of elements and its successors.
 E.g. $(1,2,5)(3,4)$ in cyclic notation is equivalent to $[0,2,5,4,3,1]$ in natural notation.
 
-In the auralization of a permutation, it is not necessary to permute elements of $S_i$,
-but only some characteristic. Thus, if $p$ is a permutation and $S_i$ is a sequence of basic notes as in the end of Section~\ref{notaBasica}, the
-sequence $S_i'=p^f(S_i)=\left\{s_i^{p(f)}\right\}$ consists of the same
+In the auralization of a permutation, it is not necessary to permute elements of $S$,
+but only some characteristic. Thus, if $p$ is a permutation and $S$ is a sequence of basic notes as in the end of Section~\ref{notaBasica}, the
+sequence $S'=p^f(S)=\left\{s_i^{p(f)}\right\}$ consists of the same
 music notes, following the same order and maintaining the same characteristics, but with the
-fundamental frequencies permuted according to the pattern of $p$.
+fundamental frequencies permuted according to $p$.
 
 Two subtleties of this procedure should be commented upon. 
-First, a permutation $p$ is not restricted to involve all elements of $S_i$, i.e.\ it can operate in a subset of $S_i$.
-Second, not all elements $s_i$ need to be executed at each access to $S_i$. To exemplify, let $S_i$ be a sequence of music notes $s_i$. 
+First, a permutation $p$ is not restricted to involve all elements of $S$, i.e.\ it can operate in a subset of $S$.
+Second, not all elements $s_i$ need to be executed at each access to $S$.
+To exemplify, let $S$ be a sequence of music notes $s_i$. 
 If $i$ goes from $0$ to $n$, and
-$n>4$, at each measure of $4$ notes it is possible to execute the first $4$
+$n>4$, at each sequence of $4$ notes it is possible to execute e.g. only the first $4$
 notes.
-The other notes of $S_i$ can occur in other measures where permutations 
-allocate those notes to the first four events $s'_i$ of $S'_i$.
-
-To each permutation $p_i$ described above, we have to determine:
-1) note dimensions where it operates (frequency, duration, \emph{fades},
-intensity, etc); and
-2) the period of incidence (how much consults before a permutation is
-applied). During realization of notes in $S_i$, an easy and coherent form is to
-execute the first $n$ notes, the execution of disjoint sets of $S_i$
+The other notes of $S$ can occur in other events where permutations 
+allocate such notes to the first four events.
+During the realization of the notes in $S$, an easy and coherent form is to
+execute the first $n$ notes, the execution of disjoint sets of $S$
 is the same as modifying the permutation and executing the first $n$ notes.
 
-The \massa\ toolbox presents a computational implementation that isolates
-permutation application to sonic characteristics, in order to deliver
-musical structures~\cite{MASSA,figgusOriginal,figgusEspacializacao}.
+Second, to each permutation $p$, we have to determine:
+1) note characteristics where it operates (frequency, duration, \emph{fades},
+intensity, timbre,etc); and
+2) the period of incidence (how many times $S$ is used before a permutation is
+applied).
+
+The PPEPPS/FIGGS and the \emph{Tr\^es Trios} present respectively a computational implementation
+and an instrumental musical piece that use
+permutations to achieve
+musical structures~\cite{MASSA,figgusOriginal,figgusEspacializacao,3Trios}.
 
 \subsection{Serialism and post-serial techniques}
-Expanding the concepts in Section~\ref{sec:atonal},
+Recapitulating concepts in Sections~\ref{sec:atonal} and~\ref{subsec:motivos},
 sequences of characteristics can be predefined and
 used throughout a musical piece.
 These sequences can be of intensities, timbre, durations,
 density of events, etc.
-The sequences can be used very strictly or loose,
+Sequences can be used very strictly or loosely,
 such as by skipping some elements.
 The sequences can be of different sizes, yielding arcs
 until the initial condition is reached again (i.e. cycles).
@@ -2027,32 +2034,32 @@ Post-serial techniques are numerous, but here is a description of
 important concepts:
 \begin{itemize}
 	\item Spectralism:
-		consists on use the (Fourier) spectrum of a sound or the harmonic series for music composition,
+		consists on use the (Fourier) spectrum of a sound or the harmonic series for musical composition,
 		such as
-		to derive harmonies, sequences of pitches or a temporal evolution of the overall spectrum~\cite{grisey}.
-		In other words, the most prominent frequencies can be used as pitches,
+		to obtain harmonies, sequences of pitches or a temporal evolution of the overall spectrum~\cite{grisey}.
+		For example, the most prominent frequencies can be used as pitches,
 		real notes can be used to mimic an original spectrum
-		(e.g. use piano notes to mimic the spectrum of a spoken sentence) or portions of the spectrum made to vary~\cite{spectral}.
+		(e.g. use piano notes to mimic the spectrum of a spoken sentence) or portions of the spectrum made to vary~\cite{grisey}.
 	\item Spectromorphology:
 		can be considered a spectral music (spectralism) theoretical framework~\cite{smalley,schaeffer}
 		that examines the relation between sound spectra and their temporal evolution.
 		The theory poses e.g. different onsets, continuations and terminations; characteristics of (sonic) ``motion'';
 		and spectral density.
 	\item Stochastic music:
-		the use of random variables to describe musical elements are largely considered in stochastic music~\cite{formalized}.
-		In summary, one can use probability distributions for the synthesis of sounds and larger scale musical elements.
+		the use of random variables to describe musical elements are extensively considered in stochastic music~\cite{formalized}.
+		In summary, one can use probability distributions for the synthesis of basic sounds and for obtaining larger scale musical elements.
 		Changes in these distributions or in other characteristics yield the discourse.
 	\item Textures:
 		sounds can be assembled in terms of a ``sonic texture''.
 		Here, a texture is often thought about very abstractly
 		as a sonic counterpart of visual texture.
-		Parameters that can be used for such are: range between highest and lowest note,
+		Parameters that can be used: range between highest and lowest note,
 		density of notes, durations of notes, motives, number of voices, etc.
-		If the sounds are small enough (typically < $100ms$) the process can be though of in terms of \emph{granular synthesis}~\cite{microsound}.
+		If the sounds are small enough (typically $<$ $100ms$) the process can be though of in terms of \emph{granular synthesis}~\cite{microsound}.
 \end{itemize}
 
 \subsection{Musical idiom?}
-In numerous studies, there are models, discussions and exploitation of a `musical language'.
+In numerous studies and aesthetic endeavors, there are models, discussions and exploitation of a `musical language'.
 Some of them are linguistic theories applied to music
 and some discern different `musical
 idioms'~\cite{Lerdahl, Harmonia, Salzer,Alfaix}. Simply put, a musical idiom
@@ -2063,7 +2070,7 @@ repetition and variation, relaxation and tension, stability and instability, con
 A thorough discussion of what can be considered a musical language is out of the scope of this article, but this brief consideration of the subject is useful as a convergence of all the previous content.
 
 \subsection{Musical usages}\label{subsec:usosmusicais3}
-First, the basic note was defined and characterized in quantitative terms in Section~\ref{sec:notaDisc}.
+The basic note was defined and characterized in quantitative terms in Section~\ref{sec:notaDisc}.
 Next, the internal note
 composition was addressed within both internal transitions and elementary sonic treatment
 (Section~\ref{sec:varInternas}). Finally, this section aims at organizing these notes in music. The numerous resources and consequent infinitude
@@ -2072,30 +2079,30 @@ of praxis possibilities is typical and highly relevant for artistic contexts~\ci
 There are studies and further developments for each of the presented resources.
 For example, it is possible to obtain `dirty' triadic harmonies (with notes out of the triad) by superposition of perfect fourths.
 Another interesting example is the superimposition of rhythms in different metrics, constituting what is
-called \emph{polyrhythm}. The music piece \emph{Poli-hit mia} in \massa\ toolbox~\cite{MASSA} explores these simultaneous metrics by impulse trains convolved with notes.
+called \emph{polyrhythm}. The music piece \emph{Poli-hit mia}~\cite{MASSA} explores these simultaneous metrics by impulse trains convolved with notes.
 
 Microtonal scales are important for 20th
 century music~\cite{microtonalidade} and yielded diverse remarkable results throughout history, e.g.
-fourths of a tone ($\epsilon=2^{\frac{1}{24}}$) is often used in some genres of Indian and Arabic music. The musical sequence \emph{MicroTom} in \massa\ toolbox~\cite{MASSA} explores these resources, including microtonal melodies and harmonies
-with many notes in a very reduced note scope.
+fourths of a tone ($\epsilon=2^{\frac{1}{24}}$) is often used in some genres of Indian and Arabic music. The musical sequence \emph{MicroTom}~\cite{MASSA} explores these resources, including microtonal melodies and harmonies
+with many pitches in a very reduced frequency bandwidth.
 
 As in Section~\ref{subsec:mus2}, relations between
-parameters are powerful ways to achieve musical pieces.
+parameters are powerful to achieve musical pieces.
 The number of permuted
-notes can vary during the music, revealing relationship with piece
+notes can vary during the music, a relationship between permutations and the piece
 duration. Harmonies can be made from triads (Equations~\ref{triades}) with duplicated
 notes at each octave and more numerous duplication when the depth and frequency of
 vibratos are lower (Equations~\ref{vbrGamma},~\ref{vbrAux},~\ref{vbrF},~\ref{vbrGamma2},~\ref{vbrT}).
-Incontestably, the possibilities are very wide, which is evidenced in the wide range of musical pieces and styles.
+Incontestably, the possibilities are very wide, which is made evident by the numerous musical pieces and styles.
 
 The symmetries at octave divisions (Equation~\ref{escSim}) and the
 symmetries presented as permutations (Table~\ref{tab:change} and
-Equations~\ref{eq:groups}) can be used together. In the music piece \emph{3 trios}
-this association is done in a systematic way in order to achieve a specific style. This is an instrumental piece, not included as a source
+Equations~\ref{eq:groups}) can be used together. In the music piece \emph{3 trios},
+this association is performed in a systematic way in order to achieve a specific style. This is an instrumental piece, not included as a source
 code but available online~\cite{3Trios}.
 
 \emph{PPEPPS} (Pure Python EP: Project Solvent) is an EP (Extended Play) synthesized using
-resources presented in this study. With minimal parametrization, the scripts
+resources presented in this document. With minimal parametrization, the scripts
 generate complete musical pieces, allowing easy composition of sets of
 music. A simple script of a few lines specifies music delivered as 16 bit
 44.1kHz PCM files (WAVE). This facility and technological
@@ -2106,12 +2113,14 @@ arrangement creates aesthetic possibilities for both sharing and education.
 In our understanding,
 this article is effective in relating musical elements to digital audio.
 We aimed at achieving a concise presentation of the subject because it involves many knowledge fields, and therefore can very easily blast into thousands of pages.
-Some readers might benefit from the text alone, but the \emph{Scripts} in the \massa\ toolbox, where all the equations and concepts are directly and simply implemented as software (in Python),
+Some readers might benefit from the text alone, but the \emph{scripts} in the \massa\ toolbox, where all the equations and concepts are directly and simply implemented as software (in Python),
 are very helpful for one to achieve elaborated implementations and deeper understandings.
-The scripts include routines that render musical pieces that illustrate the concepts in practical contexts.
+The scripts include routines that render musical pieces to illustrate the concepts in practical contexts.
 This is valuable since art (music) can involve many non-trivial processes and is often deeply glamorized, which results in a nearly unmanageable terrain for a newcomer.
-Moreover, this didactic report and the supplied open source scripts should facilitate the use of the proposed framework.
-The Supporting Information document holds listings of sections, equations, figures, tables, scripts and other documents.
+Moreover, this didactic report and the supplied open source scripts should facilitate the use of the framework.
+One Supporting Information document~\cite{massListings} holds listings of sections, equations, figures, tables, scripts and other documents.
+Another Supporting Information document~\cite{massCode} holds a PDF presentation of the code related to each section
+because many readers might not find it easy to browse source code files.
 
 The possibilities provided by this exposition pour from both the organization of knowledge and the ability to achieve sounds which are extremely true to the models.
 For example, one can produce noises with arbitrary resolution of the spectrum and a musical note can be synthesized with the parameters (e.g. of a vibrato) updated sample-by-sample.
@@ -2127,14 +2136,14 @@ The didactic potential of the framework is evident when noticed that:
 	\item the integrals and derivatives, ubiquitous in continuous signal processing,
 are all replaced, in discrete signals, by summations,
 which are more intuitive and does not require fluency in calculus.
-	\item The equations and concepts are implemented as software which can be easily assembled and inspected.
+	\item The equations and concepts are implemented in a simple and straightforward manner as software which can be easily assembled and inspected.
 \end{itemize}
-\noindent In fact, this framework was used in a number of contexts, including courses, software implementations and making music~\cite{vimeoLM,vivace,repoDissertacao,dissertacao}.
+\noindent In fact, this framework was used in a number of contexts, including courses, software implementations and for making music~\cite{vimeoLM,vivace,repoDissertacao,dissertacao}.
 Such detailed analytical descriptions, together with the computational implementations, have not been covered before in the literature, as far as the authors know, such as testified in the literature review (Appendix G of~\cite{dissertacao}), where books, articles and open software are related to this framework.
 
 The free software license and online availability of the content,
-with the respective codes and sonic examples, facilitate collaborations and the generation of sub-products in a co-authorship fashion,
-easing new implementations and development of musical pieces.
+facilitate collaborations and the generation of sub-products in a co-authorship fashion,
+new implementations and development of musical pieces.
 The scripts can be divided in three groups: implementation of all the equations and topics of music theory; routines for rendering musical pieces that illustrate the concepts; scripts that render the figures of this article and the article itself.
 
 This framework favored the formation of interest groups in topics such as musical creativity and computer music.
@@ -2150,11 +2159,12 @@ for the generation of appealing artistic materials. Some psychoacoustic effects 
 which needs validation and should be reported, specially with~\cite{quadrosSonoros}.\footnote{The sonic portraits where sent to a public mailing list and the fifth piece was reported by some individuals to induce a state in which noises from the own tongue, teeth and jaw of the individual echoed for some seconds~\cite{quadrosMetarec}.} Other foreseen advances
 are: a JavaScript version of the toolbox, better hypermedia deliverables of this framework, user guides
 for different goals (e.g. musical composition, psychophysical experiments, sound synthesis, education), creation
-of musical pieces and open experiments to be studied with EEG recordings, and further analytical specification of musical
+of musical pieces, open experiments to be studied with EEG recordings, a linked data representation
+of the knowledge in \massa\ through SKOS and OWL, data sonification routines, and further analytical specification of musical
 elements in the discrete-time representation of sound as feedback is received from the community.
 
 \begin{acks}
-This work was supported by Capes, CNPq and FAPESP.
+    This work was supported by Capes, CNPq and FAPESP (project 17/05838-3).
 \end{acks}
 
 % Bibliography
