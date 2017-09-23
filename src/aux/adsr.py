@@ -47,7 +47,7 @@ p.text(2*91,.3,"R",fontsize=28,color='red')
 som=n.random.random(De)*2-1
 som=n.sin(n.linspace(0,45*2*n.pi,De,endpoint=False))
 som=som*s
-p1=p.plot(som,'c*',markersize=9,label=u"Sampled sound subjected to the ADSL envelope with linear variation")
+p1=p.plot(som,'c*',markersize=9,label=u"Sampled sound subjected to the ADSR envelope with linear variation")
 p.plot(som,'c')
 p.plot((len(som),len(som)),(-.8,0),"k--")
 
@@ -97,7 +97,7 @@ p.plot(n.arange(De-DR,De),   R-2.5,   'ro', markersize=4)
 som=n.random.random(De)*2-1
 som=n.sin(n.linspace(0,45*2*n.pi,De,endpoint=False))
 som=som*s
-p2=p.plot(som-2.5,'md',markersize=9,label=u"Sampled sound subjected to the ADSL envelope with logarithmic variation")
+p2=p.plot(som-2.5,'md',markersize=9,label=u"Sampled sound subjected to the ADSR envelope with logarithmic variation")
 p.plot(som-2.5,'m')
 p.plot((len(som),len(som)),(-.8-2.5,0-2.5),"k--")
 
@@ -134,7 +134,7 @@ p.ylim(-3.8,1.2)
 p.yticks((-1-2.5,0-2.5,SS-2.5,1-2.5),(-1,0,r"$a_S$",1),fontsize=20)
 
 
-fig.legend((*p1,*p2),(u"Sampled sound subjected to the ADSL envelope with linear variation",u"Sampled sound subjected to the ADSL envelope with logarithmic variation"),"upper center",numpoints=3, fontsize=16)
+fig.legend((*p1,*p2),(u"Sampled sound subjected to the ADSR envelope with linear variation",u"Sampled sound subjected to the ADSR envelope with logarithmic variation"),"upper center",numpoints=3, fontsize=16)
 
-p.savefig("../figures/adsr_.png")
+p.savefig("../../doc/figures/adsr_.png")
 p.show()
