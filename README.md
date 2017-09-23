@@ -27,7 +27,7 @@ As stated in the list above, the scripts also include routines that exemplify th
 the framework.
 
 ### related work
-This work is heavely influenced by this [MSc dissertation](http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf).
+This work is heavily influenced by this [MSc dissertation](http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf).
 
 And the code and documentation available at [this repository](https://github.com/ttm/dissertacao/).
 
@@ -40,6 +40,14 @@ The Appendices of the dissertation still have important information:
 how they differ from and complement this work.
 * Appendix F holds descriptions of projects that were accomplished using the MASS framework.
 * Appendix D holds considerations about AM and FM performed with logarithmic oscillations.
+
+### license
+All the code and documentation in the MASS framework is public domain.
+If someone wants me to put a more verbose license (e.g. BSD),
+e.g. because of legal or ethical issues,
+please drop me a line.
+Notice that I omitted the license in the files and considered this
+paragraph sufficient.
 
 ### contact
 If you have any thoughts, questions, or want to report any usage of the MASS framework,
