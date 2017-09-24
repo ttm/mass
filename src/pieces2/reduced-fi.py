@@ -7,7 +7,7 @@ def d(dur):
     return int(dur*44100)
 
 def s(freq,dur):
-    return [m.sin(p(freq)*i) for i in xrange(d(dur))]
+    return [m.sin(p(freq)*i) for i in range(d(dur))]
 
 ss=(s(100,.1)+s(200,.1)+s(400,.1)+s(800,.1))*4
 ss+=(s(100,.1)+s(200,.1)+s(400,.1)+s(800,.1))*4

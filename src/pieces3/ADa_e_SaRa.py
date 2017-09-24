@@ -1,5 +1,8 @@
 import numpy as n
-from scipy.io import wavfile as w
+# from scipy.io import wavfile as w
+import imp
+io=imp.load_source("io","../aux/io.py")
+def W(fn, fs, sa): io.__s(sa, fn, int(fs))
 
 H=n.hstack
 V=n.vstack
@@ -82,7 +85,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa.wav",f_a,T_i) # escrita do som
 
 
 ############
@@ -107,7 +110,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa2.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa2.wav",f_a,T_i) # escrita do som
 
 
 ############
@@ -132,7 +135,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa3.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa3.wav",f_a,T_i) # escrita do som
 
 
 ############
@@ -157,7 +160,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa4.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa4.wav",f_a,T_i) # escrita do som
 
 ##########
 T=adsr( v(tab=Tr_i,tabv=Tr_i ,d=2.,fv=3.,  nu=3.),2,  5.,-10,1000.)
@@ -179,7 +182,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa5.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa5.wav",f_a,T_i) # escrita do som
 
 
 ###########
@@ -194,7 +197,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa6.wav",f_a,T_i) # escrita do som
+W("ADa_e_SaRa6.wav",f_a,T_i) # escrita do som
 
 ##################
 T1=adsr(v(tab=Tr_i,tabv=Tr_i ,d=2.,fv=6., nu=3.) ,1.,1.,-20,200.)
@@ -217,4 +220,4 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("ADa_e_SaRa7.wav",f_a, T_i) # escrita do som
+W("ADa_e_SaRa7.wav",f_a, T_i) # escrita do som

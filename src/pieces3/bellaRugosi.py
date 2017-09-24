@@ -1,6 +1,9 @@
 # coding: utf-8 
 import numpy as n
-from scipy.io import wavfile as w
+# from scipy.io import wavfile as w
+import imp
+io=imp.load_source("io","../aux/io.py")
+def W(fn, fs, sa): io.__s(sa, fn, int(fs))
 
 H=n.hstack
 V=n.vstack
@@ -125,4 +128,4 @@ aa=n.vstack(( aa, (zz+aa1).T*.5, (zz+aa2).T*.5,(zz+aa3).T*.5))
 aa = n.int16(aa * float(2**15))
 
 print("BellaRugosiSdadE.wav escrito")
-w.write("BellaRugosiSdadE.wav", f_a, aa)
+W("BellaRugosiSdadE.wav", f_a, aa)

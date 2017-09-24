@@ -41,6 +41,18 @@ how they differ from and complement this work.
 * Appendix F holds descriptions of projects that were accomplished using the MASS framework.
 * Appendix D holds considerations about AM and FM performed with logarithmic oscillations.
 
+There are musical pieces and software packages that used MASS
+and are not linked here properly.
+They should be linked here somehow, somewhen.
+This is a start:
+* Musical pieces
+  - [Here](https://soundcloud.com/le-poste-tche)
+are some of them (both already linked to MASS and still not linked).
+* Software packages (in github, in PyPI)
+  - Most of them, today (2017-Sep-23) should be in [my git repositories](https://github.com/ttm).
+* Standalone scripts:
+  - Some of them will be found by following the links above.
+
 ### license
 All the code and documentation in the MASS framework is public domain.
 If someone wants me to put a more verbose license (e.g. BSD),
@@ -49,6 +61,9 @@ please drop me a line.
 Notice that I omitted the license in the files and considered this
 paragraph sufficient.
 
+### further notes
+* This framework is also known by in Portuguese by the acronym
+MASSA (Música e Áudio em Sequências e Séries Amostrais).
 ### contact
 If you have any thoughts, questions, or want to report any usage of the MASS framework,
 please drop me a line at: renato [DOT] fabbri [AT] gmail [DOT] com

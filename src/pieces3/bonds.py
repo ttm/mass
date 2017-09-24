@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 import numpy as n
-from scipy.io import wavfile as w
+# from scipy.io import wavfile as w
+import imp
+io=imp.load_source("io","../aux/io.py")
+def W(fn, fs, sa): io.__s(sa, fn, int(fs))
 
 H=n.hstack
 V=n.vstack
@@ -69,7 +72,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia.wav",f_a,T_i) 
 
 
 ###############
@@ -83,7 +86,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia2.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia2.wav",f_a,T_i) 
 
 
 ###############
@@ -97,7 +100,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia3.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia3.wav",f_a,T_i) 
 
 
 
@@ -115,7 +118,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia4.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia4.wav",f_a,T_i) 
 
 ###############
 T=v(tabv=Q_i ,d=2.,fv=35.,nu=7.0)*A()
@@ -131,7 +134,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia5.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia5.wav",f_a,T_i) 
 
 
 
@@ -146,7 +149,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia6.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia6.wav",f_a,T_i) 
 
 ##########
 T1=v(tabv=D_i ,d=2.,fv=5*30.,nu=7.0,f=100)
@@ -161,7 +164,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia7.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia7.wav",f_a,T_i) 
 
 
 
@@ -178,7 +181,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia8.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia8.wav",f_a,T_i) 
 
 
 ##########
@@ -194,7 +197,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia9.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia9.wav",f_a,T_i) 
 
 
 #####################################
@@ -244,7 +247,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia10.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia10.wav",f_a,T_i) 
 
 
 
@@ -296,7 +299,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia11.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia11.wav",f_a,T_i) 
 
 
 
@@ -351,7 +354,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia12.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia12.wav",f_a,T_i) 
 
 
 #####################
@@ -405,7 +408,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia13.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia13.wav",f_a,T_i) 
 
 
 
@@ -448,7 +451,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia14.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia14.wav",f_a,T_i) 
 
 
 ######################
@@ -493,7 +496,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia15.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia15.wav",f_a,T_i) 
 
 ##########################
 
@@ -527,7 +530,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia16.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia16.wav",f_a,T_i) 
 
 ##########################
 
@@ -561,7 +564,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia17.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia17.wav",f_a,T_i) 
 
 ##########################
 
@@ -595,7 +598,7 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia18.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia18.wav",f_a,T_i) 
 
 
 T1=v(tab=S_i,tabv=S_i ,d=2.,fv=30.,nu= 49.0,f=40 )*A(fa=6.,taba=D_i) # Animal
@@ -612,5 +615,5 @@ T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
 # most music players read only 16-bit wav files, so let's convert the array
 T_i = n.int16(T_i * float(2**15))
 
-w.write("TremolosVibratosEaFrequencia19.wav",f_a,T_i) 
+W("TremolosVibratosEaFrequencia19.wav",f_a,T_i) 
 
