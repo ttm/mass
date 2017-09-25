@@ -54,7 +54,6 @@ def A(fa=2.,V_dB=10.,d=2.,taba=S_i):
     A_i=A_i*10.**(V_dB/20.)
     return A_i
 
-
 def adsr(som,A=10.,D=20.,S=-20.,R=100.,xi=1e-2):
     a_S=10**(S/20.)
     Lambda=len(som)
