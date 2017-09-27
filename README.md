@@ -64,6 +64,9 @@ paragraph sufficient.
 ### further notes
 * This framework is also known by in Portuguese by the acronym
 MASSA (Música e Áudio em Sequências e Séries Amostrais).
+* If you miss or want anything in this framework,
+drop me a line and I might incorporate it.
+
 ### contact
 If you have any thoughts, questions, or want to report any usage of the MASS framework,
 please drop me a line at: renato [DOT] fabbri [AT] gmail [DOT] com
