@@ -1,5 +1,6 @@
 import numpy as n
 from scipy.io import wavfile as w
+import doctest
 
 __doc__ = """This file holds minimal implementations
 to avoid repetitions in the
@@ -211,7 +212,7 @@ foo = n.linspace(0, 2*n.pi,Lt, endpoint=False)
 S = n.sin(foo)  # one period of a sinusoid with Lt samples
 
 # Square
-Q = n.hstack(  ( n.ones(Lt/2)*-1, n.ones(Lt/2) )  )
+Q = n.hstack(  ( n.ones(int(Lt/2))*-1, n.ones(int(Lt/2)) )  )
 
 # Triangular
 foo = n.linspace(-1, 1, Lt/2, endpoint=False)
@@ -418,11 +419,10 @@ def T(d=2, fa=2, dB=10, alpha=1, taba=S, nsamples=0, sonic_vector=0, fs=44100):
 
     Examples
     --------
-    >>> W(V()*A())  # writes a WAV file of a note with tremolo
-    >>> s = H( [V()*A(fa=i, dB=j) for i, j in zip([6, 15, 100], [2, 1, 20])] )
-    # OR
-    >>> s = H( [A(fa=i, V_dB=j, sonic_vector=V()) for i, j in zip([6, 15, 100], [2, 1, 20])] )
-    >>> envelope2 = A(440, 1.5, 60)  # a lengthy envelope
+    >>> W(V()*T())  # writes a WAV file of a note with tremolo
+    >>> s = H( [V()*T(fa=i, dB=j) for i, j in zip([6, 15, 100], [2, 1, 20])] )  # OR
+    >>> s = H( [T(fa=i, dB=j, sonic_vector=V()) for i, j in zip([6, 15, 100], [2, 1, 20])] )
+    >>> envelope2 = T(440, 1.5, 60)  # a lengthy envelope
 
     Notes
     -----
@@ -532,9 +532,8 @@ def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
     Examples
     --------
     >>> W(V()*AD())  # writes a WAV file of a note with ADSR envelope
-    >>> s = H( [V()*AD(A=i, R=j) for i, j in zip([6, 50, 300], [100, 10, 200])] )
-    # OR
-    >>> s = H( [AD(A=i, R=j, sonic_vector=V()) for i, j in zip([6, 15, 100], [2, 1, 20])] )
+    >>> s = H( [V()*AD(A=i, R=j) for i, j in zip([6, 50, 300], [100, 10, 200])] )  # OR
+    >>> s = H( [AD(A=i, R=j, sonic_vector=V()) for i, j in zip([6, 15, 100], [2, 2, 20])] )
     >>> envelope = AD(d=440, A=10e3, D=0, R=5e3)  # a lengthy envelope
 
     Notes
@@ -559,10 +558,13 @@ def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
 
     perc = 100*to_zero/A
     A = F(out=0, method=trans, alpha=alpha, dB=dB, perc=perc, nsamples=Lambda_A)
+
     D = L(dev=S, method=trans, alpha=alpha, nsamples=Lambda_D)
-    perc = 100*to_zero/R
+
     a_S = 10**(S/20.)
     S = n.ones( Lambda - (Lambda_A+Lambda_R+Lambda_D) )*a_S
+
+    perc = 100*to_zero/R
     R = F(method=trans, alpha=alpha, dB=dB, perc=perc, nsamples=Lambda_R)*a_S
 
     AD = n.hstack((A,D,S,R))
@@ -625,8 +627,7 @@ def L(d=2, dev=10, alpha=1, to=True, method="exp",
     Examples
     --------
     >>> W(V()*L())  # writes a WAV file of a loudness transition
-    >>> s = H( [V()*L(dev=i, method=j) for i, j in zip([6, -50, 2.3], ["exp", "exp", "linear"])] )
-    # OR
+    >>> s = H( [V()*L(dev=i, method=j) for i, j in zip([6, -50, 2.3], ["exp", "exp", "linear"])] )  # OR
     >>> s = H( [L(dev=i, method=j, sonic_vector=V()) for i, j in zip([6, -50, 2.3], ["exp", "exp", "linear"])] )
     >>> envelope = L(d=10, dev=-80, to=False, alpha=2)  # a lengthy fade in 
 
@@ -724,8 +725,7 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1,
     Examples
     --------
     >>> W(V()*F())  # writes a WAV file with a fade in
-    >>> s = H( [V()*F(out=i, method=j) for i, j in zip([1, 0, 1], ["exp", "exp", "linear"])] )
-    # OR
+    >>> s = H( [V()*F(out=i, method=j) for i, j in zip([1, 0, 1], ["exp", "exp", "linear"])] )  # OR
     >>> s = H( [F(out=i, method=j, sonic_vector=V()) for i, j in zip([1, 0, 1], ["exp", "exp", "linear"])] )
     >>> envelope = F(d=10, out=0, perc=0.1)  # a lengthy fade in 
 
@@ -880,7 +880,7 @@ def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1,
     Examples
     --------
     >>> W(PV())  # writes file with a glissando and vibrato
-    >>> s = H( [AD(PV(i, j)) for i, j in zip([220, 440, 4000], [440, 220, 220])] )
+    >>> s = H( [AD(sonic_vector=PV(i, j)) for i, j in zip([220, 440, 4000], [440, 220, 220])] )
     >>> W(s)  # writes a file with glissandi and vibratos
 
     """
@@ -963,7 +963,7 @@ def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=4, alphav1=1,
     Examples
     --------
     >>> W(VV())  # writes file with a two simultaneous vibratos
-    >>> s = H( [AD(VV(fv1=i, fv2=j)) for i, j in zip([2, 6, 4], [8, 10, 15])] )
+    >>> s = H( [AD(sonic_vector=VV(fv1=i, fv2=j)) for i, j in zip([2, 6, 4], [8, 10, 15])] )
     >>> W(s)  # writes a file with two vibratos
 
     """
@@ -1058,7 +1058,7 @@ def PVV(f1=220, f2=440, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alpha=1,
     Examples
     --------
     >>> W(PVV())  # writes file with a two simultaneous vibratos and a glissando
-    >>> s = H( [AD(PVV(fv2=i, nu1=j)) for i, j in zip([330, 440, 100], [8, 2, 15])] )
+    >>> s = H( [AD(sonic_vector=PVV(fv2=i, nu1=j)) for i, j in zip([330, 440, 100], [8, 2, 15])] )
     >>> W(s)  # writes a file with two vibratos and a glissando
 
     """
@@ -1199,7 +1199,7 @@ def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]],
     return s
 
 
-def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method="exp",
+def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
         nsamples=0, sonic_vector=0, fs=44100):
     """
     An envelope with linear or exponential transitions of amplitude.
@@ -1269,13 +1269,13 @@ def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method="exp",
     elif nsamples:
         N = nsamples
     else:
-        N = int(fs*d)
+        N = int(fs*sum(d))
     samples = n.arange(N)
     s = []
     fact = 1
     if nsamples:
         for i, ns in enumerate(nsamples):
-            s_ = L(nsamples=ns, dev[i], alpha[i],
+            s_ = L(dev[i], alpha[i], nsamples=ns, 
                     method=method[i])*fact
             s.append(s_)
             fact = s_[-1]
@@ -1297,7 +1297,7 @@ def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method="exp",
 
 
 def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
-        dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9],
+        dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9]],
             taba=[[S,S,S],[Tr,Tr,Tr,S]],
         nsamples=0, sonic_vector=0, fs=44100):
     for i in range(taba):
@@ -1308,14 +1308,14 @@ def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
         for i, ns in enumerate(nsamples):
             T_.append([])
             for j, ns_ in enumerate(ns):
-                s = T(fa=fa[i][j], dB[i][j], alpha[i][j],
+                s = T(fa=fa[i][j], dB=dB[i][j], alpha=alpha[i][j],
                     taba=taba[i][j], nsamples=ns_)
                 T_[-1].append(s)
     else:
         for i, durs in enumerate(d):
             T_.append([])
             for j, dur in enumerate(durs):
-                s = T(dur, fa=fa[i][j], dB[i][j], alpha[i][j],
+                s = T(dur, fa[i][j], dB[i][j], alpha[i][j],
                     taba=taba[i][j])
                 T_[-1].append(s)
     amax = 0
@@ -1325,7 +1325,7 @@ def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
         T_[i] = n.hstack(T_[i])
         amax = max(amax, len(T_[i]))
     for i in range(len(T_)):
-        if len(T_[i]) < amax):
+        if len(T_[i]) < amax:
             T_[i] = n.hstack((T_[i], n.ones(amax-len(T_[i]))*T_[i][-1]))
     if type(sonic_vector) in (n.ndarray, list):
         if len(sonic_vector) < amax:
@@ -1364,7 +1364,7 @@ def mix(sonic_vectors, end=False, offset=0, fs=44100):
 
     Examples
     --------
-    >>> W(mix(V(), N())  # writes a WAV file with nodes
+    >>> W(mix(sonic_vectors=[V(), N()]))  # writes a WAV file with nodes
 
     Notes
     -----
@@ -1420,7 +1420,8 @@ def trill(f=[220,330,440], ft=7, d=5, fs=44100):
 
     Examples
     --------
-    >>> W(trill)
+    >>> W(trill())
+
     """
     nsamples = 44100/ft
     pointer = 0
@@ -1430,10 +1431,12 @@ def trill(f=[220,330,440], ft=7, d=5, fs=44100):
         ns = int(nsamples*(i+1) - pointer)
         note = N(f[i%len(f)], nsamples=ns,
                 tab=Tr, fs=fs)
-        s.append(AD(note))
+        s.append(AD(sonic_vector=note))
         pointer += ns
         i += 1
     trill = n.hstack(s)
     return trill
 
 
+if __name__ == "__main__":
+    doctest.testmod()
