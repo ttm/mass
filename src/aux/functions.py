@@ -45,10 +45,15 @@ def __n(sonic_vector, remove_bias=True):
         return t
     else:
         s = ( (t-t.min()) / (t.max() -t.min()) )*2. -1.
-        f = n.fft.fft(s)
         if remove_bias:
+            f = n.fft.fft(s)
             f[0] = 0  # removing bias (or offset)
             s = n.fft.ifft(f).real
+            fact = max(max(s), -min(s))
+            if fact > 1:
+                # bias removal gave an offset which
+                # made the signal to extrapolate [-1,1]
+                s = s/fact
         return s
 
 
@@ -95,10 +100,20 @@ def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
         if remove_bias:
             f = n.fft.fft(s[0])
             f[0] = 0  # removing bias (or offset)
-            s[0] = n.fft.ifft(f)
+            s[0] = n.fft.ifft(f).real
+            fact = max(max(s[0]), -min(s[0]))
+            if fact > 1:
+                # bias removal gave an offset which
+                # made the signal to extrapolate [-1,1]
+                s[0] = s[0]/fact
             f = n.fft.fft(s[1])
             f[0] = 0  # removing bias (or offset)
-            s[1] = n.fft.ifft(f)
+            s[1] = n.fft.ifft(f).real
+            fact = max(max(s[1]), -min(s[1]))
+            if fact > 1:
+                # bias removal gave an offset which
+                # made the signal to extrapolate [-1,1]
+                s[1] = s[1]/fact
         return s
 
 
@@ -121,9 +136,9 @@ def W(sonic_vector=monos, filename="asound.wav", fs=44100,
         The filename to use for the file to be written.
     fs : scalar
         The sample frequency.
-    fades : integer
-        Set to number of milliseconds you want for the
-        fade in and out (to avoid clicks).
+    fades : interable
+        An iterable with two values for the milliseconds you
+        want for the fade in and out (to avoid clicks).
     bit_depth : integer
         The number of bits in each sample of the final file.
     remove_bias : boolean
@@ -137,9 +152,10 @@ def W(sonic_vector=monos, filename="asound.wav", fs=44100,
     WS ; Write a stereo file.
     
     """
-    s = __n(sonic_vector)*(2**(bit_depth-1)-1)
+    s = __n(sonic_vector, remove_bias)*(2**(bit_depth-1)-1)
+    print(max(s), min(s))
     if fades:
-        s = AD(A=fades, S=0, R=fades, sonic_vector=s)
+        s = AD(A=fades[0], S=0, R=fades[1], sonic_vector=s)
     if bit_depth not in (8, 16, 32, 64):
         print("bit_depth values allowed are only 8, 16, 32 and 64")
         print("File {} not written".format(filename))
@@ -165,9 +181,9 @@ def WS(sonic_vector=stereos, filename="asound.wav", fs=44100,
         The filename to use for the file to be written.
     fs : scalar
         The sample frequency.
-    fades : integer
-        Set to number of milliseconds you want for the
-        fade in and out (to avoid clicks).
+    fades : interable
+        An iterable with two values for the milliseconds you
+        want for the fade in and out (to avoid clicks).
     bit_depth : integer
         The number of bits in each sample of the final file.
     remove_bias : boolean
@@ -185,7 +201,7 @@ def WS(sonic_vector=stereos, filename="asound.wav", fs=44100,
     """
     s = __ns(sonic_vector, remove_bias, normalize_sep)*(2**(bit_depth-1)-1)
     if fades:
-        s = ADS(A=fades, S=0, R=fades, sonic_vector=s)
+        s = ADS(A=fades[0], S=0, R=fades[1], sonic_vector=s)
     if bit_depth not in (8, 16, 32, 64):
         print("bit_depth values allowed are only 8, 16, 32 and 64")
         print("File {} not written".format(filename))
@@ -572,6 +588,27 @@ def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
         return sonic_vector*AD
     else:
         return AD
+
+def ADS(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
+        dB=-80, to_zero=1, nsamples=0, sonic_vector=0, fs=44100):
+    """
+    A shorthand to make an ADSR envelope for a stereo sound.
+
+    See ADSR() for more information.
+
+    """
+    if type(sonic_vector) in (n.ndarray, list):
+        sonic_vector1 = sonic_vector[0]
+        sonic_vector2 = sonic_vector[1]
+    else:
+        sonic_vector1 = 0
+        sonic_vector2 = 0
+    s1 = AD(d=d, A=A, D=D, S=S, R=R, trans=trans, alpha=alpha,
+        dB=dB, to_zero=to_zero, nsamples=nsamples, sonic_vector=sonic_vector1, fs=fs)
+    s2 = AD(d=d, A=A, D=D, S=S, R=R, trans=trans, alpha=alpha,
+        dB=dB, to_zero=to_zero, nsamples=nsamples, sonic_vector=sonic_vector1, fs=fs)
+    s = n.vstack(( s1, s2 ))
+    return s
 
 
 def L(d=2, dev=10, alpha=1, to=True, method="exp",
@@ -1300,7 +1337,65 @@ def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
         dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9]],
             taba=[[S,S,S],[Tr,Tr,Tr,S]],
         nsamples=0, sonic_vector=0, fs=44100):
-    for i in range(taba):
+    """
+    An envelope with multiple tremolos.
+
+    Parameters
+    ----------
+    d : iterable of iterable of scalars
+        the durations of each tremolo.
+    fa : iterable of iterable of scalars
+        The frequencies of each tremolo.
+    dB : iterable of iterable of scalars
+        The maximum loudness variation
+        of each tremolo.
+    alpha : iterable of iterable of scalars
+        Indexes for distortion of each tremolo [1].
+    taba : iterable of iterable of array_likes
+        Tables for lookup for each tremolo.
+    nsamples : iterable of iterable of scalars
+        The number of samples or each tremolo.
+    sonic_vector : array_like
+        The sound to which apply the tremolos.
+        If supplied, the tremolo lines are
+        applied to the sound and missing samples
+        are completed by zeros (if sonic_vector
+        is smaller then the lengthiest tremolo)
+        or ones (is sonic_vector is larger).
+    fs : integer
+        The sample rate
+
+    Returns
+    -------
+    E : ndarray
+        A numpy array where each value is a value of the envelope
+        for the PCM samples.
+        If sonic_vector is supplied,
+        E is the sonic vector with the envelope applied to it.
+
+    See Also
+    --------
+    L : An envelope for a loudness transition.
+    L_ : An envelope with an arbitrary number of transitions.
+    F : Fade in and out.
+    AD : An ADSR envelope.
+    T : An oscillation of loudness.
+
+    Examples
+    --------
+    >>> W(V(d=8)*L_())  # writes a WAV file with a loudness transitions
+
+    Notes
+    -----
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+        
+
+    """
+    for i in range(len(taba)):
         for j in range(i):
             taba[i][j] = n.array(taba[i][j])
     T_ = []
@@ -1393,7 +1488,7 @@ def mix(sonic_vectors, end=False, offset=0, fs=44100):
     return s
 
 
-def trill(f=[220,330,440], ft=7, d=5, fs=44100):
+def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
     """Make a trill.
 
     This is just a simple function for exemplifying
@@ -1431,7 +1526,7 @@ def trill(f=[220,330,440], ft=7, d=5, fs=44100):
         ns = int(nsamples*(i+1) - pointer)
         note = N(f[i%len(f)], nsamples=ns,
                 tab=Tr, fs=fs)
-        s.append(AD(sonic_vector=note))
+        s.append(AD(sonic_vector=note, R=10))
         pointer += ns
         i += 1
     trill = n.hstack(s)
