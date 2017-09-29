@@ -16,45 +16,199 @@ with many useful routines."""
 # Vibrato and Tremolo
 # ADSR
 
+H = n.hstack
 #####################
 # IO
-def __n(sonic_array):
-    """Normalize sonic_array to have values only between -1 and 1"""
+def __n(sonic_vector, remove_bias=True):
+    """Normalize mono sonic_vector.
+    
+    The final array will have values only between -1 and 1.
+    
+    Parameters
+    ----------
+    sonic_vector : array_like
+        A (nsamples,) shaped array.
+    remove_bias : boolean
+        Whether to remove or not the bias (or offset)
+    
+    Returns
+    -------
+    s : ndarray
+        A numpy array with values between -1 and 1.
+    remove_bias : boolean
+        Whether to remove or not the bias (or offset)
+    """
 
-    t = sonic_array
-    if n.all(sonic_array==0):
-        return sonic_array
+    t = n.array(sonic_vector)
+    if n.all(t==0):
+        return t
     else:
-        return ( (t-t.min()) / (t.max() -t.min()) )*2.-1.
+        s = ( (t-t.min()) / (t.max() -t.min()) )*2. -1.
+        f = n.fft.fft(s)
+        if remove_bias:
+            f[0] = 0  # removing bias (or offset)
+            s = n.fft.ifft(f).real
+        return s
 
-def __s(sonic_array=n.random.uniform(size=100000), filename="asound.wav", f_s=44100, adsr=True):
-    """A minimal approach to writing 16 bit WAVE files.
+
+def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
+    """Normalize a stereo sonic_vector.
+    
+    The final array will have values only between -1 and 1.
+    
+    Parameters
+    ----------
+    sonic_vector : array_like
+        A (2, nsamples) shaped array.
+    remove_bias : boolean
+        Whether to remove or not the bias (or offset)
+    normalize_sep : boolean
+        Set to True if each channel should be normalized
+        separately. If False (default), the arrays will be
+        rescaled in the same proportion
+        (preserves loudness proportion).
+    
+    Returns
+    -------
+    s : ndarray
+        A numpy array with values between -1 and 1.
+    """
+
+    t = n.array(sonic_vector)
+    if n.all(t==0):
+        return t
+    else:
+        if not normalize_sep:
+            amb1 = t[0].max() - t[0].min()
+            amb2 = t[1].max() - t[1].min()
+            amb = max(amb1, amb2)
+            t[0] = (t[0] - t[0].min())/amb
+            t[1] = (t[1] - t[1].min())/amb
+            s = t*2 - 1
+        else:
+            amb1 = t[0].max() - t[0].min()
+            amb2 = t[1].max() - t[1].min()
+            t[0] = (t[0] - t[0].min())/amb1
+            t[1] = (t[1] - t[1].min())/amb2
+            s = t*2 - 1
+        if remove_bias:
+            f = n.fft.fft(s[0])
+            f[0] = 0  # removing bias (or offset)
+            s[0] = n.fft.ifft(f)
+            f = n.fft.fft(s[1])
+            f[0] = 0  # removing bias (or offset)
+            s[1] = n.fft.ifft(f)
+        return s
+
+
+monos = n.random.uniform(size=100000) 
+def W(sonic_vector=monos, filename="asound.wav", fs=44100,
+        fades=0, bit_depth=16, remove_bias=True):
+    """Write a mono WAV file for a numpy array.
     
     One can also use, for example:
         import sounddevice as S
-        S.play(array) # the array must have values between -1 and 1"""
+        S.play(__n(array))
+    
+    Parameters
+    ----------
+    sonic_vector : array_like
+        The PCM samples to be written as a WAV sound file.
+        The samples are always normalized by __n(sonic_vector)
+        to have samples between -1 and 1.
+    filename : string
+        The filename to use for the file to be written.
+    fs : scalar
+        The sample frequency.
+    fades : integer
+        Set to number of milliseconds you want for the
+        fade in and out (to avoid clicks).
+    bit_depth : integer
+        The number of bits in each sample of the final file.
+    remove_bias : boolean
+        Whether to remove or not the bias (or offset)
 
-    # to write the file using XX bits per sample
-    # simply use s = n.intXX(__n(sonic_array)*(2**(XX-1)-1))
-    s = n.int16(AD(sonic_vector=__n(sonic_array), S=0)*32767)
-    w.write(filename, f_s, s)
+    See Also
+    --------
+    __n : Normalizes an array to [-1,1]
+    W_ : Writes an array with the same arguments
+    and order of them as scipy.io.wavfile.
+    WS ; Write a stereo file.
+    
+    """
+    s = __n(sonic_vector)*(2**(bit_depth-1)-1)
+    if fades:
+        s = AD(A=fades, S=0, R=fades, sonic_vector=s)
+    if bit_depth not in (8, 16, 32, 64):
+        print("bit_depth values allowed are only 8, 16, 32 and 64")
+        print("File {} not written".format(filename))
+    nn = eval("n.int"+str(bit_depth))
+    s = nn(s)
+    w.write(filename, fs, s)
 
-def W(fn, fs, sa): 
+
+stereos = n.vstack((n.random.uniform(size=100000), n.random.uniform(size=100000)))
+
+def WS(sonic_vector=stereos, filename="asound.wav", fs=44100,
+        fades=0, bit_depth=16, remove_bias=True, normalize_sep=False):
+    """Write a stereo WAV files for a numpy array.
+    
+    Parameters
+    ----------
+    sonic_vector : array_like
+        The PCM samples to be written as a WAV sound file.
+        The samples are always normalized by __n(sonic_vector)
+        to have samples between -1 and 1 and remove the offset.
+        Use array of shape (nchannels, nsamples).
+    filename : string
+        The filename to use for the file to be written.
+    fs : scalar
+        The sample frequency.
+    fades : integer
+        Set to number of milliseconds you want for the
+        fade in and out (to avoid clicks).
+    bit_depth : integer
+        The number of bits in each sample of the final file.
+    remove_bias : boolean
+        Whether to remove or not the bias (or offset)
+    normalize_sep : boolean
+        Set to True if each channel should be normalized
+        separately. If False (default), the arrays will be
+        rescaled in the same proportion.
+
+    See Also
+    --------
+    __ns : Normalizes a stereo array to [-1,1]
+    W ; Write a mono file.
+    
+    """
+    s = __ns(sonic_vector, remove_bias, normalize_sep)*(2**(bit_depth-1)-1)
+    if fades:
+        s = ADS(A=fades, S=0, R=fades, sonic_vector=s)
+    if bit_depth not in (8, 16, 32, 64):
+        print("bit_depth values allowed are only 8, 16, 32 and 64")
+        print("File {} not written".format(filename))
+    nn = eval("n.int"+str(bit_depth))
+    s = nn(s)
+    w.write(filename, fs, s.T)
+
+
+def W_(fn, fs, sa): 
     """To mimic scipy.io.wavefile input"""
-    __s(sa, fn, f_s=44100)
+    W(sa, fn, fs=44100)
 
 
 ###################
 # Synthesis
-f_s = 44100  # Hz, standard sample rate
+fs = 44100  # Hz, standard sample rate
 
 # very large tables, we are not worried about real time
 # use Lt = 1024 if in need of better performance
-Lambda_tilde=Lt=1024*16
+Lambda_tilde = Lt = 1024*16
 
 # Sine
 foo = n.linspace(0, 2*n.pi,Lt, endpoint=False)
-S = n.sin(foo)  # um período da senóide com T amostras
+S = n.sin(foo)  # one period of a sinusoid with Lt samples
 
 # Square
 Q = n.hstack(  ( n.ones(Lt/2)*-1, n.ones(Lt/2) )  )
@@ -67,7 +221,7 @@ Tr = n.hstack(  ( foo, foo[::-1] )   )
 D = n.linspace(-1, 1, Lt)
 
 
-def N(f=220, d=2, tab=Tr, dB=0, nsamples=0, fs=44100):
+def N(f=220, d=2, tab=Tr, nsamples=0, fs=44100):
     """
     Synthesize a basic musical note.
 
@@ -79,20 +233,21 @@ def N(f=220, d=2, tab=Tr, dB=0, nsamples=0, fs=44100):
         The duration of the note in seconds.
     tab : array_like
         The table with the waveform to synthesize the sound.
-    nsamples : scalar
+    nsamples : integer
         The number of samples in the sound.
         If not 0, d is ignored.
-    fs : scalar
+    fs : integer
         The sample rate.
 
     Returns
     -------
     s : ndarray
-        A numpy array where each value is a PCM sample of the sound.
+        A numpy array where each value is a PCM sample of the note.
 
     See Also
     --------
-    V : a note with vibrato.
+    V : A note with vibrato.
+    T : A tremolo envelope.
 
     Examples
     --------
@@ -116,20 +271,23 @@ def N(f=220, d=2, tab=Tr, dB=0, nsamples=0, fs=44100):
     discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
+    tab = n.array(tab)
     if not nsamples:
         nsamples = int(d*fs)
     samples = n.arange(nsamples)
     l = len(tab)
+
     Gamma = (samples*f*l/fs).astype(n.int)
     s = tab[ Gamma % l ]
     return s
 
 
-def V(f=220, d=2, fv=4, nu=2, alpha=1, tab=Tr, tabv=S, nsamples=0, fs=44100):
+def V(f=220, d=2, fv=4, nu=2, tab=Tr, tabv=S,
+        alpha=1, nsamples=0, fs=44100):
     """
     Synthesize a musical note with a vibrato.
     
-    Set fv=0 (or use N()) for a note without vibrato.
+    Set fv=0 or nu=0 (or use N()) for a note without vibrato.
     A vibrato is an oscillatory pattern of pitch [1].
     
     Parameters
@@ -147,26 +305,26 @@ def V(f=220, d=2, fv=4, nu=2, alpha=1, tab=Tr, tabv=S, nsamples=0, fs=44100):
     tabv : array_like
         The table with the waveform for the vibrato oscillatory pattern.
     alpha : scalar
-        An index to begin the transitions faster or slower. 
-        If alpha != 1, the transition is not of linear pitch.
-    nsamples : scalar
+        An index to distort the vibrato [1]. 
+        If alpha != 1, the vibrato is not of linear pitch.
+    nsamples : integer
         The number of samples in the sound.
         If supplied, d is ignored.
-    fs : scalar
+    fs : integer
         The sample rate.
 
     Returns
     -------
     s : ndarray
-        A numpy array where each value is a PCM sample of the sound.
+        A numpy array where each value is a PCM sample of the note.
 
     See Also
     --------
-    N : a basic musical note without vibrato.
-    T : a tremolo, an oscillation of loudness.
-    FM : a linear oscillation of the fundamental frequency.
-    AM : a linear oscillation of amplitude.
-    V_ : a shorthand to render a note with vibrato using
+    N : A basic musical note without vibrato.
+    T : A tremolo, an oscillation of loudness.
+    FM : A linear oscillation of the frequency (not linear pitch).
+    AM : A linear oscillation of amplitude (not linear loudness).
+    V_ : A shorthand to render a note with vibrato using
         a reference frequency and a pitch interval.
 
     Examples
@@ -191,13 +349,15 @@ def V(f=220, d=2, fv=4, nu=2, alpha=1, tab=Tr, tabv=S, nsamples=0, fs=44100):
     discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
+    tab = n.array(tab)
+    tabv = n.array(tabv)
     if nsamples:
         Lambda = nsamples
     else:
         Lambda = int(fs*d)
     samples = n.arange(Lambda)
-    lv = len(tabv)
 
+    lv = len(tabv)
     Gammav = (samples*fv*lv/fs).astype(n.int)  # LUT indexes
     # values of the oscillatory pattern at each sample
     Tv = tabv[ Gammav % lv ] 
@@ -214,11 +374,11 @@ def V(f=220, d=2, fv=4, nu=2, alpha=1, tab=Tr, tabv=S, nsamples=0, fs=44100):
     return s
 
 
-def T(d=2, fa=2, dB=10, taba=S, nsamples=0, sonic_vector=0, fs=44100):
+def T(d=2, fa=2, dB=10, alpha=1, taba=S, nsamples=0, sonic_vector=0, fs=44100):
     """
     Synthesize a tremolo envelope or apply it to a sound.
     
-    Set fa=0 for a constant envelope with value 1.
+    Set fa=0 or dB=0 for a constant envelope with value 1.
     A tremolo is an oscillatory pattern of loudness [1].
     
     Parameters
@@ -229,28 +389,32 @@ def T(d=2, fa=2, dB=10, taba=S, nsamples=0, sonic_vector=0, fs=44100):
         The frequency of the tremolo oscillations in Hertz.
     dB : scalar
         The maximum deviation of loudness in the tremolo in decibels.
+    alpha : scalar
+        An index to distort the tremolo pattern [1].
     taba : array_like
         The table with the waveform for the tremolo oscillatory pattern.
-    nsamples : scalar
+    nsamples : integer
         The number of samples of the envelope. If supplied, d is ignored.
     sonic_vector : array_like
-        Samples for the tremolo to be applied ob.
+        Samples for the tremolo to be applied to.
         If supplied, d and nsamples are ignored.
-    fs : scalar
+    fs : integer
         The sample rate.
 
     Returns
     -------
     T : ndarray
-        A numpy array where each value is a PCM sample of the envelope
+        A numpy array where each value is a PCM sample
+        of the envelope.
         if sonic_vector is 0.
-        If sonic_vector is input, s is the sonic vector with the tremolo applied to it.
+        If sonic_vector is input,
+        T is the sonic vector with the tremolo applied to it.
 
     See Also
     --------
-    V : a musical note with an oscillation of pitch.
-    FM : a linear oscillation of fundamental frequency.
-    AM : a linear oscillation of amplitude.
+    V : A musical note with an oscillation of pitch.
+    FM : A linear oscillation of fundamental frequency.
+    AM : A linear oscillation of amplitude.
 
     Examples
     --------
@@ -276,30 +440,36 @@ def T(d=2, fa=2, dB=10, taba=S, nsamples=0, sonic_vector=0, fs=44100):
 
     """
 
-    if type(sonic_vector) == n.ndarray:
+    taba = n.array(taba)
+    if type(sonic_vector) in (n.ndarray, list):
         Lambda = len(sonic_vector)
     elif nsamples:
         Lambda = nsamples
     else:
         Lambda = n.floor(fs*d)
-    ii = n.arange(Lambda)
+    samples = n.arange(Lambda)
+
     l = len(taba)
-    Gammaa = (ii*fa*l/fs).astype(n.int)  # indexes for LUT
-    # amplitude variation in each sample
+    Gammaa = (samples*fa*l/fs).astype(n.int)  # indexes for LUT
+    # amplitude variation at each sample
     Ta = taba[ Gammaa % Lt ] 
-    T = 10.**(Ta*dB/20)
-    if type(sonic_vector) == n.ndarray:
+    if alpha != 1:
+        T = 10.**((Ta*dB/20)**alpha)
+    else:
+        T = 10.**(Ta*dB/20)
+    if type(sonic_vector) in (n.ndarray, list):
         return T*sonic_vector
     else:
         return T
 
 
-def AD(d=2, A=10, D=20, S=-10, R=100, trans="exp", alpha=1, dB=-80, to_zero=1, nsamples=0, sonic_vector=0, fs=44100):
+def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
+        dB=-80, to_zero=1, nsamples=0, sonic_vector=0, fs=44100):
     """
-    Synthesize an ADSR envelope [1].
+    Synthesize an ADSR envelope.
     
     ADSR (Atack, Decay, Sustain, Release) is a very traditional
-    loudness envelope in sound synthesis.
+    loudness envelope in sound synthesis [1].
     
     Parameters
     ----------
@@ -320,11 +490,12 @@ def AD(d=2, A=10, D=20, S=-10, R=100, trans="exp", alpha=1, dB=-80, to_zero=1, n
         "linear" for linear transitions of amplitude.
     alpha : scalar or array_like
         An index to make the exponential fade slower or faster [1].
-        Ignored it transitions="linear".
+        Ignored it transitions="linear" or alpha=1.
         If it is an array_like, it should hold three values to be used
         in Attack, Decay and Release.
-    dB ; scalar or array_like
-        The decibels deviation to reach before using a linear fade to reach zero amplitude.
+    dB : scalar or array_like
+        The decibels deviation to reach before using a linear fade
+        to reach zero amplitude.
         If it is an array_like, it should hold two values,
         one for Attack and another for Release.
         Ignored if trans="linear".
@@ -334,29 +505,29 @@ def AD(d=2, A=10, D=20, S=-10, R=100, trans="exp", alpha=1, dB=-80, to_zero=1, n
         of the Release.
         If it is an array_like, it should hold two values,
         one for Attack and another for Release.
-        Is ignored if transitions="linear".
-    nsamples : scalar
+        Is ignored if trans="linear".
+    nsamples : integer
         The number of samples of the envelope.
         If supplied, d is ignored.
     sonic_vector : array_like
-        Samples for the tremolo to be applied to.
+        Samples for the ADSR envelope to be applied to.
         If supplied, d and nsamples are ignored.
-    fs : scalar
+    fs : integer
         The sample rate.
 
     Returns
     -------
     AD : ndarray
         A numpy array where each value is a value of
-        the envelope for the PCM samples if sonic_array is 0.
+        the envelope for the PCM samples if sonic_vector is 0.
         If sonic_vector is input,
-        AD is the sonic vector with the tremolo applied to it.
+        AD is the sonic vector with the ADSR envelope applied to it.
 
     See Also
     --------
-    T : an oscillation of loudness.
-    L : a loudness transition.
-    F : a fade in or fade out.
+    T : An oscillation of loudness.
+    L : A loudness transition.
+    F : A fade in or fade out.
 
     Examples
     --------
@@ -376,7 +547,7 @@ def AD(d=2, A=10, D=20, S=-10, R=100, trans="exp", alpha=1, dB=-80, to_zero=1, n
     discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
-    if type(sonic_vector) == n.ndarray:
+    if type(sonic_vector) in (n.ndarray, list):
         Lambda = len(sonic_vector)
     elif nsamples:
         Lambda = nsamples
@@ -391,30 +562,34 @@ def AD(d=2, A=10, D=20, S=-10, R=100, trans="exp", alpha=1, dB=-80, to_zero=1, n
     D = L(dev=S, method=trans, alpha=alpha, nsamples=Lambda_D)
     perc = 100*to_zero/R
     a_S = 10**(S/20.)
-    S = n.ones(Lambda-(Lambda_A+Lambda_R+Lambda_D))*a_S
+    S = n.ones( Lambda - (Lambda_A+Lambda_R+Lambda_D) )*a_S
     R = F(method=trans, alpha=alpha, dB=dB, perc=perc, nsamples=Lambda_R)*a_S
 
     AD = n.hstack((A,D,S,R))
-    if type(sonic_vector) == n.ndarray:
+    if type(sonic_vector) in (n.ndarray, list):
         return sonic_vector*AD
     else:
         return AD
 
 
-def L(d=2, dev=10, alpha=1, to=True, method="exp", nsamples=0, sonic_vector=0, fs=44100):
+def L(d=2, dev=10, alpha=1, to=True, method="exp",
+        nsamples=0, sonic_vector=0, fs=44100):
     """
-    An envelope for linear or exponential (linean loudness) transition of amplitude.
+    An envelope for linear or exponential transition of amplitude.
+
+    An exponential transition of loudness yields a linean
+    transition of loudness (theoretically).
 
     Parameters
     ----------
     d : scalar
-        The duration of the sound in samples.
+        The duration of the envelope in seconds.
     dev : scalar
         The deviation of the transition.
         If method="exp" the deviation is in decibels.
-        If method="linear" the deviation is amplitude proportion.
-    alpha : scalar or array_like
-        An index to make the exponential fade slower or faster [1].
+        If method="linear" the deviation is an amplitude proportion.
+    alpha : scalar
+        An index to make the transition slower or faster [1].
         Ignored it method="linear".
     to : boolean
         If True, the transition ends at the deviation.
@@ -422,27 +597,30 @@ def L(d=2, dev=10, alpha=1, to=True, method="exp", nsamples=0, sonic_vector=0, f
     method : string
         "exp" for exponential transitions of amplitude (linear loudness).
         "linear" for linear transitions of amplitude.
-    nsamples : scalar
+    nsamples : integer
         The number of samples of the envelope.
         If supplied, d is ignored.
     sonic_vector : array_like
         Samples for the envelope to be applied to.
         If supplied, d and nsamples are ignored.
-    fs : scalar
-        The sample rate. Only used if nsamples and sonic_array are not supplied.
+    fs : integer
+        The sample rate.
+        Only used if nsamples and sonic_vector are not supplied.
 
     Returns
     -------
-    T : ndarray
-        A numpy array where each value is a value of the envelope for the PCM samples.
+    E : ndarray
+        A numpy array where each value is a value of the envelope 
+        for the PCM samples.
         If sonic_vector is supplied,
-        T is the sonic vector with the tremolo applied to it.
+        ai is the sonic vector with the envelope applied to it.
 
     See Also
     --------
-    T : an oscillation of loudness.
-    AD : an ADSR envelope.
-    F : fade in and out.
+    L_ : An envelope with an arbitrary number of transitions.
+    F : Fade in and out.
+    AD : An ADSR envelope.
+    T : An oscillation of loudness.
 
     Examples
     --------
@@ -461,14 +639,14 @@ def L(d=2, dev=10, alpha=1, to=True, method="exp", nsamples=0, sonic_vector=0, f
     .. [1] Fabbri, Renato, et al. "Musical elements in the discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
-    if type(sonic_vector) == n.ndarray:
+    if type(sonic_vector) in (n.ndarray, list):
         N = len(sonic_vector)
     elif nsamples:
         N = nsamples
     else:
         N = int(fs*d)
-    N_ = N-1
     samples = n.arange(N)
+    N_ = N-1
     if method == "linear":
         if to:
             a0 = 1
@@ -476,7 +654,7 @@ def L(d=2, dev=10, alpha=1, to=True, method="exp", nsamples=0, sonic_vector=0, f
         else:
             a0 = dev
             al = 1
-        ai = a0 + (al - a0)*samples/N_
+        E = a0 + (al - a0)*samples/N_
     if method == "exp":
         if to:
             if alpha != 1:
@@ -488,14 +666,15 @@ def L(d=2, dev=10, alpha=1, to=True, method="exp", nsamples=0, sonic_vector=0, f
                 samples_ = ( (N_-samples)/N_)**alpha
             else:
                 samples_ = ( (N_-samples)/N_)
-        ai = 10**(samples_*dev/20)
-    if type(sonic_vector) == n.ndarray:
-        return ai*sonic_vector
+        E = 10**(samples_*dev/20)
+    if type(sonic_vector) in (n.ndarray, list):
+        return E*sonic_vector
     else:
-        return ai
+        return E
         
 
-def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_vector=0, fs=44100):
+def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1,
+        nsamples=0, sonic_vector=0, fs=44100):
     """
     A fade in or out.
 
@@ -509,24 +688,25 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_ve
     out : boolean
         If True, the fade is a fade out, else it is a fade in.
     method : string
-        "exp" for exponential transitions of amplitude (linear loudness).
-        "linear" for linear transitions of amplitude.
+        "exp" for an exponential transition of amplitude (linear loudness).
+        "linear" for a linear transition of amplitude.
     dB : scalar
-        The decibels from which to use the linear transition to reach zero.
-        Not used if method="linear"
+        The decibels from which to reach before using
+        the linear transition to reach zero.
+        Not used if method="linear".
     alpha : scalar
         An index to make the exponential fade slower or faster [1].
         Ignored it transitions="linear". 
     perc : scalar
         The percentage of the fade that is linear to assure it reaches zero.
         Has no effect if method="linear".
-    nsamples : scalar
+    nsamples : integer
         The number of samples of the fade. If supplied, d is ignored.
     sonic_vector : array_like
         Samples for the fade to be applied to.
         If supplied, d and nsamples are ignored.
-    fs : scalar
-        The sample rate. Only used if nsamples and sonic_array are not supplied.
+    fs : integer
+        The sample rate. Only used if nsamples and sonic_vector are not supplied.
 
     Returns
     -------
@@ -536,9 +716,10 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_ve
 
     See Also
     --------
-    T : an oscillation of loudness.
-    AD : an ADSR envelope.
-    L : a transition of loudness.
+    AD : An ADSR envelope.
+    L : A transition of loudness.
+    L_ : An envelope with an arbitrary number or loudness transitions.
+    T : An oscillation of loudness.
 
     Examples
     --------
@@ -557,7 +738,7 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_ve
     .. [1] Fabbri, Renato, et al. "Musical elements in the discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
-    if type(sonic_vector) == n.ndarray:
+    if type(sonic_vector) in (n.ndarray, list):
         N = len(sonic_vector)
     elif nsamples:
         N = nsamples
@@ -585,7 +766,7 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_ve
             else:
                 ai0 = []
             ai = n.hstack((ai0, ai1))
-    if type(sonic_vector) == n.ndarray:
+    if type(sonic_vector) in (n.ndarray, list):
         return ai*sonic_vector
     else:
         return ai
@@ -593,7 +774,7 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1, nsamples=0, sonic_ve
 
 def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
     """
-    A note with a pitch transition, a glissando.
+    A note with a pitch transition: a glissando.
 
     Parameters
     ----------
@@ -602,16 +783,16 @@ def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
     f2 : scalar
         The final frequency.
     d : scalar
-        The duration of the sound.
-    nsamples : scalar
-        The number of samples of the sound.
-        If supplied, d is not used.
+        The duration of the sound in seconds.
     alpha : scalar
-        An index to begin the transitions faster or slower. 
+        An index to begin the transition faster or slower. 
         If alpha != 1, the transition is not of linear pitch.
     tab : array_like
         The table with the waveform to synthesize the sound.
-    fs : scalar
+    nsamples : integer
+        The number of samples of the sound.
+        If supplied, d is not used.
+    fs : integer
         The sample rate.
 
     Returns
@@ -621,13 +802,20 @@ def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
 
     See Also
     --------
-    N : a basic musical note without vibrato.
-    V : a musical note with an oscillation of pitch.
-    T : a tremolo, an oscillation of loudness.
-    F : fade in and out.
-    L : a transition of loudness.
+    N : A basic musical note without vibrato or pitch transition.
+    V : A musical note with an oscillation of pitch.
+    T : A tremolo, an oscillation of loudness.
+    L : A transition of loudness.
+    F : Fade in or out.
+
+    Examples
+    --------
+    >>> W(P())  # writes file with a glissando
+    >>> s = H( [P(i, j) for i, j in zip([220, 440, 4000], [440, 220, 220])] )
+    >>> W(s)  # writes a file with glissandi
 
     """
+    tab = n.array(tab)
     if nsamples:
         Lambda = nsamples
     else:
@@ -643,7 +831,8 @@ def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
     return s
 
 
-def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1, alphav=1, tab=S, tabv=S, nsamples=0, fs=44100):
+def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1,
+        alphav=1, tab=S, tabv=S, nsamples=0, fs=44100):
     """
     A note with a pitch transition (a glissando) and a vibrato.
 
@@ -654,26 +843,24 @@ def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1, alphav=1, tab=S, tabv=S, nsampl
     f2 : scalar
         The final frequency.
     d : scalar
-        The duration of the sound.
+        The duration of the sound in seconds.
     fv : scalar
         The frequency of the vibrato oscillations in Hertz.
     nu : scalar
-        The maximum deviation of pitch in the vibrato in semitones.
-    tab : array_like
-        The table with the waveform to synthesize the sound.
-    tabv : array_like
-        The table with the waveform for the vibrato oscillatory pattern.
+        The maximum deviation of pitch of the vibrato in semitones.
     alpha : scalar
         An index to begin the transitions faster or slower. 
         If alpha != 1, the transition is not of linear pitch.
     alphav : scalar
         An index to distort the pitch deviation of the vibrato. 
-    nsamples : scalar
-        The number of samples of the sound.
-        If supplied, d is not used.
     tab : array_like
         The table with the waveform to synthesize the sound.
-    fs : scalar
+    tabv : array_like
+        The table with the waveform for the vibrato oscillatory pattern.
+    nsamples : integer
+        The number of samples of the sound.
+        If supplied, d is not used.
+    fs : integer
         The sample rate.
 
     Returns
@@ -683,13 +870,22 @@ def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1, alphav=1, tab=S, tabv=S, nsampl
 
     See Also
     --------
-    N : a basic musical note without vibrato.
-    V : a musical note with an oscillation of pitch.
-    T : a tremolo, an oscillation of loudness.
-    F : fade in and out.
-    L : a transition of loudness.
+    P : A glissando.
+    V : A musical note with an oscillation of pitch.
+    N : A basic musical note without vibrato.
+    T : A tremolo, an oscillation of loudness.
+    F : Fade in and out.
+    L : A transition of loudness.
+
+    Examples
+    --------
+    >>> W(PV())  # writes file with a glissando and vibrato
+    >>> s = H( [AD(PV(i, j)) for i, j in zip([220, 440, 4000], [440, 220, 220])] )
+    >>> W(s)  # writes a file with glissandi and vibratos
 
     """
+    tab = n.array(tab)
+    tabv = n.array(tabv)
     if nsamples:
         Lambda = nsamples
     else:
@@ -697,7 +893,6 @@ def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1, alphav=1, tab=S, tabv=S, nsampl
     samples = n.arange(Lambda)
 
     lv = len(tabv)
-
     Gammav = (samples*fv*lv/fs).astype(n.int)  # LUT indexes
     # values of the oscillatory pattern at each sample
     Tv = tabv[ Gammav % lv ] 
@@ -712,7 +907,8 @@ def PV(f1=220, f2=440, d=2, fv=4, nu=2, alpha=1, alphav=1, tab=S, tabv=S, nsampl
     return s
 
 
-def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alphav1=1, alphav2=1, tab=Tr, tabv1=S, tabv2=S, nsamples=0, fs=44100):
+def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=4, alphav1=1,
+        alphav2=1, tab=Tr, tabv1=S, tabv2=S, nsamples=0, fs=44100):
     """
     A note with a vibrato that also has a secondary oscillatory pattern.
 
@@ -721,18 +917,16 @@ def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alphav1=1, alphav2=1, tab=Tr, ta
     f : scalar
         The frequency of the note.
     d : scalar
-        The duration of the sound.
+        The duration of the sound in seconds.
     fv1 : scalar
         The frequency of the vibrato.
     fv2 : scalar
-        The secondary of the vibrato.
+        The frequency of the secondary pattern of the vibrato.
     nu1 : scalar
         The maximum deviation of pitch in the vibrato in semitones.
-    nu1 : scalar
+    nu2 : scalar
         The maximum deviation in semitones of pitch in the
         secondary pattern of the vibrato.
-    tab : array_like
-        The table with the waveform to synthesize the sound.
     alphav1 : scalar
         An index to distort the pitch deviation of the vibrato. 
     alphav2 : scalar
@@ -758,13 +952,24 @@ def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alphav1=1, alphav2=1, tab=Tr, ta
 
     See Also
     --------
-    N : a basic musical note without vibrato.
-    V : a musical note with an oscillation of pitch.
-    T : a tremolo, an oscillation of loudness.
-    F : fade in and out.
-    L : a transition of loudness.
+    PV : A note with a glissando and a vibrato.
+    PVV : A note with a glissando and a vibrato with two oscillatory patterns.
+    N : A basic musical note without vibrato.
+    V : A musical note with an oscillation of pitch.
+    T : A tremolo, an oscillation of loudness.
+    F : Fade in and out.
+    L : A transition of loudness.
+
+    Examples
+    --------
+    >>> W(VV())  # writes file with a two simultaneous vibratos
+    >>> s = H( [AD(VV(fv1=i, fv2=j)) for i, j in zip([2, 6, 4], [8, 10, 15])] )
+    >>> W(s)  # writes a file with two vibratos
 
     """
+    tab = n.array(tab)
+    tabv1 = n.array(tabv1)
+    tabv2 = n.array(tabv2)
     if nsamples:
         Lambda = nsamples
     else:
@@ -791,27 +996,31 @@ def VV(f=220, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alphav1=1, alphav2=1, tab=Tr, ta
     return s
 
 
-def PVV(f1=220, f2=440, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alpha=1, alphav1=1, alphav2=1, tab=Tr, tabv1=S, tabv2=S, nsamples=0, fs=44100):
+def PVV(f1=220, f2=440, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alpha=1,
+        alphav1=1, alphav2=1, tab=Tr, tabv1=S, tabv2=S, nsamples=0, fs=44100):
     """
-    A note with a vibrato that also has a secondary oscillatory pattern.
+    A note with a glissando and a vibrato that also has a secondary oscillatory pattern.
 
     Parameters
     ----------
-    f : scalar
-        The frequency of the note.
+    f1 : scalar
+        The starting frequency.
+    f2 : scalar
+        The final frequency.
     d : scalar
-        The duration of the sound.
+        The duration of the sound in seconds.
     fv1 : scalar
         The frequency of the vibrato.
     fv2 : scalar
-        The secondary of the vibrato.
+        The frequency of the secondary pattern of the vibrato.
     nu1 : scalar
         The maximum deviation of pitch in the vibrato in semitones.
     nu1 : scalar
         The maximum deviation in semitones of pitch in the
         secondary pattern of the vibrato.
-    tab : array_like
-        The table with the waveform to synthesize the sound.
+    alpha : scalar
+        An index to begin the transitions faster or slower. 
+        If alpha != 1, the transition is not of linear pitch.
     alphav1 : scalar
         An index to distort the pitch deviation of the vibrato. 
     alphav2 : scalar
@@ -837,13 +1046,25 @@ def PVV(f1=220, f2=440, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alpha=1, alphav1=1, al
 
     See Also
     --------
-    N : a basic musical note without vibrato.
+    PV : A note with a glissando and a vibrato.
+    VV : A note with a vibrato with two oscillatory patterns.
+    PV_ : A note with arbitrary pitch transitions and vibratos.
     V : a musical note with an oscillation of pitch.
+    N : a basic musical note without vibrato.
     T : a tremolo, an oscillation of loudness.
-    F : fade in and out.
+    F : fade in or out.
     L : a transition of loudness.
 
+    Examples
+    --------
+    >>> W(PVV())  # writes file with a two simultaneous vibratos and a glissando
+    >>> s = H( [AD(PVV(fv2=i, nu1=j)) for i, j in zip([330, 440, 100], [8, 2, 15])] )
+    >>> W(s)  # writes a file with two vibratos and a glissando
+
     """
+    tab = n.array(tab)
+    tabv1 = n.array(tabv1)
+    tabv2 = n.array(tabv2)
     if nsamples:
         Lambda = nsamples
     else:
@@ -869,34 +1090,32 @@ def PVV(f1=220, f2=440, d=2, fv1=2, fv2=6, nu1=2, nu2=.5, alpha=1, alphav1=1, al
     s = tab[ Gamma % l ]
     return s
 
-# def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]], fv=[[2,6,1], [.5,15,2,6,3]], nu=[[2,1, 5], [4,3,7,10,3]], alpha=[[1, 1] , [1, 1, 1], [1, 1, 1, 1, 1]], tab=[[Tr,Tr], [S,Tr,S], [S,S,S,S,S]], nsamples=0, fs=44100):
-# def PV_(f=[220,440,440,220,440,220], d=[[2,9,4,.5,4],[5],[7,4]], fv=[[6],[2,11]], nu=[[2],[3,3]], alpha=[[1,1,1,1,.3],[1],[1,1]], tab=[[Tr,Tr,Tr,Tr,Tr],[S],[S, S]], nsamples=0, fs=44100):
-# def PV_(f=[220,440,220,440,220,440,220], d=[[2,2,2,2,2]], fv=[], nu=[], alpha=[[1,2.5,.2,10,.1]], tab=[[Tr,Tr,Tr,Tr,Tr]], nsamples=0, fs=44100):
-# def PV_(f=[220,440,220,440,220,440,220], d=[[2,.1,2,.1,2,.1]], fv=[], nu=[], alpha=[[1,1,5,1,.1,1]], tab=[[Tr,Tr,Tr,Tr,Tr]], nsamples=0, fs=44100):
-# def PV_(f=[220,440,220,440,220,440,220], d=[[2,.1,2,.1,2,.1]], fv=[], nu=[], alpha=[[1,1,5,1,.2,1]], tab=[[S]*6], nsamples=0, fs=44100):
-def PV_(f=[440,220,440,220,440,220, 440], d=[[2,.1,2,.1,2,.1]], fv=[], nu=[], alpha=[[1,1,5,1,.2,1]], tab=[[Tr]*6], nsamples=0, fs=44100):
-# def PV_(f=[220,440], d=[[2]], fv=[], nu=[], alpha=[[1]], tab=[[Tr]], nsamples=0, fs=44100):
+def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]],
+        fv=[[2,6,1], [.5,15,2,6,3]], nu=[[2,1, 5], [4,3,7,10,3]],
+        alpha=[[1, 1] , [1, 1, 1], [1, 1, 1, 1, 1]],
+        tab=[[Tr,Tr], [S,Tr,S], [S,S,S,S,S]], nsamples=0, fs=44100):
     """
-    A note with an arbitrary sequence of pitch transition and meta-vibrato.
+    A note with an arbitrary sequence of pitch transition and a meta-vibrato.
 
     A meta-vibrato consists in multiple vibratos.
+    The sequence of pitch transitions is a glissandi.
 
     Parameters
     ----------
-    f : array_like
-        The frequencies of the note at each point.
-    d : array_like
-        The durations transisions and then of the vibratos.
-    fv :  array_like
+    f : list of lists of scalars
+        The frequencies of the note at each end of the transitions.
+    d : list of lists of scalars
+        The durations of the transitions and then of the vibratos.
+    fv :  list of lists of scalars
         The frequencies of each vibrato.
-    nu : array_like
+    nu : list of lists of scalars
         The maximum deviation of pitch in the vibratos in semitones.
-    tab : array_like
+    alpha : list of lists of scalars
+        Indexes to distort the pitch deviations of the transitions
+        and the vibratos.
+    tab : list of lists of array_likes
         The tables with the waveforms to synthesize the sound
         and for the oscillatory patterns of the vibratos.
-    alpha : scalar
-        An index to distort the pitch deviations of the transitions
-        and the vibratos
     nsamples : scalar
         The number of samples of the sound.
         If supplied, d is not used.
@@ -910,11 +1129,18 @@ def PV_(f=[440,220,440,220,440,220, 440], d=[[2,.1,2,.1,2,.1]], fv=[], nu=[], al
 
     See Also
     --------
+    PV : A note with a glissando and a vibrato.
+    PVV : A note with a glissando and two vibratos.
+    VV : A note with a vibrato with two oscillatory patterns.
     N : a basic musical note without vibrato.
     V : a musical note with an oscillation of pitch.
     T : a tremolo, an oscillation of loudness.
     F : fade in and out.
     L : a transition of loudness.
+
+    Examples
+    --------
+    >>> W(PV_())  # writes file with glissandi and vibratos
 
     """
     # transition contributions
@@ -971,4 +1197,243 @@ def PV_(f=[440,220,440,220,440,220, 440], d=[[2,.1,2,.1,2,.1]], fv=[], nu=[], al
     s_.append(s)
     s = n.hstack(s_)
     return s
+
+
+def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method="exp",
+        nsamples=0, sonic_vector=0, fs=44100):
+    """
+    An envelope with linear or exponential transitions of amplitude.
+
+    See L() for more details.
+
+    Parameters
+    ----------
+    d : iterable
+        The durations of the transitions in seconds.
+    dev : iterable
+        The deviation of the transitions.
+        If method="exp" the deviation is in decibels.
+        If method="linear" the deviation is an amplitude proportion.
+    alpha : iterable
+        Indexes to make the transitions slower or faster [1].
+        Ignored it method[1]="linear".
+    method : iterable
+        Methods for each transition.
+        "exp" for exponential transitions of amplitude (linear loudness).
+        "linear" for linear transitions of amplitude.
+    nsamples : interable
+        The number of samples of each transition.
+        If supplied, d is ignored.
+    sonic_vector : array_like
+        Samples for the envelope to be applied to.
+        If supplied, d or nsamples is used, the final
+        sound has the greatest duration of sonic_array
+        and d (or nsamples) and missing samples are
+        replaced with silence (if sonic_vector is shorter)
+        or with a constant value (if d or nsamples yield shorter
+        sequences).
+    fs : integer
+        The sample rate.
+        Only used if nsamples and sonic_vector are not supplied.
+
+    Returns
+    -------
+    E : ndarray
+        A numpy array where each value is a value of the envelope
+        for the PCM samples.
+        If sonic_vector is supplied,
+        E is the sonic vector with the envelope applied to it.
+
+    See Also
+    --------
+    L : An envelope for a loudness transition.
+    F : Fade in and out.
+    AD : An ADSR envelope.
+    T : An oscillation of loudness.
+
+    Examples
+    --------
+    >>> W(V(d=8)*L_())  # writes a WAV file with a loudness transitions
+
+    Notes
+    -----
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    if type(sonic_vector) in (n.ndarray, list):
+        N = len(sonic_vector)
+    elif nsamples:
+        N = nsamples
+    else:
+        N = int(fs*d)
+    samples = n.arange(N)
+    s = []
+    fact = 1
+    if nsamples:
+        for i, ns in enumerate(nsamples):
+            s_ = L(nsamples=ns, dev[i], alpha[i],
+                    method=method[i])*fact
+            s.append(s_)
+            fact = s_[-1]
+    else:
+        for i, dur in enumerate(d):
+            s_ = L(dur, dev[i], alpha[i],
+                    method=method[i], fs=fs)*fact
+            s.append(s_)
+            fact = s_[-1]
+    E = n.hstack(s)
+    if type(sonic_vector) in (n.ndarray, list):
+        if len(E) < len(sonic_vector):
+            s = n.hstack((E, n.ones(len(sonic_vector)-len(E))*E[-1]))
+        if len(E) > len(sonic_vector):
+            sonic_vector = n.hstack((sonic_vector, n.ones(len(E)-len(sonic_vector))*E[-1]))
+        return sonic_vector*E
+    else:
+        return E
+
+
+def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
+        dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9],
+            taba=[[S,S,S],[Tr,Tr,Tr,S]],
+        nsamples=0, sonic_vector=0, fs=44100):
+    for i in range(taba):
+        for j in range(i):
+            taba[i][j] = n.array(taba[i][j])
+    T_ = []
+    if nsamples:
+        for i, ns in enumerate(nsamples):
+            T_.append([])
+            for j, ns_ in enumerate(ns):
+                s = T(fa=fa[i][j], dB[i][j], alpha[i][j],
+                    taba=taba[i][j], nsamples=ns_)
+                T_[-1].append(s)
+    else:
+        for i, durs in enumerate(d):
+            T_.append([])
+            for j, dur in enumerate(durs):
+                s = T(dur, fa=fa[i][j], dB[i][j], alpha[i][j],
+                    taba=taba[i][j])
+                T_[-1].append(s)
+    amax = 0
+    if type(sonic_vector) in (n.ndarray, list):
+        amax = len(sonic_vector)
+    for i in range(len(T_)):
+        T_[i] = n.hstack(T_[i])
+        amax = max(amax, len(T_[i]))
+    for i in range(len(T_)):
+        if len(T_[i]) < amax):
+            T_[i] = n.hstack((T_[i], n.ones(amax-len(T_[i]))*T_[i][-1]))
+    if type(sonic_vector) in (n.ndarray, list):
+        if len(sonic_vector) < amax:
+            sonic_vector = n.hstack(( sonic_vector, n.zeros(amax-len(sonic_vector)) ))
+        T_.append(sonic_vector)
+    s = n.prod(T_, axis=0)
+    return s
+
+
+def mix(sonic_vectors, end=False, offset=0, fs=44100):
+    """
+    Mix sonic vectors.
+    
+    The operation consists in summing sample by sample [1].
+    This function helps when the sonic_vectors are not
+    of the same size.
+    
+    Parameters
+    ----------
+    sonic_vectors : list of sonic_arrays
+        The sonic vectors to be summed.
+    end : boolean
+        If True, sync the final samples.
+        If False (default) sync the initial samples.
+    offset : list of scalars
+        A list of the offsets for each sonic vectors
+        in seconds.
+    fs : integer
+        The sample rate. Only used if offset is supplied.
+
+    Returns
+    -------
+    S : ndarray
+        A numpy array where each value is a PCM sample of
+        the resulting sound.
+
+    Examples
+    --------
+    >>> W(mix(V(), N())  # writes a WAV file with nodes
+
+    Notes
+    -----
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    if offset:
+        for i, o in enumerate(offset):
+            sonic_vectors[i] = n.hstack(( n.zeros(offset*fs), sonic_vectors[i] ))
+            
+    amax = 0
+    for s in sonic_vectors:
+        amax = max(amax, len(s))
+    for i in range(len(sonic_vectors)):
+        if len(sonic_vectors[i]) < amax:
+            if end:
+                sonic_vectors[i] = n.hstack(( n.zeros(amax-len(sonic_vectors[i])), sonic_vectors[i] ))
+            else:
+                sonic_vectors[i] = n.hstack(( sonic_vectors[i], n.zeros(amax-len(sonic_vectors[i])) ))
+    s = n.sum(sonic_vectors, axis=0)
+    return s
+
+
+def trill(f=[220,330,440], ft=7, d=5, fs=44100):
+    """Make a trill.
+
+    This is just a simple function for exemplifying
+    the synthesis of trills.
+    The user is encouraged to make its own functions
+    for trills and set e.g. ADSR envelopes, tremolos
+    and vibratos as intended.
+
+    Parameters
+    ----------
+    f : iterable of scalars
+        Frequencies to the iterated.
+    ft : scalar
+        The number of notes per second.
+    d : scalar
+        The maximum duration of the trill in seconds.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        The PCM samples of the resulting sound.
+
+    Examples
+    --------
+    >>> W(trill)
+    """
+    nsamples = 44100/ft
+    pointer = 0
+    i = 0
+    s = []
+    while pointer+nsamples < d*44100:
+        ns = int(nsamples*(i+1) - pointer)
+        note = N(f[i%len(f)], nsamples=ns,
+                tab=Tr, fs=fs)
+        s.append(AD(note))
+        pointer += ns
+        i += 1
+    trill = n.hstack(s)
+    return trill
+
 

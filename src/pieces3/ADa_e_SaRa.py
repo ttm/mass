@@ -1,7 +1,7 @@
 import numpy as n
 # from scipy.io import wavfile as w
 import imp
-io=imp.load_source("io","../aux/io.py")
+io=imp.load_source("fun","../aux/fun.py")
 def W(fn, fs, sa): io.__s(sa, fn, int(fs))
 
 H=n.hstack
