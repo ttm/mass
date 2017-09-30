@@ -2,15 +2,23 @@ import numpy as n
 from scipy.io import wavfile as w
 import doctest
 
-__doc__ = """This file holds minimal implementations
+__doc__ = """
+This file holds minimal implementations
 to avoid repetitions in the
 musical pieces of the MASS framework:
     https://github.com/ttm/mass
 
-See the music Python Package 
-(in the music/ directory of the same repository)
-for a further documented implementation
-with many useful routines."""
+Sounds are represented as arrays of
+PCM samples.
+Stereo files are represented
+by arrays of shape (2, nsamples).
+
+See the music Python Package:
+    https://github.com/ttm/music
+for a usage of these implementations
+within a package and derived routines.
+
+"""
 
 ### In this file are functions (only) for:
 # IO
@@ -44,16 +52,12 @@ def __n(sonic_vector, remove_bias=True):
     if n.all(t==0):
         return t
     else:
-        s = ( (t-t.min()) / (t.max() -t.min()) )*2. -1.
         if remove_bias:
-            f = n.fft.fft(s)
-            f[0] = 0  # removing bias (or offset)
-            s = n.fft.ifft(f).real
-            fact = max(max(s), -min(s))
-            if fact > 1:
-                # bias removal gave an offset which
-                # made the signal to extrapolate [-1,1]
-                s = s/fact
+            s = t - t.mean()
+            fact = max(s.max(), -s.min())
+            s = s/fact
+        else:
+            s = ( (t-t.min()) / (t.max() -t.min()) )*2. -1.
         return s
 
 
@@ -84,36 +88,31 @@ def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
     if n.all(t==0):
         return t
     else:
-        if not normalize_sep:
-            amb1 = t[0].max() - t[0].min()
-            amb2 = t[1].max() - t[1].min()
-            amb = max(amb1, amb2)
-            t[0] = (t[0] - t[0].min())/amb
-            t[1] = (t[1] - t[1].min())/amb
-            s = t*2 - 1
-        else:
-            amb1 = t[0].max() - t[0].min()
-            amb2 = t[1].max() - t[1].min()
-            t[0] = (t[0] - t[0].min())/amb1
-            t[1] = (t[1] - t[1].min())/amb2
-            s = t*2 - 1
         if remove_bias:
-            f = n.fft.fft(s[0])
-            f[0] = 0  # removing bias (or offset)
-            s[0] = n.fft.ifft(f).real
-            fact = max(max(s[0]), -min(s[0]))
-            if fact > 1:
-                # bias removal gave an offset which
-                # made the signal to extrapolate [-1,1]
+            s = t
+            s[0] = s[0] - s[0].mean()
+            s[1] = s[1] - s[1].mean()
+            if normalize_sep:
+                fact = max(s[0].max(), -s[0].min())
                 s[0] = s[0]/fact
-            f = n.fft.fft(s[1])
-            f[0] = 0  # removing bias (or offset)
-            s[1] = n.fft.ifft(f).real
-            fact = max(max(s[1]), -min(s[1]))
-            if fact > 1:
-                # bias removal gave an offset which
-                # made the signal to extrapolate [-1,1]
+                fact = max(s[1].max(), -s[1].min())
                 s[1] = s[1]/fact
+            else:
+                fact = max(s.max(), -s.min())
+                s = s/fact
+        else:
+            if normalize_sep:
+                amb1 = t[0].max() - t[0].min()
+                amb2 = t[1].max() - t[1].min()
+                t[0] = (t[0] - t[0].min())/amb1
+                t[1] = (t[1] - t[1].min())/amb2
+                s = t*2 - 1
+            else:
+                amb1 = t.max() - t.min()
+                amb = max(amb1, amb2)
+                t = (t - t.min())/amb
+                t = (t - t.min())/amb
+                s = t*2 - 1
         return s
 
 
@@ -153,7 +152,6 @@ def W(sonic_vector=monos, filename="asound.wav", fs=44100,
     
     """
     s = __n(sonic_vector, remove_bias)*(2**(bit_depth-1)-1)
-    print(max(s), min(s))
     if fades:
         s = AD(A=fades[0], S=0, R=fades[1], sonic_vector=s)
     if bit_depth not in (8, 16, 32, 64):
@@ -297,6 +295,444 @@ def N(f=220, d=2, tab=Tr, nsamples=0, fs=44100):
     Gamma = (samples*f*l/fs).astype(n.int)
     s = tab[ Gamma % l ]
     return s
+
+
+def N_(f=220, d=2, phase=0, tab=Tr, nsamples=0, fs=44100):
+    """
+    Synthesize a basic musical note with a phase.
+
+    Is useful in more complex synthesis routines.
+    For synthesizing a musical note directly,
+    you probably want to use N() and disconsider
+    the phase.
+
+    Parameters
+    ----------
+    f : scalar
+        The frequency of the note in Hertz.
+    d : scalar
+        The duration of the note in seconds.
+    phase : scalar
+        The phase of the wave in radians.
+    tab : array_like
+        The table with the waveform to synthesize the sound.
+    nsamples : integer
+        The number of samples in the sound.
+        If not 0, d is ignored.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        A numpy array where each value is a PCM sample of the note.
+
+    See Also
+    --------
+    N : A basic note.
+    V : A note with vibrato.
+    T : A tremolo envelope.
+
+    Examples
+    --------
+    >>> W(N_())  # writes a WAV file of a note
+    >>> s = H( [N_(i, j) for i, j in zip([200, 500, 100], [2, 1, 2])] )
+    >>> s2 = N_(440, 1.5, tab=D)
+
+    Notes
+    -----
+    In the MASS framework implementation,
+    for a sound with a vibrato (or FM) to be synthesized using LUT,
+    the vibrato pattern is considered when performing the lookup calculations.
+
+    The tremolo and AM patterns are implemented as separate amplitude envelopes.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    tab = n.array(tab)
+    if not nsamples:
+        nsamples = int(d*fs)
+    samples = n.arange(nsamples)
+    l = len(tab)
+    i0 = phase*l/(2*n.pi)
+    Gamma = (i0 + samples*f*l/fs).astype(n.int)
+    s = tab[ Gamma % l ]
+    return s
+
+def loc(sonic_vector=N(), theta=0, dist=0, x=.1, y=.01, zeta=0.215, temp=20, fs=44100):
+    """
+    Make a mono sound stereo and localize it by a very naive method.
+
+    See bellow for implementation notes.
+
+    Parameters
+    ----------
+    sonic_vector : array_like
+        An one dimensional with the PCM samples of the sound.
+    x : scalar
+        The lateral component of the position in meters.
+    y : scalar
+        The frontal component of the position in meters.
+    theta : scalar
+        The azimuthal angle of the position in degrees.
+        If theta is supplied, x and y are ignored
+        and dist must also be supplied
+        for the sound localization to have effect.
+    dist : scalar
+        The distance of the source from the listener
+        in meters.
+    zeta : scalar
+        The distance between the ears in meters.
+    temp : scalar
+        The temperature in Celsius used for calculating
+        the speed of sound.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        A (2, nsamples) shaped array with the PCM
+        samples of the stereo sound.
+
+    See Also
+    --------
+    R : A reverberator.
+    loc_ : a less naive implementation of localization
+    by ITD and IID.
+    hrtf : performs localization by means of a
+    Head Related Transfer Function.
+
+    Examples
+    --------
+    >>> WS(loc())  # write a soundfile that is localized
+    >>> WS(H([loc(V(d=1), x=i, y=j) for i, j in
+    ...   zip([.1,.7,n.pi-.1,n.pi-.7], [.1,.1,.1,.1])]))
+
+    Notes
+    -----
+    Uses the most naive ITD and IID calculations as described in [1].
+    A less naive method is implemented in loc_().
+    Nonetheless, if dist is small enough (e.g. <.3),
+    the perception of theta occurs and might be used.
+    The advantages of this method are:
+      - It is fast.
+      - It is simple.
+      - It is true to sound propagation phenomenon
+      (although it does not consider the human body
+      beyond the localization of the ears).
+      - It can be used easily for tweaks
+      (such as for a moving source).
+
+    When az = tan^{-1}(y/x) lies in the 'cone of confusion',
+    many values of x and y have the same ITD and IID [1].
+    Furthermore, lateral sources have the low frequencies
+    diffracted and reach the opposite ear with a delay
+    of ~0.7s [1].
+    The height of a source and if it is in front or
+    behind a listener are cues given by te HRTF [1].
+    These issues are not taken into account in this
+    function.
+
+    The value of zeta is ~0.215 for adult humans [1].
+
+    This implementation assumes that the speed
+    of sound (in air) is s = 331.3+0.606*temp.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    if theta:
+        theta = 2*n.pi*theta/360
+        x = n.cos(theta)*dist
+        y = n.sin(theta)*dist
+    speed = 331.3 + .606*temp
+
+    dr = n.sqrt((x-zeta/2)**2+y**2)  # distance from right ear
+    dl = n.sqrt((x+zeta/2)**2+y**2)  # distance from left ear
+
+    IID_a = dr/dl  # proportion of amplitudes from left to right ear
+    ITD = (dl-dr)/speed  # seconds
+    Lambda_ITD = int(ITD*fs)
+
+    if x > 0:
+        TL = n.hstack((n.zeros(Lambda_ITD), IID_a*sonic_vector))
+        TR = n.hstack((sonic_vector, n.zeros(Lambda_ITD)))
+    else:
+        TL = n.hstack((sonic_vector, n.zeros(-Lambda_ITD)))
+        TR = n.hstack((n.zeros(-Lambda_ITD), sonic_vector*(1/IID_a)))
+    s = n.vstack((TL, TR))
+    print(x, y, IID_a, Lambda_ITD, speed)
+    return s
+
+def loc2(sonic_vector=N(), theta1=90, theta2=0, dist1=.1,
+        dist2=.1, zeta=0.215, temp=20, fs=44100):
+    """
+    A linear variation of localization
+
+    """
+    theta1 = 2*n.pi*theta1/360
+    x1 = n.cos(theta1)*dist
+    y1 = n.sin(theta1)*dist
+    theta2 = 2*n.pi*theta2/360
+    x2 = n.cos(theta2)*dist
+    y2 = n.sin(theta2)*dist
+    speed = 331.3 + .606*temp
+
+    Lambda = len(sonic_vector)
+    L_ = L-1
+    xpos = x1 + (x2 - x1)*n.arange(Lambda)/L_
+    ypos = y1 + (y2 - y1)*n.arange(Lambda)/L_
+    d = n.sqrt( (xpos-zeta/2)**2 + ypos**2 )
+    d2 = n.sqrt( (xpos+zeta/2)**2 + ypos**2 )
+    IID_a = d/d2
+    ITD = (d2-d)/speed
+    Lambda_ITD = int(ITD*fs)
+
+    if x1 > 0:
+        TL = n.zeros(Lambda_ITD)
+        TR = n.array([])
+    else:
+        TL = n.array([])
+        TR = n.zeros(-Lambda_ITD)
+    d_ = d[1:] - d[:-1]
+    d2_ = d2[1:] - d2[:-1]
+    d__ = n.cumsum(d_).astype(n.int)
+    d2__ = n.cumsum(d2_).astype(n.int)
+
+
+def loc_(sonic_vector=N(), theta=-70, x=.1, y=.01, zeta=0.215,
+        temp=20, method="ifft", fs=44100):
+    """
+    Make a mono sound stereo and localize it by experimental methods.
+
+    See bellow for implementation notes.
+    These implementations are not standard and are only
+    to illustrate the method of using ITD and IID
+    that are frequency dependent.
+
+
+    Parameters
+    ----------
+    sonic_vector : array_like
+        An one dimensional with the PCM samples of the sound.
+    x : scalar
+        The lateral component of the position in meters.
+    y : scalar
+        The frontal component of the position in meters.
+    theta : scalar
+        The azimuthal angle of the position in degrees.
+        If theta is supplied, x and y are ignored
+        and dist must also be supplied
+        for the sound localization to have effect.
+    dist : scalar
+        The distance of the source from the listener
+        in meters.
+    zeta : scalar
+        The distance between the ears in meters.
+    temp : scalar
+        The temperature in Celsius used for calculating
+        the speed of sound.
+    method : string
+        Set to "ifft" for a working method that changes the
+        fourier spectral coefficients.
+        Set to "brute" for using an implementation that
+        sinthesizes each sinusoid in the fourier spectrum
+        separately (currently not giving good results for
+        all sounds).
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        A (2, nsamples) shaped array with the PCM
+        samples of the stereo sound.
+
+    See Also
+    --------
+    R : A reverberator.
+    loc : a more naive and fast implementation of localization
+    by ITD and IID.
+    hrtf : performs localization by means of a
+    Head Related Transfer Function.
+
+    Examples
+    --------
+    >>> WS(loc_())  # write a soundfile that is localized
+    >>> WS(H([loc_(V(d=1), x=i, y=j) for i, j in
+    ...   zip([.1,.7,n.pi-.1,n.pi-.7], [.1,.1,.1,.1])]))
+
+    Notes
+    -----
+    Uses a less naive ITD and IID calculations as described in [1].
+
+    See loc() for further notes.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    if method not in ("ifft", "brute"):
+        print("The only methods implemented are ifft and brute")
+    if not theta:
+        theta_ = n.arctan2(-x, y)
+    else:
+        theta_ = 2*n.pi*theta/360
+        theta_ = n.arcsin(n.sin(theta_))  # sign of theta is used
+    speed = 331.3 + .606*temp
+
+    c = n.fft.fft(sonic_vector)
+    norms = n.abs(c)
+    angles = n.angle(c)
+
+    Lambda = len(sonic_vector)
+    max_coef = int(Lambda/2)
+    df = 2*fs/Lambda
+
+    # zero theta in right ahead and counter-clockwise is positive
+    # theta_ = 2*n.pi*theta/360
+    freqs = n.arange(max_coef)*df
+    # max_size = len(sonic_vector) + 300*zeta*n.sin(theta_)*fs
+    # s = n.zeros( (2, max_size) )
+    if method == "ifft":
+        normsl = n.copy(norms)
+        anglesl = n.copy(angles)
+        normsr = n.copy(norms)
+        anglesr = n.copy(angles)
+    else:
+        # limit the number of coeffs considered
+        s = []
+        energy = n.cumsum(norms[:max_coef]**2)
+        p = 0.01
+        cutoff = energy.max()*(1 - p)
+        ncoeffs = (energy < cutoff).sum()
+        maxfreq = ncoeffs*df
+        if maxfreq <= 4000:
+            foo = .3
+        else:
+            foo = .2
+        maxsize = len(sonic_vector) + fs*foo*n.sin(abs(theta_))/speed
+        s = n.zeros( (2, maxsize) )
+
+    if method == "ifft":
+        # ITD implies a phase change
+        # IID implies a change in the norm
+        for i in range(max_coef):
+            if i==0:
+                continue
+            f = freqs[i]
+            if f <= 4000:
+                ITD = .3*zeta*n.sin(theta_)/speed
+            else:
+                ITD = .2*zeta*n.sin(theta_)/speed
+            IID = 1 + ( (f/1000)**.8 )*n.sin(abs(theta_))
+            # not needed, coefs are duplicated afterwards:
+            # if i != Lambda/2:
+            #     IID *= 2
+            # IID > 0 : left ear has amplification
+            # ITD > 0 : right ear has a delay
+            # relate ITD to phase change (anglesl)
+            print(IID, theta_)
+            lamb = 1/f
+            if theta_ > 0:
+                change = ITD - (ITD//lamb)*lamb
+                change_ = (change/lamb)*2*n.pi
+                anglesr[i] += change_
+                normsl[i] *= IID
+            else:
+                ITD = -ITD
+                change = ITD - (ITD//lamb)*lamb
+                change_ = (change/lamb)*2*n.pi
+                anglesl[i] += change_
+                normsr[i] *= IID
+
+    elif method == "brute":
+        print("This can take a long time...")
+        for i in range(ncoeffs):
+            if i==0:
+                continue
+            f = freqs[i]
+            if f <= 4000:
+                ITD = .3*zeta*n.sin(theta_)/speed
+            else:
+                ITD = .2*zeta*n.sin(theta_)/speed
+            IID = 1 + ( (f/1000)**.8 )*n.sin(abs(theta_))
+            # IID > 0 : left ear has amplification
+            # ITD > 0 : right ear has a delay
+            ITD_l = abs(int(fs*ITD))
+            if i == Lambda/2:
+                amplitude = norms[i]/Lambda
+            else:
+                amplitude = 2*norms[i]/Lambda
+            sine = N_(f=f, nsamples=Lambda, tab=S,
+                    fs=fs, phase=angles[i])*amplitude
+
+            # Account for phase and energy
+            if theta_ > 0:
+                TL = sine*IID
+                TR = n.copy(sine)
+            else:
+                TL = n.copy(sine)
+                TR = sine*IID
+
+            if theta > 0:
+                TL = n.hstack(( TL, n.zeros(ITD_l) ))
+                TR = n.hstack(( n.zeros(ITD_l), TR ))
+            else:
+                TL = n.hstack(( n.zeros(ITD_l), TL ))
+                TR = n.hstack(( TR, n.zeros(ITD_l) ))
+
+            TL = n.hstack(( TL, n.zeros(maxsize - len(TL)) ))
+            TR = n.hstack(( TR, n.zeros(maxsize - len(TR)) ))
+            s_ = n.vstack(( TL, TR ))
+            s += s_
+            print(i, "/", Lambda)
+    if method == "ifft":
+        coefsl = normsl*n.e**(anglesl*1j)
+        coefsl[max_coef+1:] = n.real(coefsl[1:max_coef])[::-1] - 1j * \
+            n.imag(coefsl[1:max_coef])[::-1]
+        # print(n.fft.ifft(coefsl).imag.sum())
+        sl = n.fft.ifft(coefsl).real
+
+        coefsr = normsr*n.e**(anglesr*1j)
+        coefsr[max_coef+1:] = n.real(coefsr[1:max_coef])[::-1] - 1j * \
+            n.imag(coefsr[1:max_coef])[::-1]
+        # print(n.fft.ifft(coefsr).imag.sum())
+        sr = n.fft.ifft(coefsr).real
+        s = n.vstack(( sl, sr ))
+    # If in need to force energy to be preserved, try:
+    # energy1 = n.sum(sonic_vector**2)
+    # energy2 = n.sum(s**2)
+    # s = s*(energy1/energy2)**.5
+    return s
+
+
+
+
+
+# def rev(Delta=2, Delta1=0.15, 
+# 
+# def noises():
+# 
+# def IIR():
+# 
+# def FIR():
 
 
 def V(f=220, d=2, fv=4, nu=2, tab=Tr, tabv=S,
@@ -606,7 +1042,7 @@ def ADS(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
     s1 = AD(d=d, A=A, D=D, S=S, R=R, trans=trans, alpha=alpha,
         dB=dB, to_zero=to_zero, nsamples=nsamples, sonic_vector=sonic_vector1, fs=fs)
     s2 = AD(d=d, A=A, D=D, S=S, R=R, trans=trans, alpha=alpha,
-        dB=dB, to_zero=to_zero, nsamples=nsamples, sonic_vector=sonic_vector1, fs=fs)
+        dB=dB, to_zero=to_zero, nsamples=nsamples, sonic_vector=sonic_vector2, fs=fs)
     s = n.vstack(( s1, s2 ))
     return s
 
@@ -1533,5 +1969,6 @@ def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
     return trill
 
 
-if __name__ == "__main__":
-    doctest.testmod()
+test = False
+if __name__ == "__main__" and test:
+        doctest.testmod()

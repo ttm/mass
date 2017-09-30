@@ -223,7 +223,7 @@ for t_i in T[2:]:
 # See src/filters/ruidos.py for rendering Figure 19
 Lambda = 100000  # Use an even Lambda for compliance with the following snippets
 # Separation between frequencies of neighbor spectral coefficients:
-df = f_s/float(Lambda)
+df = 2*f_s/Lambda
 
 ### Eq. 49 White noise
 # uniform moduli of spectrum and random phase
@@ -408,7 +408,7 @@ T = Tr[Gamma % Lt]*A
 __s(T, "am.wav")
 
 
-############## Sec. 3.6 Usos musicais
+############## Sec. 3.6 Musical usages
 ### Eq. 72 Relations between characteristics
 # See the musical piece Tremolos, vibratos and the frequency
 # in src/pieces3/bonds.py TremolosVibratosEaFrequencia.py

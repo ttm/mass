@@ -169,11 +169,11 @@ y = 1.  # meters
 d = n.sqrt((x-zeta/2)**2+y**2)
 d2 = n.sqrt((x+zeta/2)**2+y**2)
 ### Eq. 25 Interaural Time Difference
-ITD = (d2-d)/343.2  # segundos
+ITD = (d2-d)/343.2  # seconds
 ### Eq. 26 Interaural Intensity Difference
 IID = 20*n.log10(d/d2)  # dBs
 
-### Eq. 27 DTI and DII application in a sample sequence (T)
+### Eq. 27 ITD and IID application in a sample sequence (T)
 Lambda_ITD = int(ITD*f_s)
 IID_a = d/d2
 T = 1-n.abs(2-(4./lambda_f)*(ii % lambda_f))  # triangular
@@ -181,13 +181,13 @@ T2 = n.hstack((n.zeros(Lambda_ITD), IID_a*T))
 T = n.hstack((T, n.zeros(Lambda_ITD)))
 
 som = n.vstack((T2, T)).T
-w.write('stereo.wav', f_s, som)
+fun.WS('stereo.wav', f_s, som)
 # mirrored
 som = n.vstack((T, T2)).T
-w.write('stereo2.wav', f_s, som)
+fun.WS('stereo2.wav', f_s, som)
 
 ### Eq. 28 Object angle
-theta = n.arctan(y/x)
+theta = n.arctan2(y, x)
 
 ### Reverberation is implemented in 3.py
 # because it makes use of knowledge of the next section

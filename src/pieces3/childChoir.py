@@ -8,7 +8,7 @@ f_s = 44100. # Hz, frequência de amostragem
 
 Lambda_tilde=Lt=1024.*16
 
-# Senoide
+# Sine
 foo=n.linspace(0,2*n.pi,Lt,endpoint=False)
 S_i=n.sin(foo) # um período da senóide com T amostras
 

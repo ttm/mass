@@ -23,3 +23,11 @@ chromatic scale to the harmonic series?
 * add script on images for transitions
 * review loudness transitions to verify if is according to exponential transitions.
 * find words logarith... to see if needs to be replaced by exponential
+* Make song on spatialization
+* Divide sound by max(max, min) in normalization
+* Two advantages of the ITD and IID described:
+  - It is true to the physical phenomena of sound propagation:
+    - Disconsiders HRTF.
+  - It is easy to model and make hacks (e.g. transitions)
+* Linear PCM
+* Is PCM audio representing the displacement or the pressure variation?
