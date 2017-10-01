@@ -233,7 +233,7 @@ foo = n.linspace(-1, 1, Lt/2, endpoint=False)
 Tr = n.hstack(  ( foo, foo[::-1] )   )
 
 # Sawtooth
-D = n.linspace(-1, 1, Lt)
+Sa = n.linspace(-1, 1, Lt)
 
 
 def N(f=220, d=2, tab=Tr, nsamples=0, fs=44100):
@@ -268,7 +268,7 @@ def N(f=220, d=2, tab=Tr, nsamples=0, fs=44100):
     --------
     >>> W(N())  # writes a WAV file of a note
     >>> s = H( [N(i, j) for i, j in zip([200, 500, 100], [2, 1, 2])] )
-    >>> s2 = N(440, 1.5, tab=D)
+    >>> s2 = N(440, 1.5, tab=Sa)
 
     Notes
     -----
@@ -337,7 +337,7 @@ def N_(f=220, d=2, phase=0, tab=Tr, nsamples=0, fs=44100):
     --------
     >>> W(N_())  # writes a WAV file of a note
     >>> s = H( [N_(i, j) for i, j in zip([200, 500, 100], [2, 1, 2])] )
-    >>> s2 = N_(440, 1.5, tab=D)
+    >>> s2 = N_(440, 1.5, tab=Sa)
 
     Notes
     -----
@@ -1009,7 +1009,7 @@ def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
     Lambda_D = int(D*fs*0.001)
     Lambda_R = int(R*fs*0.001)
 
-    perc = 100*to_zero/A
+    perc = to_zero/A
     A = F(out=0, method=trans, alpha=alpha, dB=dB, perc=perc, nsamples=Lambda_A)
 
     D = L(dev=S, method=trans, alpha=alpha, nsamples=Lambda_D)
@@ -1017,7 +1017,7 @@ def AD(d=2, A=20, D=20, S=-5, R=50, trans="exp", alpha=1,
     a_S = 10**(S/20.)
     S = n.ones( Lambda - (Lambda_A+Lambda_R+Lambda_D) )*a_S
 
-    perc = 100*to_zero/R
+    perc = to_zero/R
     R = F(method=trans, alpha=alpha, dB=dB, perc=perc, nsamples=Lambda_R)*a_S
 
     AD = n.hstack((A,D,S,R))
@@ -1246,7 +1246,8 @@ def F(d=2, out=True, method="exp", dB=-80, alpha=1, perc=1,
         return ai
 
 
-def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
+def P(f1=220, f2=440, d=2, alpha=1, tab=S, method="exp",
+        nsamples=0, fs=44100):
     """
     A note with a pitch transition: a glissando.
 
@@ -1266,6 +1267,10 @@ def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
     nsamples : integer
         The number of samples of the sound.
         If supplied, d is not used.
+    method : string
+        "exp" for an exponential transition of frequency
+        (linear pitch).
+        "lin" for a linear transition of amplitude.
     fs : integer
         The sample rate.
 
@@ -1295,10 +1300,13 @@ def P(f1=220, f2=440, d=2, alpha=1, tab=S, nsamples=0, fs=44100):
     else:
         Lambda = int(fs*d)
     samples = n.arange(Lambda)
-    if alpha != 1:
-        F = f1*(f2/f1)**( (samples / (Lambda-1))**alpha )
+    if method=="exp":
+        if alpha != 1:
+            F = f1*(f2/f1)**( (samples / (Lambda-1))**alpha )
+        else:
+            F = f1*(f2/f1)**( samples / (Lambda-1) )
     else:
-        F = f1*(f2/f1)**( samples / (Lambda-1) )
+        F = f1 + (f2 - f1)*samples/(Lambda-1)
     l = len(tab)
     Gamma = n.cumsum( F*l/fs ).astype(n.int)
     s = tab[ Gamma % l ]
@@ -1867,6 +1875,103 @@ def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
     return s
 
 
+def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
+        dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9]],
+            taba=[[S,S,S],[Tr,Tr,Tr,S]],
+        nsamples=0, sonic_vector=0, fs=44100):
+    """
+    An envelope with multiple tremolos.
+
+    Parameters
+    ----------
+    d : iterable of iterable of scalars
+        the durations of each tremolo.
+    fa : iterable of iterable of scalars
+        The frequencies of each tremolo.
+    dB : iterable of iterable of scalars
+        The maximum loudness variation
+        of each tremolo.
+    alpha : iterable of iterable of scalars
+        Indexes for distortion of each tremolo [1].
+    taba : iterable of iterable of array_likes
+        Tables for lookup for each tremolo.
+    nsamples : iterable of iterable of scalars
+        The number of samples or each tremolo.
+    sonic_vector : array_like
+        The sound to which apply the tremolos.
+        If supplied, the tremolo lines are
+        applied to the sound and missing samples
+        are completed by zeros (if sonic_vector
+        is smaller then the lengthiest tremolo)
+        or ones (is sonic_vector is larger).
+    fs : integer
+        The sample rate
+
+    Returns
+    -------
+    E : ndarray
+        A numpy array where each value is a value of the envelope
+        for the PCM samples.
+        If sonic_vector is supplied,
+        E is the sonic vector with the envelope applied to it.
+
+    See Also
+    --------
+    L : An envelope for a loudness transition.
+    L_ : An envelope with an arbitrary number of transitions.
+    F : Fade in and out.
+    AD : An ADSR envelope.
+    T : An oscillation of loudness.
+
+    Examples
+    --------
+    >>> W(V(d=8)*L_())  # writes a WAV file with a loudness transitions
+
+    Notes
+    -----
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+        
+
+    """
+    for i in range(len(taba)):
+        for j in range(i):
+            taba[i][j] = n.array(taba[i][j])
+    T_ = []
+    if nsamples:
+        for i, ns in enumerate(nsamples):
+            T_.append([])
+            for j, ns_ in enumerate(ns):
+                s = T(fa=fa[i][j], dB=dB[i][j], alpha=alpha[i][j],
+                    taba=taba[i][j], nsamples=ns_)
+                T_[-1].append(s)
+    else:
+        for i, durs in enumerate(d):
+            T_.append([])
+            for j, dur in enumerate(durs):
+                s = T(dur, fa[i][j], dB[i][j], alpha[i][j],
+                    taba=taba[i][j])
+                T_[-1].append(s)
+    amax = 0
+    if type(sonic_vector) in (n.ndarray, list):
+        amax = len(sonic_vector)
+    for i in range(len(T_)):
+        T_[i] = n.hstack(T_[i])
+        amax = max(amax, len(T_[i]))
+    for i in range(len(T_)):
+        if len(T_[i]) < amax:
+            T_[i] = n.hstack((T_[i], n.ones(amax-len(T_[i]))*T_[i][-1]))
+    if type(sonic_vector) in (n.ndarray, list):
+        if len(sonic_vector) < amax:
+            sonic_vector = n.hstack(( sonic_vector, n.zeros(amax-len(sonic_vector)) ))
+        T_.append(sonic_vector)
+    s = n.prod(T_, axis=0)
+    return s
+
+
 def mix(sonic_vectors, end=False, offset=0, fs=44100):
     """
     Mix sonic vectors.
@@ -2086,7 +2191,7 @@ def D(f=220, d=2, tab=Tr, x=[-10, 10], y=[1,1], stereo=True,
         vs = fs*(d[1:]-d[:-1])  # velocities at each point
         f_ = f*speed/(speed+vs)
 
-        Gamma = (samples*f_*l/fs).astype(n.int)
+        Gamma = n.cumsum(f_*l/fs).astype(n.int)
         s = tab[ Gamma % l ]*IID[:-1]
     return s
 

@@ -1,87 +1,22 @@
 import numpy as n
-from scipy.io import wavfile as w
+import imp
+fun=imp.load_source("functions","../aux/functions.py")
 
-H=n.hstack
-V=n.vstack
-
-f_a = 44100. # Hz, frequência de amostragem
-
-Lambda_tilde=Lt=1024.*16
-
-# Senoide
-foo=n.linspace(0,2*n.pi,Lt,endpoint=False)
-S_i=n.sin(foo) # um período da senóide com T amostras
-
-# Quadrada:
-Q_i=n.hstack(  ( n.ones(Lt/2)*-1 , n.ones(Lt/2) )  )
-
-# Triangular:
-foo=n.linspace(-1,1,Lt/2,endpoint=False)
-Tr_i=n.hstack(  ( foo , foo*-1 )   )
-
-# Dente de Serra:
-D_i=n.linspace(-1,1,Lt)
-
-
-def v(f=200,d=2.,tab=S_i,fv=2.,nu=2.,tabv=S_i):
-    Lambda=n.floor(f_a*d)
-    ii=n.arange(Lambda)
-    Lv=float(len(tabv))
-
-    Gammav_i=n.floor(ii*fv*Lv/f_a) # índices para a LUT
-    Gammav_i=n.array(Gammav_i,n.int)
-    # padrão de variação do vibrato para cada amostra
-    Tv_i=tabv[Gammav_i%int(Lv)] 
-
-    # frequência em Hz em cada amostra
-    F_i=f*(   2.**(  Tv_i*nu/12.  )   ) 
-    # a movimentação na tabela por amostra
-    D_gamma_i=F_i*(Lt/float(f_a))
-    Gamma_i=n.cumsum(D_gamma_i) # a movimentação na tabela total
-    Gamma_i=n.floor( Gamma_i) # já os índices
-    Gamma_i=n.array( Gamma_i, dtype=n.int) # já os índices
-    return tab[Gamma_i%int(Lt)] # busca dos índices na tabela
-
-def A(fa=2.,V_dB=10.,d=2.,taba=S_i):
-    Lambda=n.floor(f_a*d)
-    ii=n.arange(Lambda)
-    Lt=float(len(taba))
-    Gammaa_i=n.floor(ii*fa*Lt/f_a) # índices para a LUT
-    Gammaa_i=n.array(Gammaa_i,n.int)
-    # variação da amplitude em cada amostra
-    A_i=taba[Gammaa_i%int(Lt)] 
-    A_i=A_i*10.**(V_dB/20.)
-    return A_i
-
-def adsr(som,A=10.,D=20.,S=-20.,R=100.,xi=1e-2):
-    a_S=10**(S/20.)
-    Lambda=len(som)
-    Lambda_A=int(A*f_a*0.001)
-    Lambda_D=int(D*f_a*0.001)
-    Lambda_R=int(R*f_a*0.001)
-
-    ii=n.arange(Lambda_A,dtype=n.float)
-    A=ii/(Lambda_A-1)
-    A_i=A
-    ii=n.arange(Lambda_A,Lambda_D+Lambda_A,dtype=n.float)
-    D=1-(1-a_S)*(   ( ii-Lambda_A )/( Lambda_D-1) )
-    A_i=n.hstack(  (A_i, D  )   )
-    S=n.ones(Lambda-Lambda_R-(Lambda_A+Lambda_D),dtype=n.float)*a_S
-    A_i=n.hstack( ( A_i, S )  )
-    ii=n.arange(Lambda-Lambda_R,Lambda,dtype=n.float)
-    R=a_S-a_S*((ii-(Lambda-Lambda_R))/(Lambda_R-1))
-    A_i=n.hstack(  (A_i,R)  )
-
-    return som*A_i
-
-triadeM=[0.,4.,7.]
-def ac(f=200.,notas=[0.,4.,7.,12.],tab=S_i):
-    acorde=adsr(v(tab=tab,f=f*2.**(notas[-1]/12.),nu=0))
-    for na in notas[:-1]:
-        acorde+=adsr(v(tab=tab,f=f*2**(na/12.),nu=0))
-    
-    return acorde
-
+v = fun.V
+W = fun.W
+Tr_i = fun.Tr
+Q_i = fun.Q
+D_i = fun.Sa
+S_i = fun.S
+H = n.hstack
+V = n.vstack
+def A(fa=2.,V_dB=10.,d=2.,taba=fun.S):
+    return fun.T(d, fa, V_dB, taba=taba)
+def adsr(s, A=20, D=20, S=-10, R=100):
+    return fun.AD(A=A, D=D, S=S, R=R, sonic_vector=s)
+def T(f1, f2, dur, ttype="exp", tab=S_i, alpha=1.):
+    return adsr(fun.P(f1, f2, dur, alpha, tab, ttype))
+f_a = 44100 # Hz, sample rate
 
 ############## 2.3.2 Rudimentos de contraponto
 def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
@@ -152,29 +87,28 @@ def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
     return contra
 
 
-Emf_i=[0.,1.,3.,5.,7.,8.,10.]
+Emf_i=[0.,1.,3.,5.,7.,8.,10.]*2
 E=Emf_i+Emf_i[::-1]
 
 bb=contraNotaNotaSup(E)
 
-s=H(([adsr(v(f=200*2**(b/12.),d=.2)) for b in bb   ]))
+# s=H(([adsr(v(f=200*2**(b/12.),d=.2)) for b in bb   ]))
+s=H(([adsr(v(f=200*2**(b/12.),d=.2)) for b in E   ]))
 
-s1=H(([adsr(v(f=200.*2.**(b/12.),d=.2))+\
-       adsr(v(f=200*2.**(ee/12.),d=.2)) for b,ee in zip(bb,E)   ]))
+s1=H(([adsr(v(f=200.*2.**(b/12.),nu=1,d=.2))+\
+       adsr(v(f=400*2.**(ee/12.),nu=1,d=.2)) for b,ee in zip(bb,E)   ]))
 
 m=[0,7,7,7,2,7,7,5,3,5,1,0,7,1,0,0]
 cc=contraNotaNotaSup(m)
 
-s2=H(([adsr(v(f=200.*2.**(b/12.),d=.2))+\
-       adsr(v(f=200*2.**(ee/12.),d=.2)) for b,ee in zip(cc,m)   ]))
+s2=H(([adsr(v(f=400.*2.**(b/12.),nu=.2,d=.2))+\
+       adsr(v(f=200*2.**(ee/12.),nu=.2,d=.2)) for b,ee in zip(cc,m)   ]))
 
-s=H((s,s1,s2,s2,s1,s1))
+sf=adsr(v(f=200.*2.**(bb[-1]/12.),nu=.2,fv=9,d=2))+\
+     adsr(v(f=200*2.**(E[-1]/12.),nu=.2,fv=9,d=2))
 
-s=((s-s.min())/(s.max()-s.min()))*2.-1.
+s=H((s,s1,s2,s2,s1,s1,sf))
 
-# most music players read only 16-bit wav files, so let's convert the array
-s = n.int16(s * float(2**15))
-
-w.write("contaPonto.wav",f_a,s) # escrita do som
+W(s, "contaPonto.wav")
 
 

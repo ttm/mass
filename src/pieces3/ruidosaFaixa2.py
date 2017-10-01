@@ -1,11 +1,24 @@
 #-*- coding: utf-8 -*-
 import numpy as n
 from scipy.io import wavfile as w
+import imp
+fun=imp.load_source("functions","../aux/functions.py")
 
-H=n.hstack
-V=n.vstack
+v = fun.V
+def A(fa=2.,V_dB=10.,d=2.,taba=fun.S):
+    return fun.T(d, fa, V_dB, taba=taba)
+def adsr(s, A=20, D=20, S=-10, R=100):
+    return fun.AD(A=A, D=D, S=S, R=R, sonic_vector=s)
+W = fun.W
+Tr_i = fun.Tr
+Q_i = fun.Q
+D_i = fun.Sa
+S_i = fun.S
+H = n.hstack
+V = n.vstack
 
-f_a = 44100. # Hz, frequência de amostragem
+
+f_a = 44100 # Hz, frequência de amostragem
 
 ############## 2.2.1 Tabela de busca (LUT)
 Lambda_tilde=Lt=1024.
@@ -181,7 +194,7 @@ l6_=n.convolve(obj5,linha_cabeca)[:len(linha_em3)]
 
 
 
-print "AA"
+print("AA")
 linha1=n.convolve(som2,linha_cabeca)[:len(linha_cabeca)]
 linha2=n.convolve(som4,linha_em3)[:len(linha_em3)]
 linha4=n.convolve(som5,linha_em3)[:len(linha_em3)]
@@ -197,15 +210,8 @@ som[int(len(l1)*3.5):int(len(l1)*3.5)+len(LR3)]+=LR3
 som[len(l1)*7:len(l1)*7+len(LR)]+=LR
 
 
-print "BB"
-T_i=som
+print("BB")
 
-T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
-
-# most music players read only 16-bit wav files, so let's convert the array
-aa = n.hstack((T_i,T_i,T_i,T_i,T_i,T_i))
-aa = n.int16(aa * float(2**15))
-
-w.write("ruidosaFaixa2.wav",f_a,aa) # escrita do som
+W(som, "ruidosaFaixa2.wav")
 
 

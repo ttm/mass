@@ -10,7 +10,7 @@ ii = n.linspace(0, Delta*2*n.pi, Lambda, endpoint=False)
 # frequencies
 fs = []
 for i in range(1, f_a/2+1):
-    if f_a/float(i) == int(f_a/i):
+    if f_a/i == int(f_a/i):
         fs.append(i)
 
 ### Picture 1: sinusoids that make beating in the low frequencies
@@ -24,10 +24,8 @@ som += dente_aguda/80
 
 # normalization for samples to be within [-1,1]
 som = ((som - som.min())/(som.max()-som.min()))*2-1
-
 # most music players read only 16-bit wav files, so let's convert the array
-som = n.int16(som * float(2**15))
-
+som = n.int16(som * (2**15-1))
 w.write("picture1.wav",f_a,som)
 
 print(u"picture 1 written in picture1.wav(mono), %i samples \
@@ -43,9 +41,7 @@ for f in fs2:
     som += (1-n.abs(2-(4./lambda_f)*(ii % lambda_f)))*(1./f**1.2)
 
 som = ((som - som.min())/(som.max()-som.min()))*2-1
-
-som = n.int16(som * float(2**15))
-
+som = n.int16(som * (2**15-1))
 w.write("picture2.wav", f_a, som)
 print("picture 2 written in picture2.wav (mono), %i samples \
 in a sample rate of %iHz" % (len(som), f_a))
@@ -67,7 +63,7 @@ for f in fs3:
 som = n.vstack((som_d, som_e)).T
 
 som = ((som - som.min())/(som.max()-som.min()))*2-1
-som = n.int16(som * float(2**15))
+som = n.int16(som * (2**15-1))
 w.write("picture3.wav", f_a, som)
 print("picture 3 written in picture3.wav (stereo), %i samples \
 in a sample rate of %iHz" % (len(som), f_a))
@@ -102,7 +98,7 @@ som_d = ((som_d - som_d.min())/(som_d.max()-som_d.min()))*2-1
 som_e = ((som_e - som_e.min())/(som_e.max()-som_e.min()))*2-1
 som += n.vstack((som_d, som_e)).T/60
 
-som = n.int16(som * float(2**15))
+som = n.int16(som * (2**15-1))
 w.write("picture4.wav", f_a, som)
 print("picture 4 written in picture4.wav (stereo), %i samples \
 in a sample rate of %iHz" % (len(som), f_a))
@@ -120,7 +116,7 @@ som_e = dente+n.sin(ii*43) + n.sin(ii*126.3)
 som = n.vstack((som_d, som_e)).T
 som = ((som - som.min())/(som.max()-som.min()))*2-1
 
-som = n.int16(som * float(2**15))
+som = n.int16(som * (2**15-1))
 w.write("picture5.wav", f_a, som)
 print("picture 5 written in picture5.wav (stereo), %i samples \
 in a sample frequency of %iHz" % (len(som), f_a))

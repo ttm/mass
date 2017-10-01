@@ -1,6 +1,23 @@
 #-*- coding: utf-8 -*-
 import numpy as n
-from scipy.io import wavfile as w
+import imp
+fun=imp.load_source("functions","../aux/functions.py")
+
+v = fun.V
+W = fun.W
+Tr_i = fun.Tr
+Q_i = fun.Q
+D_i = fun.Sa
+S_i = fun.S
+H = n.hstack
+V = n.vstack
+def A(fa=2.,V_dB=10.,d=2.,taba=fun.S):
+    return fun.T(d, fa, V_dB, taba=taba)
+def adsr(s, A=20, D=20, S=-10, R=100):
+    return fun.AD(A=A, D=D, S=S, R=R, sonic_vector=s)
+def T(f1, f2, dur, ttype="exp", tab=S_i, alpha=1.):
+    return adsr(fun.P(f1, f2, dur, alpha, tab, ttype))
+f_a = 44100 # Hz, sample rate
 
 # peça dedicada e expor as diferentes transições
 # de intensidade e altura
@@ -9,38 +26,6 @@ from scipy.io import wavfile as w
 # 1) Transições de altura log e lin e com alpha
 # 2) Transições de intensidade log e in e com alpha
 # 3) Usos combinados de ambos
-
-f_a = 44100. # Hz, frequência de amostragem
-Lambda_tilde=Lt=1024 # tamanho da tabela para LUT
-
-# Senoide
-foo=n.linspace(0,2*n.pi,Lt,endpoint=False)
-S_i=n.sin(foo) # um período da senóide com T amostras
-
-# Quadrada:
-Q_i=n.hstack(  ( n.ones(Lt/2)*-1 , n.ones(Lt/2) )  )
-
-# Siangular:
-foo=n.linspace(-1,1,Lt/2,endpoint=False)
-Tr_i=n.hstack(  ( foo , foo*-1 )   )
-
-# Dente de Serra:
-D_i=n.linspace(-1,1,Lt)
-
-def T(f1,f2,dur,ttype="exp",tab=S_i,alpha=1.):
-    Lambda=n.floor(dur*f_a)
-    ii=n.arange(Lambda)
-
-    if ttype=="exp":
-        f_i=f1*(f2/f1)**(  (ii/(float(Lambda)-1))**alpha  ) # exponencial
-    else:
-        f_i=f1+(f2-f1)*ii/(Lambda-1) # linear
-
-    Lt=len(tab)
-    D_gamma_i=f_i*Lt/f_a
-    Gamma_i=n.cumsum(D_gamma_i)
-    Gamma_i=n.array(Gamma_i,dtype=n.int)
-    return tab[Gamma_i%Lt]
 
 ############################################
 # PARTE 1)
@@ -119,7 +104,6 @@ n.hstack(( T(f[10],f[8],d[3],tab=Tr_i),
      T(f[10],f[5],d[3],tab=Tr_i),T(f[10],f[0],d[3],tab=Tr_i),
          T(f[10],f[1],d[3],tab=Tr_i)  ))
 
-
 sub2_d=n.hstack(( T(f[10],f[9],d[3],tab=Tr_i),
      T(f[10],f[7],d[3],tab=Tr_i),T(f[10],f[9],d[3],tab=Tr_i),
         T(f[10],f[6],d[3],tab=Tr_i),
@@ -143,28 +127,28 @@ rar_d=n.hstack(( T(f[7],f[9],d[3],'lin'),
      T(f[9],f[9],d[4]),
      T(f[1],f[9],d[6],'log')    ))
 
-
 # finalização com elementos dos outros momentos
 intr=n.hstack((T(f[9],f[0],d[7]),T(f[0],f[10],d[8],'lin',Tr_i)))
 
+def Z(sonic_vector):
+    s1 = fun.F(d=0.05)
+    s2 = fun.F(d=0.05, out=False)
+    e = n.hstack(( s1, n.zeros(len(sonic_vector)-len(s1)-len(s2)), s2 ))
+    return sonic_vector*e
+
 fin_e=n.copy(intr)
 fin_d=n.copy(intr)
-fin_e[d[4]*f_a:d[5]*f_a]=n.zeros(d[3]*f_a)
-fin_d[d[5]*f_a:d[6]*f_a]=n.zeros(d[3]*f_a)
+fin_e[d[4]*f_a:d[5]*f_a] = Z(fin_e[d[4]*f_a:d[5]*f_a])
+fin_d[d[5]*f_a:d[6]*f_a] = Z(fin_d[d[5]*f_a:d[6]*f_a])
 
-fin_e[7*f_a:7.5*f_a]=n.zeros(d[3]*f_a)
-fin_d[7.25*f_a:7.75*f_a]=n.zeros(d[3]*f_a)
+fin_e[7*f_a:7.5*f_a]    = Z(fin_e[7*f_a:7.5*f_a]    )
+fin_d[7.25*f_a:7.75*f_a]= Z(fin_d[7.25*f_a:7.75*f_a])
 
 _e=n.hstack((   intr,entr,devEntr,sub_e,sub2_e,rar_e,fin_e   ))
 _d=n.hstack((   intr,entr,devEntr,sub_d,sub2_d,rar_d,fin_d,n.zeros(2)   ))
 s=n.vstack((_e,_d)).T
 
-s=((s-s.min())/(s.max()-s.min()))*2-1
-
-# most music players read only 16-bit wav files, so let's convert the array
-s = n.int16(s * float(2**15))
-
-w.write('trans1.wav',f_a,s)
+W(s, 'trans1.wav')
 
 
 # Exploracao sistemática dos tremolos:

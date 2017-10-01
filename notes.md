@@ -40,3 +40,7 @@ in music package.
 * Put note on a golden rule: if your sound has variations of pitch,
 they need to be accounted for befor making the table lookup because
 it relies on the frequency.
+* Refazer ADa e SaRa? bonds? Melhorar trenzinho? Vibra e treme (subst pelo art on vibratos?)?
+* deixar somente o ruidosa faixa 4
+* homogeneize names of rendered wav files
+* Implement usage of HRTF

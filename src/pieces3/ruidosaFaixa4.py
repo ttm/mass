@@ -1,95 +1,33 @@
 #-*- coding: utf-8 -*-
 import numpy as n
-from scipy.io import wavfile as w
+import imp
+fun=imp.load_source("functions","../aux/functions.py")
 
-H=n.hstack
-V=n.vstack
+v = fun.V
+def A(fa=2.,V_dB=10.,d=2.,taba=fun.S):
+    return fun.T(d, fa, V_dB, taba=taba)
+def adsr(s, A=20, D=20, S=-10, R=100):
+    return fun.AD(A=A, D=D, S=S, R=R, sonic_vector=s)
+W = fun.W
+Tr_i = fun.Tr
+Q_i = fun.Q
+D_i = fun.Sa
+S_i = fun.S
+H = n.hstack
+V = n.vstack
+f_a = 44100 # Hz, sample rate
 
-f_a = 44100. # Hz, frequência de amostragem
+BPM=60.  # beats per minute
+DELTA=BPM/60  # beat duration in seconds
+LAMBDA=DELTA*f_a  # samples per beat
+LAMBDA_=int(LAMBDA)
 
-############## 2.2.1 Tabela de busca (LUT)
-Lambda_tilde=Lt=1024.
-
-# Senoide
-foo=n.linspace(0,2*n.pi,Lt,endpoint=False)
-S_i=n.sin(foo) # um período da senóide com T amostras
-
-# Quadrada:
-Q_i=n.hstack(  ( n.ones(Lt/2)*-1 , n.ones(Lt/2) )  )
-
-# Triangular:
-foo=n.linspace(-1,1,Lt/2,endpoint=False)
-Tr_i=n.hstack(  ( foo , foo*-1 )   )
-
-# Dente de Serra:
-D_i=n.linspace(-1,1,Lt)
-
-def v(f=200,d=2.,tab=S_i,fv=2.,nu=2.,tabv=S_i):
-    Lambda=n.floor(f_a*d)
-    ii=n.arange(Lambda)
-    Lv=float(len(S_i))
-
-    Gammav_i=n.floor(ii*fv*Lv/f_a) # índices para a LUT
-    Gammav_i=n.array(Gammav_i,n.int)
-    # padrão de variação do vibrato para cada amostra
-    Tv_i=tabv[Gammav_i%int(Lv)] 
-
-    # frequência em Hz em cada amostra
-    F_i=f*(   2.**(  Tv_i*nu/12.  )   ) 
-    # a movimentação na tabela por amostra
-    D_gamma_i=F_i*(Lt/float(f_a))
-    Gamma_i=n.cumsum(D_gamma_i) # a movimentação na tabela total
-    Gamma_i=n.floor( Gamma_i) # já os índices
-    Gamma_i=n.array( Gamma_i, dtype=n.int) # já os índices
-    return tab[Gamma_i%int(Lt)] # busca dos índices na tabela
-
-def A(fa=2.,V_dB=10.,d=2.,taba=S_i):
-    Lambda=n.floor(f_a*d)
-    ii=n.arange(Lambda)
-    Lt=float(len(taba))
-    Gammaa_i=n.floor(ii*fa*Lt/f_a) # índices para a LUT
-    Gammaa_i=n.array(Gammaa_i,n.int)
-    # variação da amplitude em cada amostra
-    A_i=taba[Gammaa_i%int(Lt)] 
-    A_i=A_i*10.**(V_dB/20.)
-    return A_i
-
-def adsr(som,A=10.,D=20.,S=-20.,R=100.,xi=1e-2):
-    a_S=10**(S/20.)
-    Lambda=len(som)
-    Lambda_A=int(A*f_a*0.001)
-    Lambda_D=int(D*f_a*0.001)
-    Lambda_R=int(R*f_a*0.001)
-
-    ii=n.arange(Lambda_A,dtype=n.float)
-    A=ii/(Lambda_A-1)
-    A_i=A
-    ii=n.arange(Lambda_A,Lambda_D+Lambda_A,dtype=n.float)
-    D=1-(1-a_S)*(   ( ii-Lambda_A )/( Lambda_D-1) )
-    A_i=n.hstack(  (A_i, D  )   )
-    S=n.ones(Lambda-Lambda_R-(Lambda_A+Lambda_D),dtype=n.float)*a_S
-    A_i=n.hstack( ( A_i, S )  )
-    ii=n.arange(Lambda-Lambda_R,Lambda,dtype=n.float)
-    R=a_S-a_S*((ii-(Lambda-Lambda_R))/(Lambda_R-1))
-    A_i=n.hstack(  (A_i,R)  )
-
-    return som*A_i
-
-        
-BPM=60.  # 80 batidas por minuto
-DELTA=BPM/60  # duração da batida
-LAMBDA=DELTA*f_a  # número de samples da batida
-LAMBDA_=int(LAMBDA)  # inteiro para operação com índices
-
-#cabeca=[1]+[0]*(LAMBDA-1)
-#contra=[0]*Lambda/2+[1]+[0]*(Lambda/2-1)
 tempo=n.zeros(LAMBDA)
 cabeca=n.copy(tempo); cabeca[0]=1.
 contra=n.copy(tempo); contra[LAMBDA_/2]=1.
 
-
-# tempo de musica
-Delta=4*DELTA  # segundos
+# tempo
+Delta=4*DELTA
 Lambda=Delta*f_a
 Lambda_=int(Lambda)
 ii=n.arange(Lambda_)
@@ -105,48 +43,41 @@ som5=adsr(v(tabv=Tr_i ,d=.2,fv=3.,nu=7.,f=1800.)*A(d=.2,fa=100.),
 som6=adsr(v(tabv=Tr_i ,d=.2,fv=30.,nu=7.,f=1800.)*A(d=.2),
                                           1.,100.,-60.,80.)
 
-em3=n.copy(tempo);em3[[0,LAMBDA_/3,2*LAMBDA_/3]]=1.
+em3=n.copy(tempo); em3[[0,LAMBDA_/3,2*LAMBDA_/3]]=1.
 
 linha_em3=em3[ii%LAMBDA_]
 
 ##############
-#RUIDOS
+# Noises
 
-Lambda = 100000  # Lambda sempre par
-# diferença das frequências entre coeficiêntes vizinhos:
+Lambda = 100000  # Lambda always even
+# frequency difference between neighbor coefficients:
 df=f_a/float(Lambda)
 
-# e fase aleatoria
+# as in section 3
 coefs=n.exp(1j*n.random.uniform(0, 2*n.pi, Lambda))
-# real par, imaginaria impar
 coefs[Lambda/2+1:]=n.real(coefs[1:Lambda/2])[::-1] \
                    - 1j*n.imag(coefs[1:Lambda/2])[::-1]
-coefs[0]=0.  # sem bias
-coefs[Lambda/2]=1.  # freq max eh real simplesmente
+coefs[0]=0.  # no bias
+coefs[Lambda/2]=1.  # max freq is only real
 
-# as frequências relativas a cada coeficiente
-# acima de Lambda/2 nao vale
 fi=n.arange(coefs.shape[0])*df 
-f0=15.  # iniciamos o ruido em 15 Hz
-i0=n.floor(f0/df)  # primeiro coeff a valer
+f0=15.
+i0=n.floor(f0/df)
 coefs[:i0]=n.zeros(i0)
 f0=fi[i0]
 
-# realizando o ruído em suas amostras temporais
 ruido=n.fft.ifft(coefs)
 r=n.real(ruido)
-rb=((r-r.min())/(r.max()-r.min()))*2-1  # ruido branco
+rb=((r-r.min())/(r.max()-r.min()))*2-1  # white noise
 
-# fazendo ruido preto
+# black noise
 fator=10.**(-7/20.)
 alphai=fator**(n.log2(fi[i0:]/f0))
 c=n.copy(coefs)
 c[i0:]=c[i0:]*alphai
-
-# real par, imaginaria impar
 c[Lambda/2+1:]=n.real(c[1:Lambda/2])[::-1] -\
                 1j*n.imag(c[1:Lambda/2])[::-1]
-
 ruido=n.fft.ifft(c)
 r=n.real(ruido)
 rp=((r-r.min())/(r.max()-r.min()))*2-1
@@ -160,7 +91,6 @@ LR2=rb[n.arange(int(len(linha_em3)*4.5))%len(rb)]*\
 LR3=6.*rp[n.arange(int(len(linha_em3)*6.5))%len(rp)]*\
     A(d=int(len(linha_em3)*6.5)/f_a)*.05
 
-
 obj1=rb[:int(.4*f_a)]*A(d=.4,fa=15.)
 obj2=rp[:int(.4*f_a)]*A(d=.4,fa=10.)
 
@@ -170,7 +100,6 @@ obj4=adsr(rp[:int(.4*f_a)]*A(d=.4,fa=10.),S=-5)
 obj5=adsr(rp[:int(1.4*f_a)]*A(d=1.4,fa=10.),5.,500.,-20,200)
 
 ############
-
 l1=n.convolve(obj1,linha_em3)[:len(linha_em3)]
 l2=n.convolve(obj2,linha_em3)[:len(linha_em3)]
 l3=n.convolve(obj3,linha_em3)[:len(linha_em3)]
@@ -183,13 +112,11 @@ l3_=n.convolve(obj3,linha_cabeca)[:len(linha_em3)]
 l4_=n.convolve(obj4,linha_contra)[:len(linha_em3)]
 l6_=n.convolve(obj5,linha_cabeca)[:len(linha_em3)]
 
-
 linha1=n.convolve(som2,linha_cabeca)[:len(linha_cabeca)]
 linha2=n.convolve(som4,linha_em3)[:len(linha_em3)]
 linha4=n.convolve(som5,linha_em3)[:len(linha_em3)]
 linha6=n.convolve(som6,linha_em3)[:len(linha_em3)]
 linha3=n.convolve(som2,linha_contra)[:len(linha_contra)]
-
 
 H_i=(n.random.random(int(f_a*1.2))*2-1)*n.e**(-n.arange(int(f_a*1.2)))
 def r(l):
@@ -197,30 +124,23 @@ def r(l):
     
 som_e=n.hstack((r(linha2)+l1,linha3+r(l2),linha1+l3,
                        r(linha1)+linha2+linha3,r(l6)))
-som_e=n.hstack((som_e,r(linha4)+l1_,r(l2_),l3_+linha3+linha1,
-                           r(l4_)+linha1+linha3,r(l6_)+linha2))
+som_e=n.hstack((som_e, r(linha4)+l1_, r(l2_), l3_+linha3+linha1,
+                           r(l4_)+linha1+linha3, r(l6_)+linha2))
 
-som_d=n.hstack((linha1+r(linha2),linha2+linha3,r(linha3)+linha1,
-                                         linha2+linha3+l4,linha2))
-som_d=n.hstack((som_d,r(linha4)+l1_,r(l2_),l3_+linha4+linha1,
-                        r(l4_)+linha2+linha3,r(linha6)+linha2))
+som_d=n.hstack((linha1+r(linha2), linha2+linha3, r(linha3)+linha1,
+                                         linha2+linha3+l4, linha2))
+som_d=n.hstack((som_d, r(linha4)+l1_, r(l2_), l3_+linha4+linha1,
+                        r(l4_)+linha2+linha3, r(linha6)+linha2))
 
 som=n.vstack((som_e,som_d))
 
-som[:,:len(LR)]+=LR
+som[:, :len(LR)] += LR
 
-som[:,len(l1)*3:len(l1)*3+len(LR2)]+=LR2
-som[:,int(len(l1)*3.5):int(len(l1)*3.5)+len(LR3)]+=LR3
-som[:,len(l1)*7:len(l1)*7+len(LR)]+=LR
+som[:, len(l1)*3 : len(l1)*3 + len(LR2)] += LR2
+som[:, int(len(l1)*3.5) : int(len(l1)*3.5) + len(LR3)] += LR3
+som[:, len(l1)*7 : len(l1)*7 + len(LR)] += LR                     
 
-T_i=som
+T_i = som
 
-T_i=(T_i-T_i.min())/(T_i.max()-T_i.min())
-
-# most music players read only 16-bit wav files, so let's convert the array
 aa = n.hstack((T_i,T_i,T_i,T_i,T_i,T_i)).T
-aa = n.int16(aa * float(2**15))
-
-w.write("ruidosaFaixa4.wav",f_a,aa)
-
-
+W(aa, "ruidosaFaixa4.wav")
