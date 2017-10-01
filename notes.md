@@ -31,3 +31,12 @@ chromatic scale to the harmonic series?
   - It is easy to model and make hacks (e.g. transitions)
 * Linear PCM
 * Is PCM audio representing the displacement or the pressure variation?
+* Include movement(2).py (in a sandbox?) or remove it.
+* Make Doppler with transitions of pitch, of location and vibratos
+* Make arbitrary movements.
+* Use numpy's system to obtain HTML representation of the documentation
+in music package.
+* Homogenize linear and lin
+* Put note on a golden rule: if your sound has variations of pitch,
+they need to be accounted for befor making the table lookup because
+it relies on the frequency.

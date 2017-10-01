@@ -1,6 +1,6 @@
 import numpy as n
 from scipy.io import wavfile as w
-import doctest
+import doctest, builtins
 
 __doc__ = """
 This file holds minimal implementations
@@ -428,7 +428,8 @@ def loc(sonic_vector=N(), theta=0, dist=0, x=.1, y=.01, zeta=0.215, temp=20, fs=
       (although it does not consider the human body
       beyond the localization of the ears).
       - It can be used easily for tweaks
-      (such as for a moving source).
+      (such as for a moving source resulting
+      in a Doppler Effect).
 
     When az = tan^{-1}(y/x) lies in the 'cone of confusion',
     many values of x and y have the same ITD and IID [1].
@@ -1589,6 +1590,7 @@ def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]],
     tab : list of lists of array_likes
         The tables with the waveforms to synthesize the sound
         and for the oscillatory patterns of the vibratos.
+        All the tables for f should have the same size.
     nsamples : scalar
         The number of samples of the sound.
         If supplied, d is not used.
@@ -1616,7 +1618,7 @@ def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]],
     >>> W(PV_())  # writes file with glissandi and vibratos
 
     """
-    # transition contributions
+    # pitch transition contributions
     F_ = []
     for i, dur in enumerate(d[0]):
         Lambda_ = int(fs*dur)
@@ -1661,7 +1663,6 @@ def PV_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4]],
     s_ = []
     pointer = 0
     for i, t in enumerate(tab[0]):
-        l = len(t)
         Lambda = int(fs*d[0][i])
         s = t[ Gamma[pointer:pointer+Lambda] % l ]
         pointer += Lambda
@@ -1944,6 +1945,12 @@ def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
     fs : integer
         The sample rate.
 
+    See Also
+    --------
+    V : A note with vibrato.
+    PV_ : a note with an arbitrary sequence of pitch transition and a meta-vibrato.
+    T : A tremolo envelope.
+
     Returns
     -------
     s : ndarray
@@ -1952,6 +1959,15 @@ def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
     Examples
     --------
     >>> W(trill())
+
+    Notes
+    -----
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
 
     """
     nsamples = 44100/ft
@@ -1967,6 +1983,357 @@ def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
         i += 1
     trill = n.hstack(s)
     return trill
+
+def D(f=220, d=2, tab=Tr, x=[-10, 10], y=[1,1], stereo=True,
+        zeta=0.215, temp = 20, nsamples=0, fs=44100):
+    """
+    A simple note with a transition of localization and result Doppler effect
+
+    Parameters
+    ----------
+    f : scalar
+        The frequency of the note in Hertz.
+    d : scalar
+        The duration of the note in seconds.
+    tab : array_like
+        The table with the waveform to synthesize the sound.
+    x : iterable of scalars
+        The starting and ending x positions.
+    y : iterable of scalars
+        The starting and ending y positions.
+    stereo : boolean
+        If True, returns a (2, nsamples) array representing
+        a stereo sound. Else it returns a simple array
+        for a mono sound.
+    temp : scalar
+        The air temperature in Celsius.
+        (Used to calculate the acoustic velocity.)
+    nsamples : integer
+        The number of samples in the sound.
+        If not 0, d is ignored.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        The PCM samples of the resulting sound.
+
+    See Also
+    --------
+    D_ : a note with arbitrary vibratos, transitions of pitch
+    and transitions of localization.
+    PV_ : a note with an arbitrary sequence of pitch transition and a meta-vibrato.
+
+    Examples
+    --------
+    >>> WS(D())
+    >>> W(T()*D(stereo=False))
+
+    Notes
+    -----
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    tab = n.array(tab)
+    if not nsamples:
+        nsamples = int(d*fs)
+    samples = n.arange(nsamples)
+    l = len(tab)
+    speed = 331.3 + .606*temp
+
+    x = x[0] + (x[1] - x[0])*n.arange(nsamples+1)/(nsamples)
+    y = y[0] + (y[1] - y[0])*n.arange(nsamples+1)/(nsamples)
+    if stereo:
+        dl = n.sqrt( (x+zeta/2)**2 + y**2 )
+        dr = n.sqrt( (x-zeta/2)**2 + y**2 )
+        IID_al = 1/dl
+        IID_ar = 1/dr
+
+        vsl = fs*(dl[1:]-dl[:-1])
+        vsr = fs*(dr[1:]-dr[:-1])
+        fl = f*speed/(speed+vsl)
+        fr = f*speed/(speed+vsr)
+        builtins.vsl=vsl
+        builtins.vsr=vsr
+
+        Gamma = n.cumsum(fl*l/fs).astype(n.int)
+        sl = tab[ Gamma % l ]*IID_al[:-1]
+
+        Gamma = n.cumsum(fr*l/fs).astype(n.int)
+        sr = tab[ Gamma % l ]*IID_ar[:-1]
+
+        ITD0 = (dl[0]-dr[0])/speed
+        Lambda_ITD = ITD0*fs
+
+        if x[0] > 0:
+            TL = n.hstack(( n.zeros(int(Lambda_ITD)), sl ))
+            TR = n.hstack(( sr, n.zeros(int(Lambda_ITD)) ))
+        else:
+            TL = n.hstack(( sl, n.zeros(-int(Lambda_ITD)) ))
+            TR = n.hstack(( n.zeros(-int(Lambda_ITD)), sr ))
+        s = n.vstack(( TL, TR ))
+    else:
+        d = n.sqrt( x**2 + y**2 )
+        IID = 1/d
+
+        vs = fs*(d[1:]-d[:-1])  # velocities at each point
+        f_ = f*speed/(speed+vs)
+
+        Gamma = (samples*f_*l/fs).astype(n.int)
+        s = tab[ Gamma % l ]*IID[:-1]
+    return s
+
+
+def D_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4],[4,6,1]],
+        fv=[[2,6,1], [.5,15,2,6,3]], nu=[[2,1, 5], [4,3,7,10,3]],
+        alpha=[[1, 1] , [1,1,1], [1,1,1,1,1], [1,1,1]],
+        x=[-10,10,5,3], y=[1,1,.1,.1], method=['lin','exp','lin'],
+        tab=[[Tr,Tr], [S,Tr,S], [S,S,S,S,S]], stereo=True,
+        zeta=0.215, temp = 20, nsamples=0, fs=44100):
+    """
+    A sound with arbitrary meta-vibratos, transitions of frequency and localization.
+
+    Parameters
+    ----------
+    f : list of lists of scalars
+        The frequencies of the note at each end of the transitions.
+    d : list of lists of scalars
+        The durations of the pitch transitions and then of the 
+        vibratos and then of the position transitions.
+    fv :  list of lists of scalars
+        The frequencies of each vibrato.
+    nu : list of lists of scalars
+        The maximum deviation of pitch in the vibratos in semitones.
+    alpha : list of lists of scalars
+        Indexes to distort the pitch deviations of the transitions
+        and the vibratos.
+    x : list of lists of scalars
+        The x positions at each end of the transitions.
+    y : list of lists of scalars
+        The y positions at each end of the transitions.
+    method : list of strings
+        An entry for each transition of location: 'exp' for
+        exponential and 'lin' (default) for linear.
+    stereo : boolean
+        If True, returns a (2, nsamples) array representing
+        a stereo sound. Else it returns a simple array
+        for a mono sound.
+    tab : list of lists of array_likes
+        The tables with the waveforms to synthesize the sound
+        and then for the oscillatory patterns of the vibratos.
+        All the tables for f should have the same size.
+    zeta : scalar
+        The distance between the ears in meters.
+    temp : scalar
+        The air temperature in Celsius.
+        (Used to calculate the acoustic velocity.)
+    nsamples : scalar
+        The number of samples of the sound.
+        If supplied, d is not used.
+    fs : scalar
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        A numpy array where each value is a PCM sample of the sound.
+
+    See Also
+    --------
+    PV : A note with a glissando and a vibrato.
+    D : A note with a simple linear transition of location.
+    PVV : A note with a glissando and two vibratos.
+    VV : A note with a vibrato with two oscillatory patterns.
+    N : a basic musical note without vibrato.
+    V : a musical note with an oscillation of pitch.
+    T : a tremolo, an oscillation of loudness.
+    F : fade in and out.
+    L : a transition of loudness.
+
+    Examples
+    --------
+    >>> W(D_())  # writes file with glissandi and vibratos
+
+    """
+    # pitch transition contributions
+    F_ = []
+    for i, dur in enumerate(d[0]):
+        Lambda_ = int(fs*dur)
+        samples = n.arange(Lambda_)
+        f1, f2 = f[i:i+2]
+        if alpha[0][i] != 1:
+            F = f1*(f2/f1)**( (samples / (Lambda_-1))**alpha[0][i] )
+        else:
+            F = f1*(f2/f1)**( samples / (Lambda_-1) )
+        F_.append(F)
+    Ft = n.hstack(F_)
+
+    # vibrato contributions
+    V_=[]
+    for i, vib in enumerate(d[1:-1]):
+        v_=[]
+        for j, dur in enumerate(vib):
+            samples = n.arange(dur*fs)
+            lv = len(tab[i+1][j])
+            Gammav = (samples*fv[i][j]*lv/fs).astype(n.int)  # LUT indexes
+            # values of the oscillatory pattern at each sample
+            Tv = tab[i+1][j][ Gammav % lv ] 
+            if alpha[i+1][j] != 0:
+                F = 2.**( (Tv*nu[i][j]/12)**alpha[i+1][j] )
+            else:
+                F = 2.**( Tv*nu[i][j]/12 )
+            v_.append(F)
+
+        V=n.hstack(v_)
+        V_.append(V)
+
+    V_ = [Ft] + V_
+
+    # Doppler/location localization contributions
+    speed = 331.3 + .606*temp
+    dl_ = []
+    dr_ = []
+    d_ = []
+    F_ = []
+    IID_a = []
+    if stereo:
+        for i in range(len(method)):
+            m = method[i]
+            a = alpha[-1][i]
+            Lambda = int(fs*d[-1][i])
+            if m == 'exp':
+                if a == 1:
+                    foo = n.arange(Lambda+1)/Lambda
+                else:
+                    foo = ( n.arange(Lambda+1)/Lambda )**a
+                xi = x[i]*(x[i+1] / x[i])**( foo )
+                yi = y[i]*(y[i+1] / y[i])**( foo )
+            else:
+                xi = x[i] + (x[i+1] - x[i])*n.arange(Lambda+1)/Lambda
+                yi = y[i] + (y[i+1] - y[i])*n.arange(Lambda+1)/Lambda
+            dl = n.sqrt( (xi+zeta/2)**2 + yi**2 )
+            dr = n.sqrt( (xi-zeta/2)**2 + yi**2 )
+            if len(F_) == 0:
+                ITD0 = (dl[0]-dr[0])/speed
+                Lambda_ITD = ITD0*fs
+            IID_al = 1/dl
+            IID_ar = 1/dr
+
+            vsl = fs*(dl[1:]-dl[:-1])
+            vsr = fs*(dr[1:]-dr[:-1])
+            fl = speed/(speed+vsl)
+            fr = speed/(speed+vsr)
+            builtins.vsl_=vsl
+            builtins.vsr_=vsr
+
+            F_.append( n.vstack(( fl, fr )) )
+            IID_a.append( n.vstack(( IID_al[:-1], IID_ar[:-1] )) )
+    else:
+        for i in range(len(methods)):
+            m = methods[i]
+            a = alpha[-1][i]
+            Lambda = int(fs*d[-1][i])
+            if m == 'exp':
+                if a == 1:
+                    foo = n.arange(Lambda+1)/Lambda
+                else:
+                    foo = ( n.arange(Lambda+1)/Lambda )**a
+                xi = x[i]*(x[i+1] / x[i])**( foo )
+                yi = y[i]*(y[i+1] / y[i])**( foo )
+            else:
+                xi = x[i] + (x[i+1] - x[i])*n.arange(Lambda+1)/(Lambda)
+                yi = y[i] + (y[i+1] - y[i])*n.arange(Lambda+1)/(Lambda)
+            d = n.sqrt( xi**2 + yi**2 )
+            IID = 1/d
+
+            vs = fs*(d[1:]-d[:-1])  # velocities at each point
+            f_ = speed/(speed+vs)
+
+            F_.append(f_)
+            IID_a.append(IID[:-1])
+    F_ = n.hstack( F_ )
+    IID_a = n.hstack( IID_a )
+    print(F_.shape)
+
+    # find maximum size, fill others with ones
+    amax = max([len(i) if len(i.shape)==1 else len(i[0]) for i in V_+[F_]])
+    for i, contrib in enumerate(V_[1:]):
+            V_[i+1] = n.hstack(( contrib, n.ones(amax - len(contrib)) ))
+    V_[0] = n.hstack(( V_[0], n.ones(amax - len(V_[0]))*f[-1] ))
+    if stereo:
+        F_ = n.hstack(( F_, n.ones( (2, amax - len(F_[0]) )) ))
+    else:
+        F_ = n.hstack(( F_, n.ones( amax - len(F_) ) ))
+
+    print(F_.shape)
+    l = len(tab[0][0])
+    if not stereo:
+        V_.extend(F_)
+        F = n.prod(V_, axis=0)
+        Gamma = n.cumsum( F*l/fs ).astype(n.int)
+        s_ = []
+        pointer = 0
+        for i, t in enumerate(tab[0]):
+            Lambda = int(fs*d[0][i])
+            s = t[ Gamma[pointer:pointer+Lambda] % l ]
+            pointer += Lambda
+            s_.append(s)
+        s =  t[ Gamma[pointer:] % l ]
+        s_.append(s)
+        s = n.hstack(s_)
+        s[:len(IID_a)] *= IID_a
+        s[len(IID_a):] *= IID_a[-1]
+    else:
+        # left channel
+        Vl = V_ + [F_[0]]
+        F = n.prod(Vl, axis=0)
+        Gamma = n.cumsum( F*l/fs ).astype(n.int)
+        s_ = []
+        pointer = 0
+        for i, t in enumerate(tab[0]):
+            Lambda = int(fs*d[0][i])
+            s = t[ Gamma[pointer:pointer+Lambda] % l ]
+            pointer += Lambda
+            s_.append(s)
+        s =  t[ Gamma[pointer:] % l ]
+        s_.append(s)
+        TL = n.hstack(s_)
+        TL[:len(IID_a[0])] *=  IID_a[0]
+        TL[len( IID_a[0]):] *= IID_a[0][-1]
+
+        # right channel
+        Vr = V_ + [F_[1]]
+        F = n.prod(Vr, axis=0)
+        Gamma = n.cumsum( F*l/fs ).astype(n.int)
+        s_ = []
+        pointer = 0
+        for i, t in enumerate(tab[0]):
+            Lambda = int(fs*d[0][i])
+            s = t[ Gamma[pointer:pointer+Lambda] % l ]
+            pointer += Lambda
+            s_.append(s)
+        s =  t[ Gamma[pointer:] % l ]
+        s_.append(s)
+        TR = n.hstack(s_)
+        TR[:len(IID_a[1])] *=  IID_a[1]
+        TR[len( IID_a[1]):] *= IID_a[1][-1]
+
+        if x[0] > 0:
+            TL = n.hstack(( n.zeros(int(Lambda_ITD)), TL ))
+            TR = n.hstack(( TR, n.zeros(int(Lambda_ITD)) ))
+        else:
+            TL = n.hstack(( TL, n.zeros(-int(Lambda_ITD)) ))
+            TR = n.hstack(( n.zeros(-int(Lambda_ITD)), TR ))
+        s = n.vstack(( TL, TR ))
+    return s
+
 
 
 test = False

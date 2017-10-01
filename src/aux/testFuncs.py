@@ -27,6 +27,8 @@ W(s, "metavibrato5.wav")
 
 s = PV_(f=[220,440], d=[[2]], fv=[], nu=[], alpha=[[1]], tab=[[Tr]], nsamples=0, fs=44100)
 W(s, "metavibrato6.wav")
+s = D_(f=[220,220], d=[[2],[2]], fv=[], nu=[], alpha=[[1],[1]], x=[-10,10], y=[1,1], method=["lin"], tab=[[Tr]], nsamples=0, fs=44100)
+WS(s, "dop2.wav")
 
 s = H( [N(i, j) for i, j in zip([200, 500, 100], [2, 1, 2])] )
 # test writing stereo WS()
