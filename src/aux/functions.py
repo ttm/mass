@@ -1,6 +1,7 @@
 import numpy as n
 from scipy.io import wavfile as w
 import doctest, builtins
+from HRTF import *
 
 __doc__ = """
 This file holds minimal implementations
@@ -17,6 +18,10 @@ See the music Python Package:
     https://github.com/ttm/music
 for a usage of these implementations
 within a package and derived routines.
+
+See the file HRTF.py, in this same directory,
+for the functions that use impulse responses of
+Head Related Transfer Functions (HRTFs).
 
 """
 
