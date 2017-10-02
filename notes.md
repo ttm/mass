@@ -44,3 +44,7 @@ it relies on the frequency.
 * deixar somente o ruidosa faixa 4
 * homogeneize names of rendered wav files
 * Implement usage of HRTF
+  - from webaudioapi?
+  - NPHRTF is also generalized HRTF
+  - CSound uses MIT: 
+* convolve noises and rhythms in the frequency domain
