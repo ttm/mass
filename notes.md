@@ -48,3 +48,7 @@ it relies on the frequency.
   - NPHRTF is also generalized HRTF
   - CSound uses MIT: 
 * convolve noises and rhythms in the frequency domain
+* arrumar figura e definicao de convolucao no artigo
+* send to LAD the functions on localization:
+  - being frequency dependent (loc\_())
+  - and using HRTL while the source is moving (movingHRTF())
