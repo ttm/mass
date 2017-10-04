@@ -476,7 +476,7 @@ Furthermore, these two frequencies (zero and Nyquist frequency) do not have a ph
 Therefore, the number $\tau_\Lambda$ of equivalent coefficient pairs in a decomposition of $\Lambda$ samples is:
 
 \begin{equation}\label{coefsPareados}
-	\tau_\Lambda = \frac{\Lambda - \Lambda \% 2}{2} +(\Lambda) \% 2 -2
+	\tau_\Lambda = \frac{\Lambda - \Lambda \% 2}{2} -2 +\Lambda \% 2 = \left \lceil \frac{\Lambda}{2} \right \rceil -2
 \end{equation}
 
 This discussion makes clear the equivalence in Equations~\ref{equivalenciasFreqs},~\ref{equivalenciasModulos} and~\ref{equivalenciasFases}:
