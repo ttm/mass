@@ -446,16 +446,12 @@ For a sonic signal, samples $t_i$ are real and are given by the real part of Equ
 \begin{equation}\label{moduloEfase}
 \begin{split}
 t_i& = \frac{1}{\Lambda}\sum_{k=0}^{\Lambda-1}\left[a_k cos(w_k i) -b_k sen(w_k i)\right] \\
-   & = \frac{1}{\Lambda}\sum_{k=0}^{\Lambda-1}\sqrt{a_k^2 + b_k^2} \; cos\left[w_k i - arctan\left(\frac{b_k}{a_k}\right)\right]
+	& = \frac{1}{\Lambda}\sum_{k=0}^{\Lambda-1}\sqrt{a_k^2 + b_k^2} \; cos\left[w_k i - arctan(b_k, a_k)\right]
 \end{split}
 \end{equation}
 
-Equation~\ref{moduloEfase} shows how the imaginary term of $c_k$ adds a phase to the real sinusoid:
-the terms $b_k$ enable the phase sweep $\left[-\frac{\pi}{2},+\frac{\pi}{2}\right]$
-given by $arctan\left(\frac{b_k}{a_k}\right)$ which has this image.
-The sign of $a_k$ specify the right or left side of the trigonometric circle,
-which completes the phase domain:
-$\left[-\frac{\pi}{2},+\frac{\pi}{2}\right] \cup \left[\frac{\pi}{2},\frac{3\pi}{2}\right]\equiv [2\pi]$.
+\noindent where $arctan(x, y) \in [0, 2\pi]$ is the inverse tangent with the right choice of the quadrant
+in the imaginary plane.
 
 $\Lambda$ real samples $t_i$ result in $\Lambda$ complex coefficients $c_k=a_k+j.b_k$.
 The coefficients $c_k$ are equivalent two by two,
@@ -479,29 +475,28 @@ Therefore, the number $\tau_\Lambda$ of equivalent coefficient pairs in a decomp
 	\tau_\Lambda = \frac{\Lambda - \Lambda \% 2}{2} -2 +\Lambda \% 2 = \left \lceil \frac{\Lambda}{2} \right \rceil -2
 \end{equation}
 
-This discussion makes clear the equivalence in Equations~\ref{equivalenciasFreqs},~\ref{equivalenciasModulos} and~\ref{equivalenciasFases}:
+This discussion can be summarized in the following equivalences:
 
-\begin{equation}\label{equivalenciasFreqs}
-f_{k}\equiv f_{\Lambda-k}\;, \;\; w_{k}\equiv-w_{\Lambda-k}\;\;\;, \quad \;\; \forall \quad 1 \leq k \leq \tau  
-\end{equation}
+\begin{align}
+	f_{k}\equiv f_{\Lambda-k}& \;\; , \;\; w_{k}\equiv-w_{\Lambda-k} \label{equivalenciasFreqs} \\
+	 a_k = a_{\Lambda -k}& \;\; , \;\;b_k = - b_{\Lambda -k} \label{equavalenciasTermos} \\
+	\sqrt{a_k^2 + b_k^2} & = \sqrt{a_{\Lambda - k}^2 + b_{\Lambda -k}^2}\label{equivalenciasModulos} \\
+	arctan(b_k, a_k) & = -arctan(b_{\Lambda -k}, a_{\Lambda - k}) \label{equivalenciasFases}
+\end{align}
 
-Real $T \; \Rightarrow \; a_k = a_{\Lambda -k}\;\;$ and $\;\;b_k = - b_{\Lambda -k}$, and thus:
+\noindent with
+$\forall \; 1 \leq k \leq \tau_\Lambda$, 
+$k \in \mathbb{N}$.
 
-\begin{equation}\label{equivalenciasModulos}
-\sqrt{a_k^2 + b_k^2} = \sqrt{a_{\Lambda - k}^2 + b_{\Lambda -k}^2} \;\;, \quad \;\; \forall \quad 1 \leq k \leq \tau  \\
-\end{equation}
-
-\begin{equation}\label{equivalenciasFases}
-tg^{-1}\left(\frac{b_k}{a_k}\right)=-tg^{-1}\left(\frac{b_{\Lambda -k}}{a_{\Lambda - k}}\right)\;\;,\quad \;\; \forall \quad 1 \leq k \leq \tau
-\end{equation}
-
-\noindent with $k \in \mathbb{N}$.
-
-To discuss the general case for components combination in each sample $t_i$, one can gather relations in Equation~\ref{moduloEfase} for the real signal reconstruction, equivalences of modules (Equation~\ref{equivalenciasModulos}) and phases (Equation~\ref{equivalenciasFases}), the number of paired coefficients (Equation~\ref{coefsPareados}), and the equivalence of paired frequencies (Equation~\ref{equivalenciasFreqs}):
+To express the general case for components combination in each sample $t_i$,
+one can gather the relations for the reconstruction of a real signal (Equation~\ref{moduloEfase}),
+for the number of paired coefficients (Equation~\ref{coefsPareados}),
+and for the equivalences of modules (Equation~\ref{equivalenciasModulos})
+and phases (Equation~\ref{equivalenciasFases}):
 
 \begin{equation}\label{eq:reconsCompleta}
 \begin{split}
-	t_i = \frac{a_0}{\Lambda} + \frac{ a_{\Lambda/2}}{\Lambda}(1-\Lambda\% 2) + \frac{2}{\Lambda}\sum_{k=1}^{\tau}\sqrt{a_k^2 + b_k^2} \; cos\left[w_k i - arctan\left(\frac{b_k}{a_k}\right)\right]
+	t_i = \frac{a_0}{\Lambda} + \frac{ a_{\Lambda/2}}{\Lambda}(1-\Lambda\% 2) + \frac{2}{\Lambda}\sum_{k=1}^{\tau_\Lambda}\sqrt{a_k^2 + b_k^2} \; cos\left[w_k i - arctan(b_k,a_k)\right]
 \end{split}
 \end{equation}
 
@@ -514,10 +509,11 @@ To discuss the general case for components combination in each sample $t_i$, one
 
 Figure~\ref{fig:amostras2} shows two samples and their spectral component. When there is only two samples, the Fourier decomposition has only one pair of coefficients $\{c_k=a_k-j.b_k\}_0^{\Lambda-1=1}$ relative to frequencies $\{f_k\}_0^1=\left\{w_k\frac{f_s}{2\pi}\right\}_0^1=\left\{k\frac{f_s}{\Lambda=2}\right\}_0^1=\left\{0,\frac{f_s}{2}=f_{\text{max}}\right\}$
 with energies $e_k=\frac{(c_k)^2}{\Lambda=2}$. The role of amplitudes $a_k$ is clearly observed with $\frac{a_0}{2}$, the fixed offset (also called \emph{bias}), and $\frac{a_1}{2}$ for the oscillation with frequency $f_1=\frac{f_s}{\Lambda=2}$.
-This case has special relevance. At least 2 samples are necessary to represent an oscillation and it yields the Nyquist frequency $f_{\text{max}}=\frac{f_s}{2}$, which is the maximum frequency in a sound sampled with $f_s$ samples per second. In fact, any discrete-time signal has this property, not only digitized sound.
+This case has special relevance: at least 2 samples are necessary to represent an oscillation and it yields the Nyquist frequency $f_{\text{max}}=\frac{f_s}{2}$, which is the maximum frequency in a sound sampled with $f_s$ samples per second. In fact, any discrete-time signal has this property, not only digitized sound.
 
 All fixed sequences $T$ of only $3$ samples also have just $1$ frequency, since the first harmonic would have $1.5$ samples and exceeds the bottom limit of 2 samples, i.e.\ the frequency of the harmonic would exceed the Nyquist frequency:  $\; \frac{2. f_s}{3} > \frac{f_s}{2}$. 
 The coefficients $\{c_k\}_0^{\Lambda-1=2}$ are present in 3 frequency components. One is relative to frequency zero ($c_0$), and the other two ($c_1$ and $c_2$) have the same role for reconstructing a sinusoid with $f=f_s/3$.
+This case is illustrated in Figure~\ref{fig:amostras3}.
 
  \begin{figure*}
      \centering
@@ -526,7 +522,6 @@ The coefficients $\{c_k\}_0^{\Lambda-1=2}$ are present in 3 frequency components
          \label{fig:amostras3}
  \end{figure*}
 
-\noindent with $a_{\Lambda/2}=0$ if $\Lambda$ odd.
 \begin{figure*}
     \centering
         \includegraphics[width=.7\textwidth]{figures/amostras4____}
@@ -549,7 +544,15 @@ The coefficients $\{c_k\}_0^{\Lambda-1=2}$ are present in 3 frequency components
         \label{fig:amostras6}
 \end{figure*}
 
-With 4 samples it is possible to represent 1 or 2 frequencies in any proportions (i.e. with independence). Figure~\ref{fig:amostras4} depicts the basic waveforms with 4 samples and their two (possible) components. The individual components sum to the original waveform and a brief inspection reveals the major curvatures resulting from the higher frequency, while the fixed offset is captured in the component with frequency $f_0=0$.
+With 4 samples it is possible to represent 1 or 2 frequencies with independence of magnitude and phase.
+Figure~\ref{fig:amostras4} depicts contribution of each of the two (possible) components.
+The individual components sum to the original waveform and a brief inspection reveals 
+the major curvatures resulting from the higher frequency,
+while the fixed offset is captured in the component with frequency $f_0=0$.
+Figure~\ref{fig:formas4} shows the harmonics for the basic waveforms of 
+Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square}
+in the case of 4 samples.
+There is only 1 sinusoid for each waveform, with the exception of the sawtooth, which has even harmonics.
 
 \begin{figure*}[!h!]
     \centering
@@ -558,13 +561,17 @@ With 4 samples it is possible to represent 1 or 2 frequencies in any proportions
         \label{fig:formas6}
 \end{figure*}
 
-Figure~\ref{fig:formas4} shows the harmonics for the basic waveforms of Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square} for the case of 4 samples. There is only 1 sinusoid for each waveform, with the exception of the sawtooth, which has even harmonics.
+Figure~\ref{fig:amostras6} exposes the sinusoidal components within 6 samples,
+while Figure~\ref{fig:formas6} presents the decomposition of the basic wave forms:
+square and triangular have the same components but with different proportions, while the sawtooth has an extra component.
 
-Figure~\ref{fig:amostras6} shows the sinusoidal decomposition for 6 samples, while Figure~\ref{fig:formas6} presents the decomposition of the basic wave forms. In this case, the waveforms have spectra with fundamental differences: square and triangular have the same components but with different proportions, while the sawtooth has an extra component.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The basic note}\label{notaBasica}
-In a nutshell, let $f$ be such that it divides $f_s$\footnote{As mentioned before, this limitation simplifies the explanation for now and will be overcome in the next section.}. A sequence $T$ of sonic samples separated by $\delta_a=1/f_s$ expresses a musical note with a frequency of $f$ Hertz and $\Delta$ seconds of duration if, and only if, it has the periodicity $\lambda_f=f_s/f$ and size $\Lambda=\lfloor f_s . \Delta \rfloor$:
+In a nutshell, let $f$ be such that it divides $f_s$\footnote{As 
+mentioned before, this limitation simplifies the exposition for now and will be overcome in the next section.}.
+A sequence $T$ of sonic samples separated by $\delta_a=1/f_s$ expresses a musical note with
+a frequency of $f$ Hertz and $\Delta$ seconds of duration if,
+and only if, it has the periodicity $\lambda_f=f_s/f$ and size $\Lambda=\lfloor f_s . \Delta \rfloor$:
 
 \begin{equation}\label{eq:notaBasica}
 T^{f,\; \Delta}=\{t_{i \, \% \lambda_f} \}_0^{\Lambda-1}= \left \{t^f_{i \; \% \left( \frac{f_s}{f} \right) } \right \}_0^{\Lambda-1}
@@ -650,7 +657,7 @@ and to use $\Lambda_{ITD}'= | \Lambda_{ITD} | $ and $IID_a'=1 / IID_a$.
 Spatial localization depends considerably on other cues. By using only ITD and IID it is possible to specify solely the horizontal angle (azimuthal) $\theta$ given by:
 
 \begin{equation}\label{eq:angulo}
-\theta=\tan^{-1}\left ( \frac{y}{ x }  \right )
+\theta=\arctan( y, x )
 \end{equation}
 
 \noindent with $x,y$ as presented in Figure~\ref{fig:spac}.
