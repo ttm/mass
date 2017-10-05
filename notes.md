@@ -1,5 +1,8 @@
 SI:
 * arrumar a ordem das figuras (fig 3 trocou com a 4)
+* add the Doppeleer; Re-verb pieces.
+* add the functions.py and hrtf.py scripts. (assert that they are in the body of the text)
+
 Scripts:
 * change f_a to f_s or fs
 * match script names of pieces from listing to source tree.
@@ -13,6 +16,10 @@ Scripts:
 * convolve noises and rhythms in the frequency domain
 * arrumar implementacao da dente de serra
 * assure the scripts are running (e.g. because it uses a sound sample)
+* Make Doppler right! And a musical piece.
+* Make the Re-verb piece!
+* Make a piece using HRTF, maybe make it also using ITD and IID to compare.
+
 
 Body:
 * synonym: semitone and half step
@@ -37,7 +44,7 @@ it relies on the frequency.
 * arrumar figura e definicao de convolucao no artigo
 * adicionar que no sinal discreto n ha derivadas e integrais
 * Further describe the captions of the figures (e.g. fig 3)
-
+* Mentions that this work was called music in digital audio: psychophysic description and toolbox
 Musical pieces:
 * make soundcloud playlists of songs: by section, extra, all
 * Make song on spatialization
@@ -48,6 +55,9 @@ Musical pieces:
 * add about the implementations with HRTF in the sec 3:
 maybe make a musical piece using only IID and ITD
 and using HRTFs.
+* Doppler: Change the y z coordinates, link to IID and ITD
+and make a more compelling argument about the change in power.
+* Add about the functions implemented.
 
 Extra:
 * How much is the deviation of the notes in the
@@ -61,3 +71,11 @@ chromatic scale to the harmonic series?
 * send to LAD the functions on localization:
   - being frequency dependent (loc\_())
   - and using HRTF while the source is moving (movingHRTF())
+* Ask about LUT:
+	- 44100/1024 ~ 43Hz, the table should be bigger
+	- For control variables (such as a vibrato) the frequency can be very small,
+	such as .3hz
+	- Is it really ok to use 1024?
+	- No interpolation needed for the indexes?
+* Avisar music-dsp q citei eles na secao de filtros
+* Ask around about the power variation in the Doppler effect
