@@ -567,47 +567,59 @@ square and triangular have the same components but with different proportions, w
 
 
 \subsection{The basic note}\label{notaBasica}
-In a nutshell, let $f$ be such that it divides $f_s$\footnote{As 
-mentioned before, this limitation simplifies the exposition for now and will be overcome in the next section.}.
-A sequence $T$ of sonic samples separated by $\delta_a=1/f_s$ expresses a musical note with
-a frequency of $f$ Hertz and $\Delta$ seconds of duration if,
+In a nutshell
+a sequence $T$ of sonic samples separated by $\delta_a=1/f_s$ expresses a musical note with
+a frequency of $f$ Hertz\footnote{Let $f$ be such that it divides $f_s$.
+As mentioned before, this limitation simplifies the exposition for now
+and will be overcome in the next section.} and $\Delta$ seconds of duration if,
 and only if, it has the periodicity $\lambda_f=f_s/f$ and size $\Lambda=\lfloor f_s . \Delta \rfloor$:
 
 \begin{equation}\label{eq:notaBasica}
 T^{f,\; \Delta}=\{t_{i \, \% \lambda_f} \}_0^{\Lambda-1}= \left \{t^f_{i \; \% \left( \frac{f_s}{f} \right) } \right \}_0^{\Lambda-1}
 \end{equation}
 
-The note by itself does not specify a timbre, it is necessary to choose a waveform for the samples $t_i$ to have a value. A unique period from one of the basic waveforms can be used to specify the note, where $\lambda_f=\frac{f_s}{f}$ is the number of samples in each period. Let $L^{f,\, \delta_f} $ be the sequence that describes a period of the waveform $L^f \in \{S^f,Q^f,T^f,D^f,R^f \}$ with duration $\delta_f=1/f$ (as given by Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square} and let $R_i^f$ be a sampled real waveform):
+Such note still does not have timbre: it is necessary to choose a waveform for the samples $t_i$ to have a value.
+Any waveform can be used to further specify the note,
+where $\lambda_f=\frac{f_s}{f}$ is the number of samples in each period.
+Let $L^f \in \{S^f,Q^f,T^f,D^f,R^f \}$
+(as given by Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular}
+and~\ref{square} and let $R_i^f$ be a sampled waveform)
+be the sequence that describes a period of the waveform 
+ with duration $\delta_f=1/f$:
 
 \begin{equation}\label{periodoUnico}
 L^{f} = \left\{ l_i^f \right\}_0^{\delta_f . f_s -1}=\left\{ l_i^f \right\}_0^{\lambda_f-1}
 \end{equation}
 
-Therefore, the sequence $T$ for a note of duration $\Delta$ and frequency $f$ is:
+Thereafter, the sequence $T$ for a note of duration $\Delta$ and frequency $f$ is:
 
 \begin{equation}\label{eq:notaBasicaTimbre}
 T^{f,\; \Delta}=\left\{t_i^f\right\}_0^{\lfloor f_s . \Delta \rfloor -1}=\left \{ l^f_{i\,\%\left(\frac{f_s}{f}\right)} \right \}_0^{\Lambda-1}
 \end{equation}
 
 \subsection{Spatialization: localization and reverberation}\label{subsec:spac}
-A musical note is always produced within the three dimensional physical space.
+A musical note is always spatialized
+(i.e. it is always produced within the ordinary three dimensional physical space)
+even though it is not one of its four basic properties in canonical musical theory (duration, loudness, pitch and timbre).
 The consideration of this fact is the subject of the spatialization knowledge field and practice\footnote{By
 spatialization one might find both:
 1) the consideration of cues in sound that derive from the environment,
 including the localization of the listener and the sound source;
 2) techniques to produce sound through various sources, such as loudspeakers, singers and traditional musical instruments, for musical purposes.
-We focus in the first item although issues of the second item are also tackled.}.
-A note is always spatialized
-even though it is not one of its four basic properties in canonical musical theory (duration, loudness, pitch and timbre).
-A note has a source which has a position at the ordinary three dimensional physical space.
+We focus in the first issue although issues of the second are also tackled
+and they are obviously intermingled.}.
+A note has a source which has a three dimensional position.
 This position is the spatial localization of the sound.
 It is often (modeled as) a single point but can be a surface or a volume.
-The reverberation in the environment in which a sound occurs is another one of the main topics of spatialization.
+The reverberation in the environment in which a sound occurs is another main topic of spatialization.
 Both concepts, spatial localization and reverberation,
 are widely valued by composers, audiophiles and the music industry~\cite{floEsp}.
 
 \subsubsection{Spatial localization}
-It is understood that the perception of sound localization occurs in our nervous system mainly by three cues: the delay of incoming sound between both ears, the difference of sound intensity at each ear and the filtering performed by the human body, specially its chest, head and ears~\cite{Roederer, hrtf, Heeger}. 
+It is understood that the perception of sound localization occurs in our nervous system
+mainly by three cues: the delay of incoming sound (and its reflections in the surfaces) between both ears,
+the difference of sound intensity at each ear and the filtering performed by the human body,
+specially its chest, head and ears~\cite{Roederer, hrtf, Heeger}. 
 
 \begin{figure}[h!]
     \centering
@@ -616,7 +628,7 @@ It is understood that the perception of sound localization occurs in our nervous
     \label{fig:spac}
 \end{figure}
 
-Considering only the direct incidences in each ear, the equations are quite simple. An object placed at $(x,y)$, as in Figure~\ref{fig:spac}, is distant of each ear by:
+An object placed at $(x,y)$, as in Figure~\ref{fig:spac}, is distant of each ear by:
 
 \begin{equation}\label{eq:distOuvidos}
 \begin{split}
@@ -625,7 +637,10 @@ d' & =\sqrt{\left (x+\frac{\zeta}{2} \right )^2 + y^2}
 \end{split}
 \end{equation}
 
-\noindent where $\zeta$ is the distance between the ears, known to be $\zeta \approx 21.5cm$ in an adult human. Straightforward calculations result in the Interaural Time Difference:
+\noindent where $\zeta$ is the distance between the ears, known to be $\zeta \approx 21.5cm$ in an adult human.
+The cues for the sonic localization are not easy to calculate, but,
+in a very simplified model, useful for musical purposes,
+straightforward calculations result in the Interaural Time Difference:
 
 \begin{equation}\label{eq:dti}
 ITD=\frac{d'-d}{v_{sound\;at\;air}\approx 343.2 }\quad \text{seconds}
@@ -651,20 +666,38 @@ IID_a & = \frac{d}{d'} \\
 \end{split}
 \end{equation}
 
-If $\Lambda_{ITD} < 0$, it is necessary to change $t_i$ by $t_i'$
+\noindent where, if $\Lambda_{ITD} < 0$, it is necessary to change $t_i$ by $t_i'$
 and to use $\Lambda_{ITD}'= | \Lambda_{ITD} | $ and $IID_a'=1 / IID_a$.
 
-Spatial localization depends considerably on other cues. By using only ITD and IID it is possible to specify solely the horizontal angle (azimuthal) $\theta$ given by:
+Spatial localization depends considerably on other cues.
+By using only ITD and IID it is possible to specify solely
+the horizontal angle (azimuthal) $\theta$ given by:
 
 \begin{equation}\label{eq:angulo}
 \theta=\arctan( y, x )
 \end{equation}
 
 \noindent with $x,y$ as presented in Figure~\ref{fig:spac}.
-Furthermore, there are problems when $\theta$ falls within the so-called "cone of confusion": the same pair of ITD and IID is related to a large number of points inside the cone~\footnote{The cone itself is not shown in Figure~\ref{fig:spac} because it is not exactly a cone and its precise dimensions were not found in the literature. Given the filtering and diffraction dependent on the sound spectrum, it is hard, if not impossible, to correctly draw the cone. Even so, the cone of confusion can be pictured as a cone with its apex placed in the middle of the head and growing out in the direction of the ear~\cite{hrtf}.}.
-On those points the inference of the azimuthal angle depends especially on the filtering of the frequencies by the head and torso~\cite{Heeger,hrtf}.
-Figure~\ref{fig:spac} depicts the acoustic shadow of the cranium, an important phenomenon to perception of the azimuthal angle in the cone of confusion. Also relevant to the hearing of lateral sources is that low frequencies diffract and the wave arrives to the opposite ear with a delay of $\approx 0.7ms$~\cite{floEsp}. 
-The complete localization, including height and distance of sound source, is given by the Head Related Transfer Function (HRTF)~\cite{hrtf}. There are well known open databases of HRTF, such as CIPIC, and it is possible to apply those transfer functions in a sonic signal by convolution (see Equation~\ref{eq:conv})~\cite{CIPIC}. Each human body has its filtering and there are techniques to generate HRTFs to be universally used~\cite{lazaSPA}. 
+Notice that
+the same pair of ITD and IID (as defined in Equations~\ref{eq:dti} and~\ref{eq:dii})
+is related to all the points in a circle parallel to
+the head, i.e. the source can have any horizontal component inside the circle.
+Such a circle is called the "cone of confusion".
+In general, one can assume that the source is in the same horizontal plane
+as the listener and at its front
+(because humans are prone to hearing frontal and horizontal sources).
+Even in such cases, there are other important cues for sound localization.
+Consider the acoustic shadow depicted in Figure~\ref{fig:spac}:
+for lateral sources the inference of the azimuthal angle is especially dependent
+on the filtering of frequencies by the head, pinna and torso.
+Also, low frequencies diffract and arrive to the opposite ear with a greater ITD. 
+The complete localization, including height and distance of a sound source,
+is given by the Head Related Transfer Function (HRTF).
+There are well known open databases of HRTFs, such as CIPIC,
+and it is possible to apply such transfer functions in a sonic 
+signal by convolution (see Equation~\ref{eq:conv}).
+Each human body has its own filtering and there are techniques 
+to generate HRTFs to be universally used.~\cite{lazaSPA,CIPIC,floEsp,Heeger,hrtf} 
 
 \subsubsection{Reverberation}
 The reverberation results from sound reflections and absorption by the environment (e.g. a room) surface where a sound occurs.
@@ -673,7 +706,6 @@ The sonic waves propagate until they reach inaudible levels (and further but the
 As a sonic front reaches the human ear, it can be described as the original sound, with the last reflection point as the source, and the absorption filters of each surface it has reached.
 It is possible to simulate reverberations that are impossible in real systems.
 For example, it is possible to use asymmetric reflections with relation to the axis perpendicular to the surface,
-to increase the intensity of the last reflections,
 to model propagation in a space with more than three dimensions,
 or consider a listener located in various positions.
 
@@ -685,8 +717,15 @@ There are reverberation models less related to each independent reflection and t
    \item Second band: mid and treble have a progressive decay and smooth statistical fluctuations.
 \end{itemize}
 
-Smith III states that usual concert rooms have a total reverberation time of $\approx 1.9$ seconds, and that the period of first reflections is around $0.1s$. With these values, under the given conditions, there are perceived wave pulses which propagate for $652.08m$ ($83.79k$ samples in $f_s=44.1kHz$) before reaching the ear. In addition, sound reflections made after propagation for
-$34.32m$ ($4.41k$ samples in $f_s=44.1kHz$) have incidences less distinct by hearing. These first reflections are particularly important to spatial sensation. The first incidence is the direct sound, described by ITD and IID of Equations~\ref{eq:dti} and~\ref{eq:dii}. Assuming that each one of the first reflections, before reaching the ear, will propagate at least $3-30m$, depending on the room dimensions, the separation between the first reflections is $8-90ms$ ($\approx 350-4000$ samples in $f_s=44.1kHz$).
+Smith III states that usual concert rooms have a total reverberation time of $\approx 1.9$ seconds, and that the period of first reflections is around $0.1s$.
+With these values, there are perceived wave pulses which propagate for $652.08m$ ($83.79k$ samples in $f_s=44.1kHz$) before reaching the ear.
+In addition, sound reflections made after propagation for
+$34.32m$ ($4.41k$ samples in $f_s=44.1kHz$) have incidences less distinct by hearing.
+These first reflections are particularly important to spatial sensation.
+The first incidence is the direct sound, described by ITD and IID of Equations~\ref{eq:dti} and~\ref{eq:dii}.
+Assuming that each one of the first reflections, before reaching the ear,
+will propagate at least $3-30m$, depending on the room dimensions,
+the separation between the first reflections is $8-90ms$ ($350-4000$ samples in $f_s=44.1kHz$).
 Also, it is experimentally verifiable that the number of reflections increases with the square of time.
 A discussion about the use of convolutions and filtering to favor implementation of these phenomena is provided in Section~\ref{subsec:mus2}, particularly in the paragraphs about reverberation.~\cite{JOSPhy}
 
@@ -710,8 +749,8 @@ Figure~\ref{fig:mixagem} illustrates this overlapping process of discretized sou
 The mixed notes are generally separated by the ear according to the physical laws of resonance and by the nervous system~\cite{Roederer}.
 This process of mixing musical notes results in musical harmony whose intervals between frequencies and chords of simultaneous notes guide subjective and abstract aspects of music and its appreciation~\cite{Harmonia} and are addressed in Section~\ref{sec:notesMusic}. 
 
-Sequences can be concatenated in time. If the sequences $\{t_{k,i}\}_0^{\Lambda_k-1}$ of sizes $\Lambda_k$ represent musical notes,
-their concatenation in a unique sequence $T$ is a simple melodic sequence, or melody of its own:
+Sequences can be concatenated in time. If the sequences $\{t_{k,i}\}_0^{\Lambda_k-1}$ represent musical notes,
+their concatenation in a unique sequence $T$ is a simple melodic sequence (or melody):
 
 \begin{equation}\label{eq:concatenacao}
 \begin{split}
@@ -724,7 +763,7 @@ This mechanism is illustrated in Figure~\ref{fig:concatenacao} with the same seq
 \begin{figure}[h!]
 {    \centering
         \includegraphics[width=.5\columnwidth]{figures/concatenacao__}}
-    \caption{Concatenation of three sound sequences by temporal overlap of their samples.}
+    \caption{Concatenation of three sounds.}
         \label{fig:concatenacao}
 \end{figure}
 
@@ -732,17 +771,13 @@ The musical piece \emph{reduced-fi} explores the temporal juxtaposition of notes
 
 With the basic musical digital note carefully described, the next section develops the temporal evolution of its contents as in \emph{glissandi} and intensity envelopes. Filtering of spectral components and noise generation complements the musical note as a self-contained unity. Section~\ref{notasMusica} is dedicated to the organization of these notes e.g. by using metrics and trajectories, with regards to traditional music theory.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \section{Variation in the basic note}\label{sec:internalVar}\label{sec:varInternas}
 The basic digital music note defined in Section~\ref{sec:notaDisc} has the following parameters: duration, pitch, intensity (loudness) and timbre. This is a useful and paradigmatic model, but it does not exhaust all the aspects of a musical note. First of all, characteristics of the note change along the note itself~\cite{Chowning}. For example, a $3s$ piano note has intensity with an abrupt rise at the beginning and a progressive decay, has spectral variations with harmonics decaying and some others emerging along time. These variations are not mandatory, but they are used in sound synthesis for music because they reflect how sounds appear in nature. This is considered so important that there is a rule of thumb: to make a sound that incites interest by itself, arrange internal variations on it~\cite{Roederer}.
 To explore all the ways by which variations occur within a note is out of the scope of any work, given the sensibility of the human ear and the complexity of human sound cognition. In the following, primary resources are presented to produce variations in the basic note. It is worthwhile to recall that all the relations in this and other sections are implemented in Python and published in the public domain \massa\ toolbox. The musical pieces \emph{Transit para meter}; \emph{Vibrates and shakes}; \emph{Tremolos, vibratos and the frequency}; \emph{Little train of impulsive hillbillies}; \emph{Noisy band}; \emph{Bela rugosi}; \emph{Children's chorus}; and \emph{ADa and SaRa} were made to validate and illustrate concepts of this section. The code that synthesizes these pieces is also part of the toolbox.~\cite{MASSA}
  
 \subsection{Lookup table}\label{subsec:lookup}
-The \emph{Lookup Table} (or simply LUT) is an array for indexed operations which substitutes continuous and repetitive calculations.
+The \emph{Lookup Table} (LUT) is an array for indexed operations which substitutes continuous and repetitive calculations.
 It is used to reduce computational complexity and for employing functions without calculating them directly, e.g. from sampled data or hand picked values.
 In music its usage transcends these applications: it simplifies many operations and enables the use a single wave period to synthesize sounds in the whole audible spectrum, with any waveform.
 

@@ -45,6 +45,9 @@ Musical pieces:
 * Refazer ADa e SaRa? bonds? Melhorar trenzinho? Vibra e treme (subst pelo art on vibratos?)?
 * deixar somente o ruidosa faixa 4
 * make list of musical pieces done with mass in a wiki page
+* add about the implementations with HRTF in the sec 3:
+maybe make a musical piece using only IID and ITD
+and using HRTFs.
 
 Extra:
 * How much is the deviation of the notes in the
