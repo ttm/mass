@@ -58,6 +58,7 @@ and using HRTFs.
 * Doppler: Change the y z coordinates, link to IID and ITD
 and make a more compelling argument about the change in power.
 * Add about the functions implemented.
+* Very easy to inspect and assure the sound is what you expect it to be, in terms of the most used variables in physichophysics.
 
 Extra:
 * How much is the deviation of the notes in the

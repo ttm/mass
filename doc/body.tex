@@ -424,8 +424,9 @@ The isolated and exactly harmonic components of the spectra is a consequence of 
 
 \subsection{Spectra of sampled sounds}
 The sinusoidal components in the discretized sound have some particularities.
+% no integral and derivatives
 Considering a signal $T$ and its corresponding Fourier decomposition 
-$\mathcal{F}\langle T\rangle=C=\{c_i\}_0^{\Lambda-1}=\left\{ \sum_{k=0}^{\Lambda-1}t_ke^{-j2\pi ki/\Lambda} \right\}_0^{\Lambda-1}$,
+$\mathcal{F}\langle T\rangle=C=\{c_k\}_0^{\Lambda-1}=\left\{ \sum_{i=0}^{\Lambda-1}t_ie^{-j i (k \frac{2 \pi}{\Lambda})} \right\}_-1^{\Lambda-1}$,
 the recomposition is the sum of the frequency components to yield the temporal samples\footnote{The 
 factor $\frac{1}{\Lambda}$ can be distributed among the Fourier transform and its reconstruction, as preferred.
 Note that $j$ here is the imaginary unit $j^2=-1$.}:

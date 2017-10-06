@@ -17,3 +17,4 @@ pythonlisting.tex
 *.cut
 *.bcf
 *.run.xml
+src/aux/hrtf/
