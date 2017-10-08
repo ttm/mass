@@ -19,7 +19,7 @@ Scripts:
 * Make Doppler right! And a musical piece.
 * Make the Re-verb piece!
 * Make a piece using HRTF, maybe make it also using ITD and IID to compare.
-
+* Arrumar Acorde cedo para fazer modulacoes
 
 Body:
 * synonym: semitone and half step
@@ -60,6 +60,7 @@ and make a more compelling argument about the change in power.
 * Add about the functions implemented.
 * Very easy to inspect and assure the sound is what you expect it to be, in terms of the most used variables in physichophysics.
 * Make figures on sampled frequency right!
+* Make note on temporal and frequential notations for note durations
 
 Extra:
 * How much is the deviation of the notes in the
