@@ -2097,7 +2097,7 @@ def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
 def D(f=220, d=2, tab=Tr, x=[-10, 10], y=[1,1], stereo=True,
         zeta=0.215, temp = 20, nsamples=0, fs=44100):
     """
-    A simple note with a transition of localization and result Doppler effect
+    A simple note with a transition of localization and resulting Doppler effect.
 
     Parameters
     ----------

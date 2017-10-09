@@ -6,12 +6,11 @@ SI:
 Scripts:
 * change f_a to f_s or fs
 * match script names of pieces from listing to source tree.
-* include aux/utils.py to listings
-* add script on images for transitions
-* Divide sound by max(max, min) in normalization
+* add script on images for transitions ????
+* Divide sound by max(max, -min) in normalization
 * Include movement(2).py (in a sandbox?) or remove it.
-* Make Doppler with transitions of pitch, of location and vibratos
-* Make arbitrary movements.
+* Make Doppler with transitions of pitch, of location and vibratos OK
+* Make arbitrary movements. OK
 * homogeneize names of rendered wav files
 * convolve noises and rhythms in the frequency domain
 * arrumar implementacao da dente de serra
@@ -20,9 +19,10 @@ Scripts:
 * Make the Re-verb piece!
 * Make a piece using HRTF, maybe make it also using ITD and IID to compare.
 * Arrumar Acorde cedo para fazer modulacoes
+* Incorporate fractalize.py
+* Model the sonic boom (when the moving source reaches the sonic speed)
 
 Body:
-* synonym: semitone and half step
 * position figures
 * see if codes.pdf is not dropping out of the margin
 * figgus package is very preliminary. Its principles are incorporated into music. It is interesting because:
@@ -30,21 +30,11 @@ Body:
   - Implements a whole EP album.
   - Inherits the original FIGGUS concepts (articles)
   - Is a step betwen original FIGGUS and the music package
-* review loudness transitions to verify if is according to exponential transitions.
-* find words logarith... to see if needs to be replaced by exponential
-* Two advantages of the ITD and IID described:
-  - It is true to the physical phenomena of sound propagation:
-    - Disconsiders HRTF.
-  - It is easy to model and make hacks (e.g. transitions)
-* Linear PCM
-* Put note on a golden rule: if your sound has variations of pitch,
-they need to be accounted for before making the table lookup because
-it relies on the frequency.
-* Generalized/non-personalized HRTF.
-* arrumar figura e definicao de convolucao no artigo
-* adicionar que no sinal discreto n ha derivadas e integrais
-* Further describe the captions of the figures (e.g. fig 3)
-* Mentions that this work was called music in digital audio: psychophysic description and toolbox
+* Mention that this work was called music in digital audio: psychophysic description and toolbox
+* Cite more reference works that I've visited (from CCRMA, UPF, Brazil, England, Germany, IRCAM, etc)
+* Add about the functions implemented.
+* Very easy to inspect and assure the sound is what you expect it to be, in terms of the most used variables in physichophysics.
+
 Musical pieces:
 * make soundcloud playlists of songs: by section, extra, all
 * Make song on spatialization
@@ -55,18 +45,13 @@ Musical pieces:
 * add about the implementations with HRTF in the sec 3:
 maybe make a musical piece using only IID and ITD
 and using HRTFs.
-* Doppler: Change the y z coordinates, link to IID and ITD
-and make a more compelling argument about the change in power.
-* Add about the functions implemented.
-* Very easy to inspect and assure the sound is what you expect it to be, in terms of the most used variables in physichophysics.
-* Make figures on sampled frequency right!
-* Make note on temporal and frequential notations for note durations
+* Make a final musical suite using the techniques presented?
 
 Extra:
 * How much is the deviation of the notes in the
 equal temperament from the natural tuning (harmonic series)?
-* avisar Cristina que coloquei o número do projeto no trabalho.
 chromatic scale to the harmonic series?
+* avisar Cristina que coloquei o número do projeto no trabalho.
 * send work to numpy/scipy community
 * Is PCM audio representing the displacement or the pressure variation?
 * Use numpy's system to obtain HTML representation of the documentation in music package.
@@ -76,8 +61,7 @@ chromatic scale to the harmonic series?
   - and using HRTF while the source is moving (movingHRTF())
 * Ask about LUT:
 	- 44100/1024 ~ 43Hz, the table should be bigger
-	- For control variables (such as a vibrato) the frequency can be very small,
-	such as .3hz
+	- For control variables (such as a vibrato) the frequency can be very small, such as .3hz
 	- Is it really ok to use 1024?
 	- No interpolation needed for the indexes?
 * Avisar music-dsp q citei eles na secao de filtros

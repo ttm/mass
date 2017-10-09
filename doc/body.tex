@@ -1364,40 +1364,32 @@ the creation of `sound amalgams' based on granular synthesis; see Figure~\ref{fi
 
 
 \subsubsection{Moving source and receptor, Doppler effect}
-According to the discussion in Section~\ref{subsec:spac}, when an audio source or receptor is moving, its characteristics are ideally updated at each sample of the digital signal (if fast computational rendering is not at stake).
-Velocity components should be found for each ear.
-Hence, given the audio source speed $s_s$, with positive values if the source moves away from receptor,
+According to the discussion in Section~\ref{subsec:spac},
+when an audio source (or receptor) is moving,
+the IID and ITD are constantly changing and
+are ideally updated at each sample of the digital signal 
+(if fast computational rendering is not at stake).
+As given by basic theory,
+the audio source speed $s_s$, with positive values if the source moves away from receptor,
 and receptor speed $s_r$, positive when it gets closer to audio source (one might always use $s_r=0$ for musical purposes),
-the frequency is given by the well-known shift in the Doppler effect:
+relates the fequency $f$ at the receiver
+and the frequency $f_0$ emitted by:
 
 \begin{equation}\label{eq:fDoppler}
     f=\left(\frac{s_{sound}+s_r}{s_{sound}+s_s}\right)f_0
 \end{equation}
 
-With both frequencies $f$ and $f_0$, and the IID and ITD from the new source
-position, it is possible to simulate the Doppler effect. There is an addendum to improve the fidelity of the physical phenomena:
-to change the intensity of the received wave, which may be understood as being proportional to the wave shrinking or expansion: $P=P_0\left(1+ \frac{s_r+s_s}{343.2}\right)$,
- where $P_0$ is signal power and $P$ the power at the receptor.
-Hence, both the received amplitude and frequency of a moving sonic source can be modeled.
-If the audio source is in front of the receptor with $y_0$ meters of horizontal distance and $z_0$ meters of height, the distance is given by
-$D=\left\{ d_i=\sqrt{ y_{i}^{2}+z_{0}^{2} } \right\}_0^{\Lambda-1}$,
-where $y_i=y_0+(v_r-v_s)\frac{i}{f_s}$ with $v_s$ and $v_r$ both
-horizontal, having null non-$y$ components.
-Thus:
-
-\begin{equation}\label{eq:aDoppler}
-    A_i=\left\{ \frac{z_0}{d_i}A_{\Delta P}\right\}_0^{\Lambda-1} = \left\{ \frac{z_0}{\sqrt{y_i^2+z_0^2}} \sqrt{\frac{v_r-v_s}{343,2}+1}  \,\right\}_0^{\Lambda-1}
-\end{equation}
-
-The change in both the power and the pitch are antisymmetric
-upon the crossing of source with receptor.
-The same semitones (or fraction of) that are added during the approach are decreased during the departure.
+Using the coordinates as in Figure~\ref{fig:spac},
+and Equation~\ref{eq:distOuvidos},
+the speed $s_s$ can be found simply by $s_s = f_s(d_{i+1}-d{i})$.
+One should also use IID for the intensity progression of the sound,
+and ITD to correctly start and end the sonic
+sequences related to each ear.
+The change in pitch is antisymmetric
+upon the crossing of source with receptor:
+the same semitones (or fraction of) that are added during the approach are decreased during the departure.
 Moreover, the transition is abrupt if source and receptor intersect with zero distance, otherwise, there is a smooth progression.
-In the given case, where there is a static height $z_0$, the frequencies $F$ at the observer are given by:
 
-\begin{equation}\label{eq:ffDoppler}
-    F=\{f_i\}_0^{\Lambda-1}=\left\{\frac{v_{sound} + v_r\frac{y_i}{\sqrt{z_0^2+y_i^2}}}{v_{sound}+v_s\frac{y_i}{\sqrt{z_0^2+y_i^2}}}f_0\right\}_0^{\Lambda-1}
-\end{equation}
 The musical piece \emph{Doppeleer} explores and exemplifies the musical use of the Doppler effect.~\cite{MASSA}
 
 \subsubsection{Filters and noises (Sections~\ref{subsec:ruidos} and~\ref{subsec:filtros})}
@@ -2042,7 +2034,24 @@ P^{ \{ j_k \} }_{ \{ i_{k} \}}
 As an example, consider $P^{-1,0,1}_{3,2,2}$ as the third subdivision $P^{-1}_3$ of the
 second pulse $P^0_2$ and of the second pulse group $P^1_2$ (possibly second measure).
 Each unit $P_i^j$ can be associated with a sequence of temporal samples $T$ that constitutes e.g. a
-note. The music piece \emph{Poli Hit Mia} uses different metrics~\cite{MASSA}.
+note.
+In practice, there is an underlying reference duration, usually associated with the pulse,
+e.g. $d_r=1$ second, and the durations of each segment are specified by:
+\begin{itemize}
+	\item a `temporal notation': where each entry is a relative duration to
+		be multiplied by the reference duration. E.g. $durs=\{1,0.5,4\}$
+		is mapped to $\{d_id_r\} = \{1d_r, 0.5d_r, 4d_r\}$. Or:
+	\item a `frequential notation': where each entry is how many the
+		entry that fits a same duration. E.g. $durs=\{4, 2, 16\}$
+		is mapped to $\{d_r/d_i\} = \{d_r/4, d_r/2, d_r/16\}$.
+		This notation might be less intuitive but it is more tightly
+		related to traditional music theory, where e.g. the duration related
+		to the number 4 is twice the duration related to the number 8.
+\end{itemize}
+See the function \texttt{rhythymToDurations} in file \texttt{src/aux/functions.py}
+for an implementation of both notations that allows the specification of tuplets
+(the use of arbitrary divisions of a reference duration).
+The music piece \emph{Poli Hit Mia} uses different metrics.~\cite{MASSA}
 
 \subsection{Repetition and variation: motifs and larger units}\label{subsec:motivos}
 Given the basic musical structures, both frequential (chords and scales) and rhythmic (simple, compound and complex beat divisions and agglomerations), it is
@@ -2304,7 +2313,7 @@ permutations to achieve
 musical structures~\cite{MASSA,figgusOriginal,figgusEspacializacao,figgus,3Trios}.
 
 \subsection{Serialism and post-serial techniques}
-Recapitulating concepts in Sections~\ref{sec:atonal} and~\ref{subsec:motivos},
+Recapitulating concepts from Sections~\ref{sec:atonal} and~\ref{subsec:motivos},
 sequences of characteristics can be predefined and
 used throughout a musical piece.
 These sequences can be of intensities, timbre, durations,
@@ -2325,10 +2334,10 @@ important concepts:
 	\item Spectralism:
 		consists on use the (Fourier) spectrum of a sound or the harmonic series for musical composition,
 		such as
-		to obtain harmonies, sequences of pitches or a temporal evolution of the overall spectrum~\cite{grisey}.
+		to obtain harmonies, sequences of pitches or a temporal evolution of the overall spectrum.
 		For example, the most prominent frequencies can be used as pitches,
 		real notes can be used to mimic an original spectrum
-		(e.g. use piano notes to mimic the spectrum of a spoken sentence) or portions of the spectrum made to vary~\cite{grisey}.
+		(e.g. use piano notes to mimic the spectrum of a spoken sentence) or portions of the spectrum made to vary.~\cite{grisey}
 	\item Spectromorphology:
 		can be considered a spectral music (spectralism) theoretical framework~\cite{smalley,schaeffer}
 		that examines the relation between sound spectra and their temporal evolution.
@@ -2336,11 +2345,11 @@ important concepts:
 		and spectral density.
 	\item Stochastic music:
 		the use of random variables to describe musical elements are extensively considered in stochastic music~\cite{formalized}.
-		In summary, one can use probability distributions for the synthesis of basic sounds and for obtaining larger scale musical elements.
+		In summary, one can use probability distributions for the synthesis of basic sounds and for obtaining larger scale musical structures.
 		Changes in these distributions or in other characteristics yield the discourse.
 	\item Textures:
 		sounds can be assembled in terms of a ``sonic texture''.
-		Here, a texture is often thought about very abstractly
+		A sonic texture is often thought about very abstractly
 		as a sonic counterpart of visual texture.
 		Parameters that can be used: range between highest and lowest note,
 		density of notes, durations of notes, motives, number of voices, etc.
@@ -2351,7 +2360,7 @@ important concepts:
 In numerous studies and aesthetic endeavors, there are models, discussions and exploitation of a `musical language'.
 Some of them are linguistic theories applied to music
 and some discern different `musical
-idioms'~\cite{Lerdahl, Harmonia, Salzer,Alfaix}. Simply put, a musical idiom
+idioms'~\cite{Lerdahl, Harmonia, Salzer,Alfaix}. Simply put, a musical idiom or language
 is the result of chosen materials together with variation techniques and
 relations established between elements along a music piece. In these matters,
 dichotomies are prominent, as explained in Section~\ref{subsec:motivos}:
@@ -2368,11 +2377,13 @@ of praxis possibilities is typical and highly relevant for artistic contexts~\ci
 There are studies and further developments for each of the presented resources.
 For example, it is possible to obtain `dirty' triadic harmonies (with notes out of the triad) by superposition of perfect fourths.
 Another interesting example is the superimposition of rhythms in different metrics, constituting what is
-called \emph{polyrhythm}. The music piece \emph{Poli-hit mia}~\cite{MASSA} explores these simultaneous metrics by impulse trains convolved with notes.
+called \emph{polyrhythm}. The music piece \emph{Poli-hit my}~\cite{MASSA} explores these simultaneous metrics by impulse trains convolved with notes.
 
 Microtonal scales are important for 20th
 century music~\cite{microtonalidade} and yielded diverse remarkable results throughout history, e.g.
-fourths of a tone ($\epsilon=2^{\frac{1}{24}}$) is often used in some genres of Indian and Arabic music. The musical sequence \emph{MicroTom}~\cite{MASSA} explores these resources, including microtonal melodies and harmonies
+fourths of a tone ($\epsilon=2^{\frac{1}{24}}$) are often used in some genres of Indian and Arabic music.
+The musical sequence \emph{Micro Tone}~\cite{MASSA} explores these possibilities,
+including microtonal melodies and harmonies
 with many pitches in a very reduced frequency bandwidth.
 
 As in Section~\ref{subsec:mus2}, relations between
@@ -2387,8 +2398,8 @@ Incontestably, the possibilities are very wide, which is made evident by the num
 The symmetries at octave divisions (Equation~\ref{escSim}) and the
 symmetries presented as permutations (Table~\ref{tab:change} and
 Equations~\ref{eq:groups}) can be used together. In the music piece \emph{3 trios},
-this association is performed in a systematic way in order to achieve a specific style. This is an instrumental piece, not included as a source
-code but available online~\cite{3Trios}.
+this association is performed in a systematic way in order to achieve a specific style.
+This is an instrumental piece, not included as a source code but available online~\cite{3Trios}.
 
 \emph{PPEPPS} (Pure Python EP: Project Solvent) is an EP (Extended Play) synthesized using
 resources presented in this document. With minimal parametrization, the scripts
@@ -2412,7 +2423,7 @@ Another Supporting Information document~\cite{massCode} holds a PDF presentation
 because many readers might not find it easy to browse source code files.
 
 The possibilities provided by this exposition pour from both the organization of knowledge and the ability to achieve sounds which are extremely true to the models.
-For example, one can produce noises with arbitrary resolution of the spectrum and a musical note can be synthesized with the parameters (e.g. of a vibrato) updated sample-by-sample.
+For example, one can produce noises with an arbitrary resolution of the spectrum and a musical note can be synthesized with the parameters (e.g. of a vibrato) updated sample-by-sample.
 Furthermore, software for synthesis and processing of sounds for musical purposes
 by standard restricts the bit depth to 16 or 24.
 This is achievable in this framework but by standard Python uses more bits per floating point number.
@@ -2430,7 +2441,7 @@ which are more intuitive and does not require fluency in calculus.
 \noindent In fact, this framework was used in a number of contexts, including courses, software implementations and for making music~\cite{vimeoLM,vivace,dissertacao}.
 Such detailed analytical descriptions, together with the computational implementations, have not been covered before in the literature, as far as the authors know, such as testified in the literature review (Appendix G of~\cite{dissertacao}), where books, articles and open software are related to this framework.
 
-The free software license and online availability of the content,
+The free software license, and online availability of the content,
 facilitate collaborations and the generation of sub-products in a co-authorship fashion,
 new implementations and development of musical pieces.
 The scripts can be divided in three groups: implementation of all the equations and topics of music theory; routines for rendering musical pieces that illustrate the concepts; scripts that render the figures of this article and the article itself.
@@ -2444,11 +2455,11 @@ Some of these efforts are available online~\cite{dissertacao}.
 It is evident that all these contributions are a consequence of more that just \massa, but it is also evident to the authors that \massa\ had a primary role in converging interests and attracting collaborators.}
 
 Future work might include application of these results in artificial intelligence
-for the generation of appealing artistic materials. Some psychoacoustic effects were detected,
-which needs validation and should be reported, specially with~\cite{quadrosSonoros}.\footnote{The sonic portraits where sent to a public mailing list~\cite{metaLista} and the fifth piece was reported by some individuals to induce a state in which noises from the own tongue, teeth and jaw of the individual echoed for some seconds (the GMANE archives with the descriptions of the effect by listeners in the public email list is unfortunately offline at the moment.} Other foreseen advances
+for the generation of attractive artistic materials. Some psychoacoustic effects were detected,
+which need validation and should be reported, specially with~\cite{quadrosSonoros}.\footnote{The sonic portraits where sent to a public mailing list~\cite{metaLista} and the fifth piece was reported by some individuals to induce a state in which noises from the own tongue, teeth and jaw of the individual echoed for some seconds (the GMANE archives with the descriptions of the effect by listeners in the public email list is unfortunately offline at the moment.} Other foreseen advances
 are: a JavaScript version of the toolbox, better hypermedia deliverables of this framework, user guides
-for different goals (e.g. musical composition, psychophysical experiments, sound synthesis, education), creation
-of musical pieces, open experiments to be studied with EEG recordings, a linked data representation
+for different goals (e.g. musical composition, psychophysic experiments, sound synthesis, education), creation
+of more musical pieces, open experiments to be studied with EEG recordings, a linked data representation
 of the knowledge in \massa\ through SKOS and OWL to tackle the issues exposed in Section~\ref{sec:disc},
 data sonification routines, and further analytical specification of musical
 elements in the discrete-time representation of sound as feedback is received from the community.

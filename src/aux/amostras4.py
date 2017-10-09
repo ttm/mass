@@ -7,16 +7,16 @@ f=n.fft.fft
 #n4=n.random.rand(4)*2-1
 n4=n.array([ 0.58003705, -0.30828309, -0.29797696, -0.99219078])
 p.figure(figsize=(12.,6.))
-p.subplots_adjust(left=0.04,bottom=0.12,right=0.99,top=0.99)
+p.subplots_adjust(left=0.06,bottom=0.12,right=0.995,top=0.995)
 p.plot(n4,"bo")
 
 ff=f(n4)
 
-# Primeiro componente, 0Hz
+# Primeira componente, 0Hz
 a0=n.real(ff[0]) 
 b0=n.imag(ff[0]) # sempre zero
 
-# Segundo componente, t_a/N Hz
+# Segunda componente, t_a/N Hz
 ab1=n.abs(ff[1]) # (a**2+b**2)**0.5
 a1=n.real(ff[1])
 b1=n.imag(ff[1])
@@ -24,16 +24,13 @@ fas=n.arctan(b1/a1) # fase fas=n.angle(f[1])
 if a1<0: fas+=n.pi # segundo e terceiro quadrantes somam pi
 print("abs: %s, a1: %s, b1: %s, fas: %s" % (ab1,a1,b1,fas))
 
-# Segundo componente, t_a/N Hz
+# Segunda componente, t_a/N Hz
 ab2=n.abs(ff[2]) # (a**2+b**2)**0.5
 a2=n.real(ff[2])
 b2=n.imag(ff[2])
 fas2=n.arctan(b2/a2) # fase fas=n.angle(f[1])
 if a2<0: fas2+=n.pi # segundo e terceiro quadrantes somam pi
 print("abs: %s, a2: %s, b2: %s, fas2: %s" % (ab2,a2,b2,fas2))
-
-
-
 
 fr1=(2*n.pi/4)/2 #ciclo em 4 * \delta_a, metade do intervalo angular 
 fr2=1/2. # metade de \delta_a
@@ -54,7 +51,7 @@ p.plot(iii,ss,"r--", label=r"$\frac{a_2}{4}cos\left(\frac{2\pi . 2 }{4}i \right)
 p.legend(loc="upper right", fontsize=20)
 
 
-p.yticks((),())
+p.yticks((0,),(0,), size=20)
 p.xticks((-1,0,1,2,3,4),(r"$-\delta_a$",r"$0$",r"$\delta_a$",r"$2\delta_a$",r"$3\delta_a$",r"$4\delta_a$"),
         size=20)
 
@@ -62,5 +59,5 @@ p.xlim(-.6,4.9)
 p.ylim(-1.1,1.1)
 p.ylabel(r"amplitude $\rightarrow$", fontsize=19)
 p.xlabel(r"time $\rightarrow$", fontsize=19)
-p.savefig("../figures/amostras4____.png")
+p.savefig("../../doc/figures/amostras4____.png")
 p.show()
