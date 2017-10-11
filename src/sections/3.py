@@ -140,7 +140,7 @@ B = n.random.random(3)  # arbitrary coefficients
 
 def applyIIR(signal, A, B):
     signal_ = []
-    for i, sample in enumerate(signal):
+    for i in range(len(signal)):
         samples_A = signal[i::-1][:len(A)]
         A_coeffs = A[:i+1]
         A_contrib = (samples_A*A_coeffs).sum()
@@ -223,7 +223,7 @@ for t_i in T[2:]:
 # See src/filters/ruidos.py for rendering Figure 19
 Lambda = 100000  # Use an even Lambda for compliance with the following snippets
 # Separation between frequencies of neighbor spectral coefficients:
-df = 2*f_s/Lambda
+df = f_s/Lambda
 
 ### Eq. 49 White noise
 # uniform moduli of spectrum and random phase
@@ -236,7 +236,6 @@ coefs[:i0] = n.zeros(i0)
 # coefficients have real part even and imaginary part odd
 coefs[Lambda/2+1:] = n.real(coefs[1:Lambda/2])[::-1] - 1j * \
     n.imag(coefs[1:Lambda/2])[::-1]
-coefs[0] = 0.  # no bias (no offset)
 coefs[Lambda/2] = 1.  # max freq is only real (as explained in Sec. 2.5)
 
 # Achievement of the temporal samples of the noise
@@ -479,7 +478,7 @@ P = (ii[:Lambda1]/float(Lambda1))**2.
 R1_=n.random.random(Lambda1)<P
 A=10.**((-50./20)*(ii/Lambda))
 ### Eq. 76 First period of reverberation:
-R1=R1_*A[:Lambda1]*ruido_marrom[:Lambda1] # first incidences
+R1=R1_*A[:Lambda1]  # first incidences
 
 # Brown noise with exponential decay (of amplitude) for the second period:
 ### Eq. 77 Second period of reverberation:

@@ -21,6 +21,8 @@ Scripts:
 * Arrumar Acorde cedo para fazer modulacoes
 * Incorporate fractalize.py
 * Model the sonic boom (when the moving source reaches the sonic speed)
+* Make a piece with noises that use the same bandwidth as harmonies
+or notes.
 
 Body:
 * position figures

@@ -1,7 +1,15 @@
 import numpy as n
 from scipy.io import wavfile as w
-import doctest, builtins
+from scipy.signal import fftconvolve as convolve_
 from HRTF import *
+from numbers import Number
+
+
+def convolve(sig1, sig2):
+    if len(sig1) > len(sig2):
+        return convolve(sig1, sig2)
+    else:
+        return convolve(sig2, sig1)
 
 __doc__ = """
 This file holds minimal implementations
@@ -34,7 +42,8 @@ H = n.hstack
 #####################
 # IO
 def __n(sonic_vector, remove_bias=True):
-    """Normalize mono sonic_vector.
+    """
+    Normalize mono sonic_vector.
     
     The final array will have values only between -1 and 1.
     
@@ -51,8 +60,8 @@ def __n(sonic_vector, remove_bias=True):
         A numpy array with values between -1 and 1.
     remove_bias : boolean
         Whether to remove or not the bias (or offset)
-    """
 
+    """
     t = n.array(sonic_vector)
     if n.all(t==0):
         return t
@@ -67,7 +76,8 @@ def __n(sonic_vector, remove_bias=True):
 
 
 def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
-    """Normalize a stereo sonic_vector.
+    """
+    Normalize a stereo sonic_vector.
     
     The final array will have values only between -1 and 1.
     
@@ -87,8 +97,8 @@ def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
     -------
     s : ndarray
         A numpy array with values between -1 and 1.
-    """
 
+    """
     t = n.array(sonic_vector)
     if n.all(t==0):
         return t
@@ -124,7 +134,8 @@ def __ns(sonic_vector, remove_bias=True, normalize_sep=False):
 monos = n.random.uniform(size=100000) 
 def W(sonic_vector=monos, filename="asound.wav", fs=44100,
         fades=0, bit_depth=16, remove_bias=True):
-    """Write a mono WAV file for a numpy array.
+    """
+    Write a mono WAV file for a numpy array.
     
     One can also use, for example:
         import sounddevice as S
@@ -171,7 +182,8 @@ stereos = n.vstack((n.random.uniform(size=100000), n.random.uniform(size=100000)
 
 def WS(sonic_vector=stereos, filename="asound.wav", fs=44100,
         fades=0, bit_depth=16, remove_bias=True, normalize_sep=False):
-    """Write a stereo WAV files for a numpy array.
+    """
+    Write a stereo WAV files for a numpy array.
     
     Parameters
     ----------
@@ -479,7 +491,6 @@ def loc(sonic_vector=N(), theta=0, dist=0, x=.1, y=.01, zeta=0.215, temp=20, fs=
         TL = n.hstack((sonic_vector, n.zeros(-Lambda_ITD)))
         TR = n.hstack((n.zeros(-Lambda_ITD), sonic_vector*(1/IID_a)))
     s = n.vstack((TL, TR))
-    print(x, y, IID_a, Lambda_ITD, speed)
     return s
 
 def loc2(sonic_vector=N(), theta1=90, theta2=0, dist1=.1,
@@ -527,7 +538,6 @@ def loc_(sonic_vector=N(), theta=-70, x=.1, y=.01, zeta=0.215,
     These implementations are not standard and are only
     to illustrate the method of using ITD and IID
     that are frequency dependent.
-
 
     Parameters
     ----------
@@ -654,7 +664,6 @@ def loc_(sonic_vector=N(), theta=-70, x=.1, y=.01, zeta=0.215,
             # IID > 0 : left ear has amplification
             # ITD > 0 : right ear has a delay
             # relate ITD to phase change (anglesl)
-            print(IID, theta_)
             lamb = 1/f
             if theta_ > 0:
                 change = ITD - (ITD//lamb)*lamb
@@ -708,18 +717,15 @@ def loc_(sonic_vector=N(), theta=-70, x=.1, y=.01, zeta=0.215,
             TR = n.hstack(( TR, n.zeros(maxsize - len(TR)) ))
             s_ = n.vstack(( TL, TR ))
             s += s_
-            print(i, "/", Lambda)
     if method == "ifft":
         coefsl = normsl*n.e**(anglesl*1j)
         coefsl[max_coef+1:] = n.real(coefsl[1:max_coef])[::-1] - 1j * \
             n.imag(coefsl[1:max_coef])[::-1]
-        # print(n.fft.ifft(coefsl).imag.sum())
         sl = n.fft.ifft(coefsl).real
 
         coefsr = normsr*n.e**(anglesr*1j)
         coefsr[max_coef+1:] = n.real(coefsr[1:max_coef])[::-1] - 1j * \
             n.imag(coefsr[1:max_coef])[::-1]
-        # print(n.fft.ifft(coefsr).imag.sum())
         sr = n.fft.ifft(coefsr).real
         s = n.vstack(( sl, sr ))
     # If in need to force energy to be preserved, try:
@@ -727,18 +733,6 @@ def loc_(sonic_vector=N(), theta=-70, x=.1, y=.01, zeta=0.215,
     # energy2 = n.sum(s**2)
     # s = s*(energy1/energy2)**.5
     return s
-
-
-
-
-
-# def rev(Delta=2, Delta1=0.15, 
-# 
-# def noises():
-# 
-# def IIR():
-# 
-# def FIR():
 
 
 def V(f=220, d=2, fv=4, nu=2, tab=Tr, tabv=S,
@@ -2036,7 +2030,8 @@ def mix(sonic_vectors, end=False, offset=0, fs=44100):
 
 
 def trill(f=[440,440*2**(2/12)], ft=17, d=5, fs=44100):
-    """Make a trill.
+    """
+    Make a trill.
 
     This is just a simple function for exemplifying
     the synthesis of trills.
@@ -2170,8 +2165,6 @@ def D(f=220, d=2, tab=Tr, x=[-10, 10], y=[1,1], stereo=True,
         vsr = fs*(dr[1:]-dr[:-1])
         fl = f*speed/(speed+vsl)
         fr = f*speed/(speed+vsr)
-        builtins.vsl=vsl
-        builtins.vsr=vsr
 
         Gamma = n.cumsum(fl*l/fs).astype(n.int)
         sl = tab[ Gamma % l ]*IID_al[:-1]
@@ -2352,8 +2345,6 @@ def D_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4],[4,6,1]],
             vsr = fs*(dr[1:]-dr[:-1])
             fl = speed/(speed+vsl)
             fr = speed/(speed+vsr)
-            builtins.vsl_=vsl
-            builtins.vsr_=vsr
 
             F_.append( n.vstack(( fl, fr )) )
             IID_a.append( n.vstack(( IID_al[:-1], IID_ar[:-1] )) )
@@ -2382,7 +2373,6 @@ def D_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4],[4,6,1]],
             IID_a.append(IID[:-1])
     F_ = n.hstack( F_ )
     IID_a = n.hstack( IID_a )
-    print(F_.shape)
 
     # find maximum size, fill others with ones
     amax = max([len(i) if len(i.shape)==1 else len(i[0]) for i in V_+[F_]])
@@ -2394,7 +2384,6 @@ def D_(f=[220, 440, 330], d=[[2,3],[2,5,3], [2,5,6,1,.4],[4,6,1]],
     else:
         F_ = n.hstack(( F_, n.ones( amax - len(F_) ) ))
 
-    print(F_.shape)
     l = len(tab[0][0])
     if not stereo:
         V_.extend(F_)
@@ -2582,7 +2571,427 @@ def rhythymToDurations(durations=[4, 2, 2, 4, 1,1,1,1, 2, 2, 4],
             
 R = rhythymToDurations
 
+def FM(f=220, d=2, fm=100, mu=2, tab=Tr, tabm=S,
+        nsamples=0, fs=44100):
+    """
+    Synthesize a musical note with FM synthesis.
+    
+    Set fm=0 or mu=0 (or use N()) for a note without FM.
+    A FM is a linear oscillatory pattern of frequency [1].
+    
+    Parameters
+    ----------
+    f : scalar
+        The frequency of the note in Hertz.
+    d : scalar
+        The duration of the note in seconds.
+    fm : scalar
+        The frequency of the modulator in Hertz.
+    mu : scalar
+        The maximum deviation of frequency in the modulator in Hertz.
+    tab : array_like
+        The table with the waveform for the carrier.
+    tabv : array_like
+        The table with the waveform for the modulator.
+    nsamples : integer
+        The number of samples in the sound.
+        If supplied, d is ignored.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    s : ndarray
+        A numpy array where each value is a PCM sample of the note.
+
+    See Also
+    --------
+    N : A basic musical note without vibrato.
+    V : A musical note with an oscillation of pitch.
+    T : A tremolo, an oscillation of loudness.
+    AM : A linear oscillation of amplitude (not linear loudness).
+
+    Examples
+    --------
+    >>> W(FM())  # writes a WAV file of a note
+    >>> s = H( [FM(i, j) for i, j in zip([200, 500, 100], [2, 1, 2])] )
+    >>> s2 = FM(440, 1.5, 600, 10)
+
+    Notes
+    -----
+    In the MASS framework implementation,
+    for a sound with a vibrato (or FM) to be synthesized using LUT,
+    the vibrato (or FM)
+    pattern is considered when performing the lookup calculations.
+
+    The tremolo and AM patterns are implemented as separate amplitude envelopes.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    tab = n.array(tab)
+    tabm = n.array(tabm)
+    if nsamples:
+        Lambda = nsamples
+    else:
+        Lambda = int(fs*d)
+    samples = n.arange(Lambda)
+
+    lm = len(tabm)
+    Gammam = (samples*fm*lm/fs).astype(n.int)  # LUT indexes
+    # values of the oscillatory pattern at each sample
+    Tm = tabm[ Gammam % lm ] 
+
+    # frequency in Hz at each sample
+    F = f + Tm*mu 
+    l = len(tab)
+    D_gamma = F*(l/fs)  # shift in table between each sample
+    Gamma = n.cumsum(D_gamma).astype(n.int)  # total shift at each sample
+    s = tab[ Gamma % l ]  # final sample lookup
+    return s
+
+
+def AM(d=2, fm=50, a=10, tabm=S, nsamples=0, sonic_vector=0, fs=44100):
+    """
+    Synthesize an AM envelope or apply it to a sound.
+    
+    Set fm=0 or a=0 for a constant envelope with value 1.
+    An AM is a linear oscillatory pattern of amplitude [1].
+    
+    Parameters
+    ----------
+    d : scalar
+        The duration of the envelope in seconds.
+    fm : scalar
+        The frequency of the modultar in Hertz.
+    a : scalar in [0,1]
+        The maximum deviation of amplitude of the AM.
+    tabm : array_like
+        The table with the waveform for the tremolo oscillatory pattern.
+    nsamples : integer
+        The number of samples of the envelope. If supplied, d is ignored.
+    sonic_vector : array_like
+        Samples for the tremolo to be applied to.
+        If supplied, d and nsamples are ignored.
+    fs : integer
+        The sample rate.
+
+    Returns
+    -------
+    T : ndarray
+        A numpy array where each value is a PCM sample
+        of the envelope.
+        if sonic_vector is 0.
+        If sonic_vector is input,
+        T is the sonic vector with the AM applied to it.
+
+    See Also
+    --------
+    V : A musical note with an oscillation of pitch.
+    FM : A linear oscillation of fundamental frequency.
+    T : A tremolo, an oscillation of loudness.
+
+    Examples
+    --------
+    >>> W(V()*AM())  # writes a WAV file of a note with tremolo
+    >>> s = H( [V()*AM(fm=i, a=j) for i, j in zip([60, 150, 100], [2, 1, 20])] )  # OR
+    >>> s = H( [AM(fm=i, a=j, sonic_vector=V()) for i, j in zip([60, 150, 100], [2, 1, 20])] )
+    >>> envelope2 = AM(440, 150, 60)  # a lengthy envelope
+
+    Notes
+    -----
+    In the MASS framework implementation, for obtaining a sound with a tremolo (or AM),
+    the tremolo pattern is considered separately from a synthesis of the sound.
+
+    The vibrato and FM patterns are considering when synthesizing the sound.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound." arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+
+    taba = n.array(taba)
+    if type(sonic_vector) in (n.ndarray, list):
+        Lambda = len(sonic_vector)
+    elif nsamples:
+        Lambda = nsamples
+    else:
+        Lambda = n.floor(fs*d)
+    samples = n.arange(Lambda)
+
+    l = len(taba)
+    Gammaa = (samples*fa*l/fs).astype(n.int)  # indexes for LUT
+    # amplitude variation at each sample
+    Ta = taba[ Gammaa % Lt ] 
+    T = 1 + Ta*a
+    if type(sonic_vector) in (n.ndarray, list):
+        return T*sonic_vector
+    else:
+        return T
+
+def noises(ntype="brown", d=2, fmin=15, fmax=15000, nsamples=0, fs=44100):
+    """
+    Return a colored or user-refined noise.
+
+    Parameters
+    ----------
+    ntype : string or scalar
+        Specifies the decibels gain or attenuation per octave.
+        It can be specified numerically 
+        (e.g. ntype=3.5 is 3.5 decibels gain per octave)
+        or by strings:
+          "brown" is -6dB/octave
+          "pink" is -3dB/octave
+          "white" is 0dB/octave
+          "blue" is 3dB/octave
+          "violet" is 6dB/octave
+          "black" is -12/dB/octave but, in theory, is any < -6dB/octave
+        See [1] for more information.
+    d : scalar
+        The duration of the noise in seconds.
+    fmin : scalar in [0, fs/2]
+        The lowest frequency allowed.
+    fmax : scalar in [0, fs/2]
+        The highest frequency allowed.
+        It should be > fmin.
+    nsamples : integer
+        The number of samples of the resulting sonic vector.
+
+    Notes
+    -----
+    The noise is synthesized with components with random phases,
+    with the moduli that are related to the decibels/octave,
+    and with a frequency resolution of
+      fs/nsamples = fs/(fs*d) = 1/d Hz
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound."
+    arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    if nsamples:
+        Lambda = nsamples
+    else:
+        Lambda = int(d*fs)
+    if ntype == "white":
+        prog = 0
+    elif ntype == "pink":
+        prog = -3
+    elif ntype == "brown":
+        prog = -6
+    elif ntype == "blue":
+        prog = 3
+    elif ntype == "violet":
+        prog = 6
+    elif ntype == "black":
+        prog = -12
+    elif isinstance(ntype, Number):
+        prog = ntype
+    else:
+        print("Set ntype to a number or one of the following strings:\
+                'white', 'pink', 'brown', 'blue', 'violet', 'black'.\
+                Check docstring for more information.")
+        return
+    # random phases
+    coefs = n.zeros(Lambda)
+    coefs[:Lambda//2] = n.exp(1j*n.random.uniform(0, 2*n.pi, Lambda//2))
+    if Lambda%2==0:
+        coefs[Lambda/2] = 1.  # max freq is only real (as explained in Sec. 2.5)
+
+    df = fs/Lambda
+    i0 = n.floor(fmin/df)  # first coefficient to be considered
+    il = n.floor(fmax/df)  # last coefficient to be considered
+    coefs[:i0] = 0
+    coefs[il:] = 0
+
+    factor = 10.**(prog/20.)
+    fi = n.arange(coefs.shape[0])*df # frequencies related to the coefficients
+    alphai = factor**(n.log2(fi[i0:il]/fmin))
+    coefs[i0:il] *= alphai
+
+    # coefficients have real part even and imaginary part odd
+    if Lambda%2 == 0:
+        coefs[Lambda//2+1:] = n.conj(coefs[1:-1][::-1])
+    else:
+        coefs[Lambda//2+1:] = n.conj(coefs[1:][::-1])
+
+    # Achievement of the temporal samples of the noise
+    noise = n.fft.ifft(coefs).real
+    return noise
+
+
+def FIR(samples, sonic_vector, freq=True, max_freq=True):
+    """
+    Apply a FIR filter to a sonic_array.
+
+    Parameters
+    ----------
+    samples : array_like
+        A sequence of absolute values for the frequencies
+        (if freq=True) or samples of an impulse response.
+    sonic_vector : array_like
+        An one-dimensional array with the PCM samples of
+        the signal (e.g. sound) for the FIR filter
+        to be applied to.
+    freq : boolean
+        Set to True if samples are frequency absolute values
+        or False if samples is an impulse response.
+        If max_freq=True, the separations between the frequencies
+        are fs/(2*N-2).
+        If max_freq=False, the separation between the frequencies
+        are fs/(2*N-1).
+        Where N is the length of the provided samples.
+    max_freq : boolean
+        Set to true if the last item in the samples is related
+        to the Nyquist frequency fs/2.
+        Ignored if freq=False.
+
+    Notes
+    -----
+    If freq=True, the samples are the absolute values of
+    the frequency components.
+    The phases are set to zero to maintain the phases
+    of the components of the original signal.
+
+    """
+    if not freq:
+        return convolve(samples, sonic_vector)
+    if max_freq:
+        s = n.hstack(( samples, samples[1:-1][::-1] ))
+    else:
+        s = n.hstack(( samples, samples[1:][::-1] ))
+    return convolve(samples, sonic_vector)
+
+def IIR(sonic_vector, A, B):
+    """
+    Apply an IIR filter to a signal.
+    
+    Parameters
+    ----------
+    sonic_vector : array_like
+        An one dimensional array representing the signal
+        (potentially a sound) for the filter to by applied to.
+    A : iterable of scalars
+        The feedforward coefficients.
+    B : iterable of scalars
+        The feedback filter coefficients.
+
+    Notes
+    -----
+    Check [1] to know more about this function.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound."
+    arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    signal = sonic_vector
+    signal_ = []
+    for i in range(len(signal)):
+        samples_A = signal[i::-1][:len(A)]
+        A_coeffs = A[:i+1]
+        A_contrib = (samples_A*A_coeffs).sum()
+
+        samples_B = signal_[-1:-1-i:-1][:len(B)-1]
+        B_coeffs = B[1:i+1]
+        B_contrib = (samples_B*B_coeffs).sum()
+        t_i = (A_contrib + B_contrib)/B[0]
+        signal_.append(t_i)
+    return n.array(signal_)
+
+
+def R(d=1.9, d1=0.15, decay=-50, stat="brown", sonic_vector=0, fs=44100):
+    """
+    Apply an artificial reverberation or return the impulse response.
+
+    Parameters
+    ----------
+    d : scalar
+        The total duration of the reverberation in seconds.
+    d1 : scalar
+        The duration of the first phase of the reverberation
+        in seconds.
+    decay : scalar
+        The total decay of the last incidence in decibels.
+    stat : string or scalar
+        A string or scalar specifying the noise.
+        Passed to noises(ntype=scalar).
+    sonic_vector : array_like
+        An optional one dimensional array for the reverberation to
+        be applied.
+    fs : scalar
+        The sampling frequency.
+
+    Returns
+    -------
+    s : numpy.ndarray
+        An array if the impulse response of the reverberation
+        (if sonic_vector is not specified),
+        or with the reverberation applied to sonic_vector.
+
+    Notes
+    -----
+    This is a simple artificial reverberation with a progressive
+    loudness decay of the reincidences of the sound and with
+    two periods: the first consists of scattered reincidences,
+    the second period reincidences is modeled by a noise.
+
+    Comparing with the description in [1], the frequency bands
+    are ignored.
+
+    One might want to run this function twice to obtain
+    a stereo reverberation.
+
+    Cite the following article whenever you use this function.
+
+    References
+    ----------
+    .. [1] Fabbri, Renato, et al. "Musical elements in the 
+    discrete-time representation of sound."
+    arXiv preprint arXiv:abs/1412.6853 (2017)
+
+    """
+    Lambda = int(d*fs)
+    Lambda1 =  int(d1*fs)
+    # Sound reincidence probability probability in the first period:
+    ii = n.arange(Lambda)
+    P = (ii[:Lambda1]/Lambda1)**2.
+    # incidences:
+    R1_ = n.random.random(Lambda1) < P
+    A = 10.**( (decay1/20)*(ii/(Lambda-1)) )
+    ### Eq. 76 First period of reverberation:
+    R1 = R1_*A[:Lambda1]  # first incidences
+
+    ### Eq. 77 Second period of reverberation:
+    noise = noises(ntype, fmax=fs/2, nsamples=Lambda-Lambda1)
+    R2 = noise*A[Lambda1:Lambda]
+    ### Eq. 78 Impulse response of the reverberation
+    R = n.hstack((R1,R2))
+    R[0] = 1.
+    if type(sonic_vector) in (n.ndarray, list):
+        return convolve(sonic_vector, R)
+    else:
+        return R
+
 
 test = False
 if __name__ == "__main__" and test:
+        import doctest
         doctest.testmod()
