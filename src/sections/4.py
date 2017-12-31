@@ -55,7 +55,7 @@ def v(f=200, d=1., tab=S_i, fv=2., nu=2., tabv=S_i):
 ############## Sec. 4.1 Tuning, intervals, scales and chords
 just_ratios = [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/3, 2]
 pythagorean_ratios = [1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2]
-equal_temperament_ratios = [2**(i/12) for i in range(12)]
+equal_temperament_ratios = [2**(i/12) for i in range(13)]
 
 f = 220  # an arbitrary frequency
 just_scale = [i*f for i in just_intonations]
@@ -155,7 +155,6 @@ Emmi = [0., 2., 4., 5., 7., 8., 10.]
 E_ = n.roll(n.array([2.,2.,1.,2.,2.,2.,1.]), n.random.randint(7.))
 E = n.cumsum(E_)-E_[0.]
 
-
 ### Eq. 85 Harmonic and melodic minor scales
 Em = [0., 2., 3., 5., 7., 8., 10.]
 Emh = [0., 2., 3., 5., 7., 8., 11.]
@@ -179,6 +178,38 @@ def withMajorSeventh(A): return A+[11.]
 
 ############## Sec. 4.2 Atonal and tonal harmonies, harmonic expansion and modulation
 ### Table 2.23
+def dominant(TT):
+    """
+    Returns the dominant chord of another chord
+
+    It suposes TT complete and 
+    in fundamental and closed position.
+    And fundamental represented as zero.
+
+    """
+    T = n.copy(TT)
+    T[0] = -1
+    T[1] = 2
+    return T
+
+
+def subDominant(TT):
+    """
+    Returns the sub-dominant chord of another chord
+
+    It suposes TT complete and 
+    in fundamental and closed position.
+    And fundamental represented as zero.
+
+    """
+    T = n.copy(TT)
+    T[1] = 5
+    if TT[1] == 4:
+        T[2] = 9
+    else:
+        T[2] = 8
+    return T
+
 def relativa(TT):
     """Returns the relative chord.
     
@@ -202,7 +233,7 @@ def antiRelativa(TT):
         T[2] = 8.  # returns down major
     return T
 
-### Medians
+### Mediants
 def sup(TT):
     T = n.copy(TT)
     if T[1]-T[0] == 4.:  # major

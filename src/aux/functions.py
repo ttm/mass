@@ -2719,7 +2719,7 @@ def AM(d=2, fm=50, a=10, tabm=S, nsamples=0, sonic_vector=0, fs=44100):
 
     """
 
-    taba = n.array(taba)
+    taba = n.array(tabm)
     if type(sonic_vector) in (n.ndarray, list):
         Lambda = len(sonic_vector)
     elif nsamples:
@@ -2729,9 +2729,9 @@ def AM(d=2, fm=50, a=10, tabm=S, nsamples=0, sonic_vector=0, fs=44100):
     samples = n.arange(Lambda)
 
     l = len(taba)
-    Gammaa = (samples*fa*l/fs).astype(n.int)  # indexes for LUT
+    Gammaa = (samples*fm*l/fs).astype(n.int)  # indexes for LUT
     # amplitude variation at each sample
-    Ta = taba[ Gammaa % Lt ] 
+    Ta = taba[ Gammaa % l ] 
     T = 1 + Ta*a
     if type(sonic_vector) in (n.ndarray, list):
         return T*sonic_vector

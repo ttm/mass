@@ -1,3 +1,16 @@
+Music package
+* Recycle and document the IteratorSynth in music/sandbox/fourthChant.py
+* 
+
+
+pieces:
+* final suite as planned
+* one or two routines for synthesizing albums:
+  - with no parametrization
+  - with arbitrary parametrization
+
+
+
 SI:
 * arrumar a ordem das figuras (fig 3 trocou com a 4)
 * add the Doppeleer; Re-verb pieces.
@@ -25,7 +38,7 @@ Scripts:
 or notes.
 
 Body:
-* position figures
+* position figures (FINAL)
 * see if codes.pdf is not dropping out of the margin
 * figgus package is very preliminary. Its principles are incorporated into music. It is interesting because:
   - It does use MASS but does not require numpy to render sonic arrays and write WAV files
@@ -34,8 +47,22 @@ Body:
   - Is a step betwen original FIGGUS and the music package
 * Mention that this work was called music in digital audio: psychophysic description and toolbox
 * Cite more reference works that I've visited (from CCRMA, UPF, Brazil, England, Germany, IRCAM, etc)
-* Add about the functions implemented.
 * Very easy to inspect and assure the sound is what you expect it to be, in terms of the most used variables in physichophysics.
+* Add about the functions.py!
+* Permutations are also paths in the sonic state:
+  - Each line of a peal in change ringuing is a path and a permutation
+  - A permutation is sequential or cyclic notation is a path
+  - Music makes peals and permutation groups and sets
+  - Synths of Mass make symmetric scales within the octaves and 10 decibels
+  - Modo intervalar (Vanazzi): cada nota tem uma nota associada.
+  Function receives any melody: outputs upper or lower voice given
+  the intervalar mode.
+  - Distribution of harmonics is the sound: from lowest to highest components: df = fs/N. All harmonics of f = fs/N.
+  - Use equal loudness contours (iso..),
+  - implement Steven's loudness
+  - Relate Steven's to the Weber-Fechner: power-law to exponential.
+  - 
+- visit wavepot
 
 Musical pieces:
 * make soundcloud playlists of songs: by section, extra, all
