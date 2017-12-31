@@ -8,6 +8,34 @@ pieces:
 * one or two routines for synthesizing albums:
   - with no parametrization
   - with arbitrary parametrization
+* D\_(method=['exp']) is not working
+* start piece with two voices, one speaking English and
+the other in Toki Pona:
+"""
+English: MASS is useful for computer music,
+Toki Pona: MASS li pona tawa kalama musi pi ilo nanpa.
+English: You can sonify ideas, data and arbitrary structures into music,
+Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
+"""
+* use peals and rotations to walk on the scales.
+  - Fast walks.
+  - Slow upwards walk starts on the bass.
+  - Gets responded by the treble in a slow downward walk.
+  - Use of different symmetric scales as in trio 3
+* Final piece:
+  - name: SSSS (((symmetric suite) suite) suite) suite
+    - 1st movement: Peal
+    - 2nd movement: Walk
+    - 3rd movement: triangle and square
+    - 4th movement: the circle
+    - 5th movement: peals, triangles, squares, circles and walks
+    - 6th movement: spectra
+    - 7th movement: samba
+    - 8th movement: coda with data sonification and singing
+  
+    
+
+
 
 
 
