@@ -326,6 +326,37 @@ s_ = J(s_, s_4, d=-5)
 # is completely on one channel.
 # Then its timbre varies (it can be an AM)
 # and it starts to move, and morph timbre.
+s_5_ = A(sonic_vector=s_3____,fm=150)
+s_5__ = s_3____
+s_5___ = s_5_+s_5__
+
+L_ = M.utils.L_
+fade0 = L_(d=[6.75], dev=[0], method=['lin'])
+
+s_5____ = n.array(( s_5___*fade0, s_5___*(1-fade0) ))
+s_ = J_(s_,0, s_5___,6.75, s_5____,6.75)
+
+fade1 = L_(nsamples=[len(s_5_)],
+    dev=[-80, 0], method=['lin']*2)
+s_5 = s_5_*fade1 + s_5__*(1-fade1)
+s_5b = n.array(( n.zeros(s_5.shape[0]), s_5 ))
+s_ = H(s_, s_5b)
+
+M.utils.WS(s_, '02walk_foo.wav')
+
+P = M.utils.panTransitions
+
+    
+
+
+
+
+
+
+# def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
+#         nsamples=0, sonic_vector=0, fs=44100):
+
+
 
 ## D.1.2
 # while the voice goes on on solo

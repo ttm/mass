@@ -40,9 +40,78 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     - 4th movement: the circle
     - 5th movement: peals, triangles, squares, circles and walks
     - 6th movement: spectra
+      - Counterpoint of loudness:
+
+        also, 10**(x/12) - n.log10(2**(y/12))
+        i.e. the association of double pitch to y semitons (unknown?)
+        (double frequency is associated with the same distance in
+        pitch, but what is the interval of pitch y (or frequency) so that 
+        a sound is perceived as twice as higher?
+
+        2**(21/12) ~ n.log2(10),
+        i.e. the convention of associating 10 dB to a double volume
+        suggests that double the intensity of the sensation
+        is related to 21 semitones = 12 + 9 = one octave and a major sixth.
+
+        It seems ok because it is so subjective and dependent on the
+        sound and context.
+
+        21 semitons is close to two octaves, therefore, given that
+        the convention of 10dB is very arbitrary, one might reason
+        that neighbor octaves are not as easely associated with
+        double pitch, but the second octave is.
     - 7th movement: samba
     - 8th movement: coda with data sonification and singing
+    - Synthesize excerpts with fs >> 100kHz for using as wavetable
+      * if s1_ is in fs=44100*4, we might obtain the same pitches
+      is fs=44100 with s1_, s1_[::2] and with other indexes (as LUT)
+      the resulting sound in fs is better quality.
+      Use this feature to make a high quality freeze and stretch.
     - Implement Figgus as a function to ease granular and unit synthesis
+    - Make some sort of tonal/modal harmony where voices might follow
+      chords and scales, make the walks, and put some folcloric/ethnic
+      melodies and rhythms.
+        - Use triads and thetrads
+        - Use chords of seconds and fourths, as well as of thirds
+        - Develop the counterpoint to the extent where:
+          * A second voice is built in accordance with a cantus firmus
+          * The second voice, and/or the cantus firmus, might have an arbitrary rhythm input by
+            user
+          * The rules are all named, documented and configured to be
+            respected or not.
+          * Arbitrary rules are then easy to be added. The
+            Counterpoint class always runs self.rulesCheck()
+            after a note pitch/frequency and duration is 
+          * Use loudness also to move voices independently.
+          E.g. l = [a0*10**(i/12) for i in range(12)],
+          l is multiplicative factors to the note sample amplitude:
+          H(s*l[0]+s*l[7], s*l[2]+s*l[9])  # <= is a parallel perfect
+          consonant (of a perfect 5th)
+            - a_i ~ a0*10**(i/12) ~ a0*2**(1/12)
+          * Tunable counterpoint interface.
+          * Only uses pitch and duration
+          * Handles arbitrary number of voices.
+            - If voice precedence leaves it without possible moves,
+              the note is just repeated.
+           
+* Make a piece using RGB in (100,010,001,110,011,101,000,111)
+as the sequence/scale with which to follow the pitches or whatever
+parameter of the music or the voices.
+use also (.5.50, .50.5, 0.5.5, .5.5.5)
+and (1.50, .510,  10.5,.501,  01.5, 0.51)
+are actually the ones that deviate the most
+from uncollored things (black and white).
+  - Use speech and subtitles to explain the
+  proposal, the techniques: REM therapy and influence in cognition
+  of change ringuing and reproducing REM when awake,
+  arbitrary fidelity, enabling new gadgets an assuring
+  that the sound is what we intend it to be.
+
+* Make a tutorial piece on MASS:
+  - Use speech and singing to:
+    * expose that the fourth section is relatively independent from the other two.
+    * explain what MASS is, how it works and what we are able to do
+      with it.
 * Transitions:
   - Make linear, exponential and power-law transitions with various
     values of alpha
