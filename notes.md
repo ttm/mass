@@ -32,6 +32,11 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     - 6th movement: spectra
     - 7th movement: samba
     - 8th movement: coda with data sonification and singing
+* Transitions:
+  - Make linear, exponential and power-law transitions with various
+    values of alpha
+  - For freq, amp, ft, fv, fm, dB, nu, etc.
+  - use espeak to describe transitions.
   
     
 
