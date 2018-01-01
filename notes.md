@@ -34,6 +34,7 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     - 1st movement: Peal, better explore vibratos, tremolos and envelopes.
                     Maybe use the tentative coda for an interlude
                     between 5th and 6th movements.
+                    Include something very probabilistic.
     - 2nd movement: Walk
     - 3rd movement: triangle and square
     - 4th movement: the circle
@@ -41,6 +42,7 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     - 6th movement: spectra
     - 7th movement: samba
     - 8th movement: coda with data sonification and singing
+    - Implement Figgus as a function to ease granular and unit synthesis
 * Transitions:
   - Make linear, exponential and power-law transitions with various
     values of alpha
@@ -56,6 +58,9 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
   - start another thread about numpy's documentation and how to derive
   the HTML files e.g. using doxigen.
   - put music and mass as python packages
+* Testing the limits of a code for bugs is a source of musical creativity
+because one often achieves unexpected sounds, both because of bugs,
+and because of the limits employed.
   
     
 
