@@ -1,6 +1,13 @@
+Urgent:
+* Better discuss Midi notation, translation between midi and Hz
+* make V() that oscilattes and in the pan
+* Write about 60 beats/minute is the 'right tempo'.
+
+
 Music package
 * Recycle and document the IteratorSynth in music/sandbox/fourthChant.py
 * 
+
 
 
 pieces:
@@ -24,7 +31,9 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
   - Use of different symmetric scales as in trio 3
 * Final piece:
   - name: SSSS (((symmetric suite) suite) suite) suite
-    - 1st movement: Peal
+    - 1st movement: Peal, better explore vibratos, tremolos and envelopes.
+                    Maybe use the tentative coda for an interlude
+                    between 5th and 6th movements.
     - 2nd movement: Walk
     - 3rd movement: triangle and square
     - 4th movement: the circle
@@ -37,6 +46,16 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     values of alpha
   - For freq, amp, ft, fv, fm, dB, nu, etc.
   - use espeak to describe transitions.
+* Piece for numpy community:
+  - uses the names of methods and modules input by function or startup
+  - sings with ecantorix after espeak exhibitionism
+  - uses random distributions and equations (e.g. polinomials)
+  for sonic atributtes following Steven's and Weber-Fechner laws
+  - as about the possibility of integratin mass or music into scipy
+    (scikit?)
+  - start another thread about numpy's documentation and how to derive
+  the HTML files e.g. using doxigen.
+  - put music and mass as python packages
   
     
 
