@@ -38,6 +38,13 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
     - 2nd movement: Walk
     - 3rd movement: triangle and square
     - 4th movement: the circle
+      - explore tremolos, vibratos, pan, DTI, IIT, doppler and HRTF
+      - oscilation of filter settings, noise bandwidth, proportion
+      of each waveform in a wavetable synthesis routine
+      - oscilation of spectral components for inverse Fourier or
+        wavelet transform
+      - dihedral groups with many elements (specially rotations)
+      - recalls 3rd movement on the end to bridge to 5th movement
     - 5th movement: peals, triangles, squares, circles and walks
     - 6th movement: spectra
       - Counterpoint of loudness:
@@ -106,6 +113,16 @@ from uncollored things (black and white).
   of change ringuing and reproducing REM when awake,
   arbitrary fidelity, enabling new gadgets an assuring
   that the sound is what we intend it to be.
+
+* Make music for people (people suite?):
+  - Chu e Cristina
+  - Vilson, Ric, Gilson
+  - Mae, Thata, Marina, Flavinha, Milena, Nadia, Gabi, Luciana, Bjork, Pri, Leticia, Debora, Laura, Ana Paula, Trindade, Laila, Fabs, Rita,
+    Marilia, Tara, Karen Jolavescu, fabib, laura moraes, Maju, Karla, 
+  - Pai, Israel, pastel, Rebecchi, Vini, Vanazzi, Lucas, Caleb, Silverio, Tiru, Daniel, Fred, Joca, Hugo, Tau, T, 
+
+* Challenge in the social networks (FB, email, twitter):
+  - 7 days to make an audiovisual album with 7 pieces
 
 * Make a tutorial piece on MASS:
   - Use speech and singing to:

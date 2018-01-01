@@ -7,6 +7,7 @@ import music as M, numpy as n
 from percolation.rdf import c
 H = M.H
 T = M.tables.Basic()
+fs = 44100
 
 scale = s = n.array([0,2,4,5,7,9,11])
 scale_grid = sg = H(*[s+12*i for i in range(12)])
@@ -37,6 +38,16 @@ peal7 = M.structures.symmetry.PlainChanges(7,5)
 print(time.time()-t); t = time.time()
 # takes too long, maybe save as a pickle file:
 # peal12 = M.structures.symmetry.PlainChanges(12,10)
+# If only part of interesting permutations are intended,
+# one might also do:
+# >>> R = M.structures.permutations.InterestingPermutations
+# >>> R.nelements=12
+# >>> R.method='dimino'
+# >>> R.getRotations()
+# >>> R.getRotations(R)
+# >>> R.rotations
+# which is very fast
+
 
 def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='swap', step=1, domain=None):
     """
@@ -148,8 +159,9 @@ sti4_ = H(*sti4['values_m'])
 sti3_ = H(*sti3['values_m'])
 sti2_ = H(*sti2['values_m'])
 
+D = M.utils.AD
 def v(m,**kargs):
-    return M.utils.V_(M.utils.midi2Hz(m), **kargs)
+    return D(sonic_vector=M.utils.V_(M.utils.midi2Hz(m), **kargs), R=30)
 def v_(m_, size=36, **kargs):
     return [v(m, **kargs) for m in m_[:size]]
 def v__(m_, d_, t_, size=36, **kargs):  # used only in a further section
@@ -272,22 +284,7 @@ s_3___ = walk2(pivots_m[1], 0, sg2, perms[count], step=2, rhy=rhy__)
 
 s_3____ = walk2(pivots_m[3], 0, sg2, perms[1], step=2, rhy=rhy_[::-1], tabs=[T.sine])
 
-def J_(*args):
-    i = 0
-    s = []
-    while i < len(args):
-        a = args[i]
-        b = args[i+1]
-        if type(a) in (n.ndarray, list):
-            if n.isscalar(b):
-                s = J(s, a, d=b)
-                i += 2
-            else:
-                s = J(s, a)
-                i += 1
-        else:
-            i += 1
-    return s
+J_ = M.utils.J_
 s_3_c = J_(s_3, 0,
            s_3_, 5,
            s_3__, 8,
@@ -318,7 +315,7 @@ for s in s_4__:
     s_4___ = J(s_4___, s)
 s_4 = H(s_4_, s_4___)
 
-s_ = J(s_, s_4, d=-5)
+s_ = J(s_, s_4*.01, d=-5)
 
 ## D.1.1
 # Only one voice remains, maybe static or stops walking
@@ -334,23 +331,68 @@ L_ = M.utils.L_
 fade0 = L_(d=[6.75], dev=[0], method=['lin'])
 
 s_5____ = n.array(( s_5___*fade0, s_5___*(1-fade0) ))
-s_ = J_(s_,0, s_5___,6.75, s_5____,6.75)
+s_ = J_(s_,0, s_5___,-6.75, s_5____,-6.75)
 
 fade1 = L_(nsamples=[len(s_5_)],
     dev=[-80, 0], method=['lin']*2)
 s_5 = s_5_*fade1 + s_5__*(1-fade1)
 s_5b = n.array(( n.zeros(s_5.shape[0]), s_5 ))
-s_ = H(s_, s_5b)
+s_ = H(s_, s_5b*3)
 
 M.utils.WS(s_, '02walk_foo.wav')
 
-P = M.utils.panTransitions
+s6 = n.zeros(2*fs)
+s6_ = walk2(pivots_m[-2], 0, scale_grid=sg2, perms=i6.rotations, step=0, rhy=[.15])
+s6 = H(s6, s6_)
 
-    
+perms = i6.rotations
+step = 2
+s6__ = walk2(pivots_m[-2], 0, scale_grid=sg2, perms=perms, step=step, rhy=[.12])
+center = step*len(perms)/2
+step = 6
+perms = i2.rotations
+s6___ = walk2(pivots_m[-2]+center, 0, scale_grid=sg6, perms=perms, step=step, rhy=[.5])
+center2 = step*len(perms)/2
+perms = i6.rotations
+step = -2
+s6____ = walk2(pivots_m[-2]+center+center2, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1])
 
+center3 = step*len(perms)/2
+perms = i6.rotations
+step = 0
+s6_____ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1])
+s6______ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1*(i+1) for i in range(5)])
+s6_______ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=scale_grid, perms=perms, step=step, rhy=[.1*(i+1) for i in range(5)])
 
+step = 2
+s6________ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=scale_grid, perms=perms, step=step, rhy=[.7+.12*(i) for i in range(5)])
+center4 = step*len(perms)/2
+s6 = H(s6, s6__, s6___, s6____,
+        s6_____, s6______, s6________, s6________)
+s_ = H(s_, s6)
 
+center = pivots_m[-2]+center+center2+center3+center4
+# P = M.utils.panTransitions
+step = 3
+s7 = walk2(center, 0, scale_grid=sg3, perms=perms, step=step, rhy=[.15])
 
+# s7 transitions to the left channel
+# stops again in major scale
+# transitions from left to right
+# with same scale but oposite step
+# all mix with AM and/or tremolo
+
+# silence,
+# two almost equal deep and heavy
+# sequences of 1 tempo
+# is repeated several times
+# while s7 transits back and forth
+
+# silence,
+# same pattern but varied
+# mix with
+# glissandi and walks,
+# that fall from here to there and from treble to bass
 
 
 # def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
@@ -412,4 +454,10 @@ P = M.utils.panTransitions
 
 
 
+# make the line walk realy
+# start with only sg2
 
+# the voice on the left stops
+# it starts again in sg2, rotating fast but not walking
+# step is the interval with the walking
+# just change d=.5, d=1,

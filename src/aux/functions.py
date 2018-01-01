@@ -1971,7 +1971,7 @@ def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
     return s
 
 
-def mix(sonic_vectors, end=False, offset=0, fs=44100):
+def mix2(sonic_vectors, end=False, offset=0, fs=44100):
     """
     Mix sonic vectors.
     
