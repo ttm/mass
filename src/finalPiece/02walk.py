@@ -573,7 +573,7 @@ ff = [
      ]
 
 fv = [2,4,8,16,1]
-nu = [8,4,2,1,16]
+nu = [2,4,2,1,2]
 tab = [T.sine, T.triangle, T.square, T.saw, T.sine]
 
 gs = []
@@ -587,10 +587,60 @@ s9 = M.utils.mix2([s9]+gs, offset=[0,0,4,5, 11,16])
 
 s_ = H(s_, silence, s9)
 M.utils.WS(s_, '02walk_foo2.wav')
-# def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
-#         nsamples=0, sonic_vector=0, fs=44100):
 
+pr = M.utils.profile(locals().copy())
+def profile(adict):
+    """
+    Notes
+    -----
+    Should return a dictionary with the following structure:
+      d['type']['scalar'] should return all the names of scalar variables
+      as strings.
+      scalar: all names in numeric, string, float, integer, 
+      collections: all names in dict, list, set, ndarray
 
+      d['analyses']['ndarray'] should return a general analysis of the ndarrays,
+      including size in seconds of each considering fs.
+      mean and mean square values to have an idea of whats there.
+      RMS values in different scales and the overal RMS standard deviation 
+      on a scale is helpful in grasping disconttinuities.
+      The overal RMS mean of a scale is a hint of whether the variable
+      is meant to be used (or usable as) PCM samples or parametrization.
+      E.g.
+        * Large arrays, i.e. with many elements, are usable as PCM samples.
+        If the mean is zero, and they are bound to [-1,1] or to some power
+        of 2, specially [-2**15, 2**15-1], it is probably PCM samples
+        synthesized or sampled or derivatives.
+        If it has more than one or two dimensions where the many samples are,
+        it might be a collection of audio samples with the sample size
+
+        * Arrays with an offset (abs(mean) << 0) and small number of elements
+        are good candidates for parametrization.
+        They might be used for repetition, yielding a clear rhythm.
+        They might also be used to derive more ellaborate patterns,
+        such as by using the values of more then one arrays,
+        and using them simultaneously, often creating patterns
+        because of the different sizes of each array.
+
+        * Values in the order of hundreds and thousands are
+        candidates for frequency.
+        Values within zero and 150 are candidates for decibels,
+        and for absolute pitch or pitch interval through MIDI notes
+        and semitones count, respectively.
+        If the values are integers of very close to them,
+        or have many consecutive values deviating less then
+        10, it is more likely to be related to pitches.
+        If the consecutive values deviate by tens to about a hundred,
+        it is kin to decibels notation.
+
+    """
+    for key in adict:
+        avar = adict[key]
+        if type(sonic_vector) == n.ndarray:
+        elif type(sonic_vector) == list:
+        elif n.isscalar(avar):
+        else:
+            print('unrecognized type, implement dealing with it')
 
 ## D.1.2
 # while the voice goes on on solo
