@@ -375,26 +375,218 @@ center = pivots_m[-2]+center+center2+center3+center4
 # P = M.utils.panTransitions
 step = 3
 s7 = walk2(center, 0, scale_grid=sg3, perms=perms, step=step, rhy=[.15])
+s7M = walk2(center, 0, scale_grid=scale_grid, perms=perms, step=0, rhy=[.15])
 
+s7I = walk2(center+24, 0, scale_grid=sg3, perms=perms, step=-step, rhy=[.15])
+s7MI = walk2(center+24, 0, scale_grid=scale_grid, perms=perms, step=0, rhy=[.15])
 # s7 transitions to the left channel
 # stops again in major scale
 # transitions from left to right
 # with same scale but oposite step
 # all mix with AM and/or tremolo
+s7_ = n.array(( n.zeros(len(s7M)), s7M ))
+P = M.utils.panTransitions
+pantrans = P(p=[(0, 1), (1, 0)], d=[4], method=['lin'], fs=fs)
+s7__ = J(s7, pantrans)[:44100*4]
+s7___ = n.array(( s7M, n.zeros(len(s7M)) ))
+s7b = H( s7_, s7__, s7___ )
+
+s_ = H(s_, s7b)
 
 # silence,
 # two almost equal deep and heavy
 # sequences of 1 tempo
 # is repeated several times
 # while s7 transits back and forth
+pantrans2 = P(p=[(0, 1), (1, 0), (0, 1)], d=[1,1], method=['lin'], fs=fs)
+s8 = J(s7, pantrans2)
+s8M = J(s7M, pantrans2)
+s8I = J(s7I, pantrans2)
+s8MI = J(s7MI, pantrans2)
+
+
+
+s8[ :, 3*fs:4*fs] = s8M[ :, 3*fs:4*fs]
+s8[ :, 6*fs:7*fs] = s8M[ :, 6*fs:7*fs]
+s8I[:, 3*fs:4*fs] = s8MI[:, 3*fs:4*fs]
+s8I[:, 6*fs:7*fs] = s8MI[:, 6*fs:7*fs]
+
+for i in range(s8.shape[1]//(3*fs)):
+    s8[ :, i*3*fs:(i*3+1)*fs] = s8M[ :, i*3*fs:(i*3+1)*fs]
+    s8I[:, i*3*fs:(i*3+1)*fs] = s8MI[:, i*3*fs:(i*3+1)*fs]
+
+for i in range(s8.shape[1]//fs):
+    if (i+1)%2:
+        s8[:, i*fs:(i+1)*fs] = s8I[:, i*fs:(i+1)*fs] 
+
+
+
+# deep and heavy: slow pattens around bass notes.
+# this center-note synthesis might be used to make 
+# melodies and other patterns
+
+# 20 notes around and including 110Hz, A2, spaced by 10 cents
+scale_bass1 = [110*2**((i/12)/10) for i in range(-10,10)]
+# Ab minor triad of seconds 2m, 2M, 
+minor_triad_2 = scale_bass2 = [220*2**((i/12)/10) for i in (-1,0,2)]
+major_triad_2 = scale_bass3 = [330*2**((i/12)/10) for i in (-2,0,1)]
+dim_triad_2 = scale_bass4 = [110*2**((i/12)/10) for i in (-1,0,1)]
+aum_triad_2 = scale_bass5 = [2*880*2**((i/12)/10) for i in (-2,0,2)]
+
+sb1 = [i/10-.5 for i in range(10)]
+smt2 = [-1,0,2]
+sMt2 = [-2,0,1]
+sdt2 = [-1,0,1]
+sAt2 = [-2,0,2]
+
+T2 = [
+      sb1,
+      smt2,
+      sMt2,
+      sdt2,
+      sAt2,
+     ]
+pivs = [pivots[i] for i in (0,1,2,0,-1)]
+p=.5
+rs = [  (p,),
+        (p/4, p/2, p/4),
+        (p/2, p/4, p/4),
+        (p/4, p/4, p/2),
+        (p/4, p/4, p/4, p/4)
+     ]
+ss = [1,3,4,2,1]
+s8_ = []
+A = n.array
+for t2, piv, r, s in zip(T2, pivs, rs, ss):
+    # make grid
+    grid = H(*[A(t2)+12*i for i in range(12)])
+    # make walk with walk and walk2
+    s8__ = walk2(piv, 0, scale_grid=grid, perms=peal5.peal_direct, step=s, rhy=r)
+    s8_.append(s8__)
+
+s8___ = H(*s8_)
+env = D(d=.5)
+
+i = 0
+while i*fs < len(s8):
+    s8[:, i*fs:(i+.5)*fs] += s8___[i*fs:(i+.5)*fs]*env
+    i += 1
+
+s_ = H(s_, s8)
 
 # silence,
 # same pattern but varied
 # mix with
 # glissandi and walks,
 # that fall from here to there and from treble to bass
+silence = n.zeros(fs*2)
+
+pantrans2 = P(p=[(0, 1), (1, 0), (0, 1)], d=[1,1], method=['lin'], fs=fs)
+s9 = s7      # moves up
+s9M = s7M    # static bottom
+s9I = s7I    # moves down
+s9MI = s7MI  # static top
+
+s9_ = walk2(center, 0, scale_grid=sg3, perms=perms, step=0, rhy=[.15])
+s9_M = walk2(center, 0, scale_grid=scale_grid, perms=perms, step=3, rhy=[.15])
+
+s9_I = walk2(center+24, 0, scale_grid=sg3, perms=perms, step=-0, rhy=[.15])
+s9_MI = walk2(center+24, 0, scale_grid=scale_grid, perms=perms, step=-3, rhy=[.15])
+
+r =  D(d=1)*n.array(( n.zeros(fs), n.ones(fs) ))
+l =  D(d=1)*n.array(( n.ones(fs), n.zeros(fs) ))
+rl = D(d=1)*pantrans2[:, -fs:]                     
+lr = D(d=1)*pantrans2[:, :fs]                      
+
+s9y = H(s9[:fs]*r,
+        s9_I[fs*1:fs*2]*rl,
+         s9I[fs*2:fs*3]*l,
+         s9_[fs*3:fs*4]*lr)
+
+s9y_ = H(s9_MI[:fs]*l,
+        s9M[fs*1:fs*2]*lr,
+         s9_M[fs*2:fs*3]*r,
+         s9MI[fs*3:fs*4]*rl)
+
+s9y__ = H(
+         s9MI[fs*0:fs*1]*lr,
+        s9_MI[fs*1:fs*2]*r,
+        s9M[fs*2:fs*3]*rl,
+         s9_M[fs*3:fs*4]*l,
+         )
+
+s9yy = H(s9y, s9y+s9y_, s9y+s9y_, s9y__, s9y__)
+s9 = s9yy
+
+# s9[3*fs:4*fs] = s9M[3*fs:4*fs]
+# s9[6*fs:7*fs] = s9M[6*fs:7*fs]
+# s9I[3*fs:4*fs] = s9MI[3*fs:4*fs]
+# s9I[6*fs:7*fs] = s9MI[6*fs:7*fs]
+
+for i in range(s9.shape[1]//(3*fs)):
+    indices = n.arange(i*3*fs,(i*3+1)*fs)
+    ii = indices % len(s9M)
+    s9[ :, i*3*fs:(i*3+1)*fs] =  s9M[ii]
+    s9I[i*3*fs:(i*3+1)*fs] = s9MI[i*3*fs:(i*3+1)*fs]
+
+for i in range(s9.shape[1]//fs):
+    if (i+1)%2:
+        indices = n.arange(i*fs, (i+1)*fs)
+        ii = indices % len(s9I)
+        s9[:, i*fs:(i+1)*fs] = s9I[ii] 
 
 
+rs = [  (p,),
+        (p/6, p/6, p/2, p/6),
+        (p/2, p/6, p/6, p/6),
+        (p/6, p/6, p/6, p/2),
+        (p/6, p/6, p/6, p/6, p/6, p/6)
+     ]
+ss = [1,3,4,2,1]
+s9_ = []
+tabs = [T.square, T.triangle, T.sine, T.sine, T.saw]
+for t2, piv, r, s in zip(T2, pivs, rs, ss):
+    # make grid
+    grid = H(*[A(t2)+12*i for i in range(12)])
+    # make walk with walk and walk2
+    s9__ = walk2(piv, 0, scale_grid=grid, perms=peal5.peal_direct, tabs=tabs,  step=s, rhy=r)
+    s9_.append(s9__)
+
+s9___ = H(*s9_)
+env = D(d=.5)
+
+i=0
+while i*fs < s9.shape[1]:
+    indices = n.arange(i*fs, (i+.5)*fs)
+    ii = indices % len(s9I)
+    s9[:, i*fs:(i+.5)*fs] += s9___[i*fs:(i+.5)*fs]*env
+    i += 1
+
+
+# 5 glissandi of 2s
+ff = [
+        (pivots_f[-1], pivots_f[0]),
+        (pivots_f[-2], pivots_f[1]),
+        (pivots_f[-1], pivots_f[1]),
+        (pivots_f[-2], pivots_f[0]),
+        (pivots_f[-1], pivots_f[-2]),
+     ]
+
+fv = [2,4,8,16,1]
+nu = [8,4,2,1,16]
+tab = [T.sine, T.triangle, T.square, T.saw, T.sine]
+
+gs = []
+for ff_, fv_, nu_, tab_ in zip(ff,fv,nu,tab):
+    gg = M.utils.PV(ff_[0], ff_[1], d=2, fv=fv_,
+            nu=nu_)
+    gs.append(gg)
+
+s9 = M.utils.mix2([s9]+gs, offset=[0,0,4,5, 11,16])
+
+
+s_ = H(s_, silence, s9)
+M.utils.WS(s_, '02walk_foo2.wav')
 # def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
 #         nsamples=0, sonic_vector=0, fs=44100):
 

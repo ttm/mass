@@ -101,6 +101,55 @@ Toki Pona: sina ken pali kalama kepeken nasin anu ijo ante.
             - If voice precedence leaves it without possible moves,
               the note is just repeated.
            
+* Make pieces with Daime Hymns.
+  - Portuguese and Toki Pona (and english translation)
+  - Cruzeirinho:
+    * 06 mamaezinha
+    * 11 flecha ligeira
+  - o ebó audiovisual: sequência de hinos.
+  - um ebó, ebós: hinos intercalados com outras peças,
+  ou sequencias 
+  - Puxar rezas em Toki Pona: ler/ouvir o hinário cantando.
+  Versão do video com e sem escritos com o híno.
+* Make Figgus (Finite groups in granular and unit synthesis)
+  - Send to Ircam to the brazilian professor from near Jundiaí.
+  - Implement it all! But no gui in emphasys.
+  - It will be the core system that runs over the music python
+    package that is based on MASS.
+  - Write by heart without consulting software engineering,
+  math, music, and other literature.
+  - See some MOOCs, specially soft eng
+  - Write about the advantages and losses of programming it
+  without prior preparation.
+  See if I am able to sustain an antithesis of the common place
+  idea that planning beforehand is better. Reasons why it is not:
+    * If you do something significant beforehand, it is more likely
+    that you do somethings in a new or relevant way to given
+    literature in the sense that you are not already formatted before
+    thinking seriously on the subject.
+    * You are most probably be able to enhance your work greatly
+    after skimming through the literature.
+    * Prof. Dr. L. da F. Costa sometimes mentions that he finds
+    it a good habit to first find something of interest, then
+    start digging with the tools at hand for something relevant.
+    After things are reasonably interesting, and the discourse
+    and a document is +- stable,
+    then start digging literature (including videos and software).
+    * Of course, there is some consideration of the literature
+    on the whole process. And there is also background knowledge.
+    E.g.: for this document on making the definitive Figgus,
+    I wrote a preliminary version of it ~10 years ago,
+    am finishing a article on the MASS (music and audio in PCM sample
+    sequences),
+    all implemented in Python which yields the Music package
+    which yields the FIGGUS system.
+* Consider psychophysic tests and make audiovisualizations with them.
+* 
+* Make music with the networks.
+  - Revive the bot to scrappe FB.
+  - Make music for Cristina, Chu, Antonio, etc etc
+* Musify the Pedro Epistle.
+  - Portuguese and Toki Pona (and english translation)
 * Make a piece using RGB in (100,010,001,110,011,101,000,111)
 as the sequence/scale with which to follow the pitches or whatever
 parameter of the music or the voices.
