@@ -3,42 +3,49 @@ keys=tuple(sys.modules.keys())
 for key in keys:
     if "music" in key:
         del sys.modules[key]
-import music as M, numpy as n
+import music as M, numpy as n, sounddevice as sd
 from percolation.rdf import c
 H = M.H
 T = M.tables.Basic()
 fs = 44100
 
-scale = s = n.array([0,2,4,5,7,9,11])
+# Note grids yield by scales
+scale = s = n.array([0,2,4,5,7,9,11]) # scale given by the pitches
 scale_grid = sg = H(*[s+12*i for i in range(12)])
-scale_ = [2,2,1,2,2,2,1]
+scale_ = [2,2,1,2,2,2,1] # or scale by the intervals
 scale_grid_b = [0] + scale_*12
 scale_grid_ = n.cumsum(scale_grid_b)
 
-# value of 69 is 440Hz, A4, 60 in C4
-# f = M.utils.midi2Hz(scale[i])
-
+# scale_grid_ == scale_grid is True
 # both scale_grid and scale_grid_ are grids for
 # the C major scale, represented by
 # sequences of midi nodes which starts from
 # C-1 = 0 to beyond our hearing (20kHz ~ 135 midi note, Eb10).
 
+# References: Midi note 69 is A4, 440Hz.
+# Note 60 is C4, 261.63Hz. Convert with e.g.:
+# f = M.utils.midi2Hz(scale_grid_[i])
+
+
+# Pivots to use recurrently:
 pivots = [7*i for i in range(3,8)]
 pivots_m = [scale_grid[i] for i in pivots]
 pivots_f = [M.utils.midi2Hz(i) for i in pivots_m]
 
+# Plain changes with 2-7 bells:
 peal2 = M.structures.symmetry.PlainChanges(2)
 peal3 = M.structures.symmetry.PlainChanges(3)
 peal4 = M.structures.symmetry.PlainChanges(4)
 peal5 = M.structures.symmetry.PlainChanges(5)
 t = time.time()
 peal6 = M.structures.symmetry.PlainChanges(6,4)
-print(time.time()-t); t = time.time()
+c('Finished making peals 1-6')
 peal7 = M.structures.symmetry.PlainChanges(7,5)
-print(time.time()-t); t = time.time()
-# takes too long, maybe save as a pickle file:
+c('Finished making peals 7')
+
+# This one takes too long, maybe save as a pickle file:
 # peal12 = M.structures.symmetry.PlainChanges(12,10)
-# If only part of interesting permutations are intended,
+# If only part of interesting permutations are desired,
 # one might also do:
 # >>> R = M.structures.permutations.InterestingPermutations
 # >>> R.nelements=12
@@ -50,7 +57,30 @@ print(time.time()-t); t = time.time()
 
 
 def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='swap', step=1, domain=None):
-    """
+    """Plays notes successively permuted and made higher or lower.
+
+    Parameters
+    ----------
+    p1 : numeric
+        The pitch in MIDI of the starting note of the walk.
+    p2 : numeric
+        The pitch in MIDI of the ending note of the walk.
+        Not implemented!
+    scale_grid : list
+        The MIDI note values that the notes are allowed to have.
+    perms : list of permutations
+        The permutations that are applied to the notes at each cycle.
+    method : string
+        The procedure by which the sequence gets higher or lower.
+    step : 1
+        The number of cycles performed before each change in the pitches.
+    domain : ??
+        ??
+
+    Notes
+    -----
+    Should be validated with simple walks in major, minor or whole tone scales.
+
     """
     foo = [abs(i-p1) for i in scale_grid]
     m = min(foo)
@@ -101,14 +131,31 @@ def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='sw
         values_f.append(v_f)
     return locals()
 
-def walk2(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='swap', step=1, domain=None, rhy=[.5], tabs=[T.triangle]):
+def walk2(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct,
+        method='swap', step=1, domain=None,
+        rhy=[.5], tabs=[T.triangle], size=36):
+    """
+    Returns a synthesized walk.
+
+    Parameters
+    ----------
+    Same as walk() plus these:
+    rhy : list of numbers
+        A sequence of durations in seconds to be iterated circularly.
+    tabs : list of array-like waveforms
+        A sequence of waveforms to be iterated circularly.
+    size : integer
+        The number of notes to be synthesized.
+
+    """
     d = locals().copy()
-    del d['rhy'], d['tabs']
+    del d['rhy'], d['tabs'], d['size']
     values_m = H(*walk(**d)['values_m'])
-    samples = H(*v__(values_m, d_=rhy, t_=tabs))
+    samples = H(*v__(values_m, d_=rhy, t_=tabs, size=size))
     return samples
 
     
+### Random notes and sketches: 
 # sequence = walk(pivot[0],pivot[-1],scale_grid, peal6)
 # sequence = walk(pivots[0], 0, scale_grid, peal3.peal_direct)
 # sequence should have all the notes in the peal,
@@ -117,11 +164,13 @@ def walk2(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='s
 # 1) the lowest bell with the highest or vice-versa
 # 2) with all the notes might being shifted one unit per peal row
 
+### Material of the piece:
 # match the number of elements in the peal with the symmetric scales:
 # p3 -> 3M/4, p2 -> 4A/6, p4 -> 3m/3, p6 -> 2M/2, p12 -> 2m/1
 
-s6 = n.arange(0,12,6)
-sg6 = H(*[s6+12*i for i in range(12)])
+# Symmetric scales and grids:
+s6S = n.arange(0,12,6)
+sg6 = H(*[s6S+12*i for i in range(12)])
 s4 = n.arange(0,12,4)
 sg4 = H(*[s4+12*i for i in range(12)])
 s3 = n.arange(0,12,3)
@@ -129,16 +178,18 @@ sg3 = H(*[s3+12*i for i in range(12)])
 s2 = n.arange(0,12,2)
 sg2 = H(*[s2+12*i for i in range(12)])
 
+### Note
 # use exotic scales, such as with 2A/3,
 # messiaen's modes, or favourites
-t = time.time()
+
+c('before seqs')
 seq7 = walk(pivots_m[0], 0, scale_grid, peal7.peal_direct*3)
 seq6 = walk(pivots_m[-1], 0, sg6, peal2.peal_direct*3,step=-1, domain=[1,0])
 seq4 = walk(pivots_m[1], 0, sg4, peal3.peal_direct*3)
 seq3 = walk(pivots_m[-2], 0, sg3, peal4.peal_direct*3,step=-1, domain=[3,2,1,0])
 seq2 = walk(pivots_m[2], 0, sg2, peal6.peal_direct*3)
-print(time.time()-t); t = time.time()
-# seq1 takes too long because of peal12 (pickle it?)
+c('after seqs 7-2')
+# Note: seq1 takes too long because of peal12 (pickle it?)
 seq7_ = H(*seq7['values_m'])
 seq6_ = H(*seq6['values_m'])
 seq4_ = H(*seq4['values_m'])
@@ -146,12 +197,15 @@ seq3_ = H(*seq3['values_m'])
 seq2_ = H(*seq2['values_m'])
 
 
-# still, no permutation, only swapping of highest and lowest
+# Material: note set is still, no permutation,
+# only swapping of highest and lowest:
 sti7 = walk(pivots_m[0], 0, scale_grid, [peal7.peal_direct[0]]*25)
 sti6 = walk(pivots_m[-1], 0, sg6, [peal2.peal_direct[0]]*25, step=-1, domain=[1,0])
 sti4 = walk(pivots_m[1], 0, sg4, [peal3.peal_direct[0]]*25)
 sti3 = walk(pivots_m[-2], 0, sg3, [peal4.peal_direct[0]]*25,step=-1, domain=[3,2,1,0])
 sti2 = walk(pivots_m[2], 0, sg2, [peal6.peal_direct[0]]*25)
+
+# Note: vars ending with _ (seq*_ and sti*_) are the midi notes in sequence
 
 sti7_ = H(*sti7['values_m'])
 sti6_ = H(*sti6['values_m'])
@@ -161,10 +215,45 @@ sti2_ = H(*sti2['values_m'])
 
 D = M.utils.AD
 def v(m,**kargs):
+    """
+    Synthesizes a note.
+    
+    A V_ note with midi note instead of frequency 
+    and an ADSR envelope.
+
+    """
     return D(sonic_vector=M.utils.V_(M.utils.midi2Hz(m), **kargs), R=30)
+
 def v_(m_, size=36, **kargs):
+    """
+    Synthesizes various similar notes.
+
+    With same settings and variable pitch given as midi notes.
+
+    """
     return [v(m, **kargs) for m in m_[:size]]
+
 def v__(m_, d_, t_, size=36, **kargs):  # used only in a further section
+    """
+    Synthesizes various notes with varying parameters.
+
+    Parameters
+    ----------
+    All V_ parameters plus these:
+    m_ : sequence of numbers
+        A sequence of MIDI notes to be iterated.
+    d_ : sequence of numbers
+        A sequence of durations, in seconds, to be iterated.
+    t_ : sequence of array likes
+        A sequence of waveforms to be iterated.
+    size : integer
+        The maximum number of notes to be synthesized.
+
+    Returns
+    -------
+    sv : list of array-like
+        The sequence of notes in PCM samples.
+    """
     if len(m_) < size:
         size = len(m_)
     nrep = 1+int(size/len(d_))
@@ -173,46 +262,50 @@ def v__(m_, d_, t_, size=36, **kargs):  # used only in a further section
     t__ = t_ * nrept
     return [v(m, d=d, tab=t, **kargs) for m,d,t in zip(m_[:size],d__[:size],t__[:size])]
 
-# s = v_(seq2_, d=1) 
+# All sequences of notes, of all walks
 seq_ = [seq7_, seq6_, seq4_, seq3_, seq2_,
         sti7_, sti6_, sti4_, sti3_, sti2_]
 
-print('mark: ', time.time()-t); t = time.time()
+c('Making PCM samples from MIDI notes')
 s01_ = [H(*v_(i, d=.1)) for i in seq_]
 s0125_ = [H(*v_(i, d=.125)) for i in seq_]
 s025_ = [H(*v_(i, d=.25)) for i in seq_]
 s05_ = [H(*v_(i, d=.5)) for i in seq_]
-print('mark: ', time.time()-t); t = time.time()
+c('finished .1-.5s per note')
 s1_ = [H(*v_(i[:36], d=1.)) for i in seq_]
-print('mark: ', time.time()-t); t = time.time()
+c('finished 1s per note')
 
-# seq_[n] and sXX_[n] hold walks with n notes
+# Note: seq_[n] and sXX_[n] hold walks with n notes
   
-J = M.utils.J
-### Opening:
-s_ = J(s1_[1], s0125_[4], d=7)
+J = M.utils.J # a simple mixer (mix2 is better)
+
+### 01 - Opening:
+s1_0 = M.utils.F( sonic_vector = s1_[0][:len(s1_[1])],
+          out = False,
+          method = 'lin')
+s_ = J(s1_[1]+s1_0, s0125_[4], d=7)
 
 ### Exposition of the material
 # walks, all mono,
 # all with the same timbre
 # all perfectly matched the symmetric scale with the peal size
-# all using the cannonic peal
+# all using the canonic peal
 # all with unitary step
 # all with equivalent duration and within the same 1s binary grid
 # exception for s01_ which is a division of 1s in 2*5
 s1 = s01_[3]+s01_[4]
-s1_ = s01_[3][::-1]+s01_[4][::-1]
-s1__ = H(s1, s1_, s1)
+s1_B = s01_[3][::-1]+s01_[4][::-1]
+s1__ = H(s1, s1_B, s1)
 
 s2 = J(s05_[1], s0125_[4])
 
 s_ = H(s_, J(s1__, s2))
 
-### Development
+### 02 - Development
 # introduction of the interesting permutation groups
 # explorar caminhar stereo, efeito doppler, hrtf
 # timbres, ritmos, escalas, passos, tamanhos dos peals e sequencias
-# maintain the theme: mixing scales and peals in walking patterns
+# Maintain the theme: mixing scales and peals in walking patterns
 
 ## D.0
 # a rotation group starts low and slow and rises
@@ -258,6 +351,8 @@ s_2_c = H(s_2_, s_2_, s_2__)
 s_2_c[-44100*4:] *= M.utils.F(d=4, method='lin')
 
 s_ = H(s_, J(s_2, s_2_c, d=7))
+
+s_OK1 = s_[:]
 
 
 ## D.0.1
@@ -315,7 +410,9 @@ for s in s_4__:
     s_4___ = J(s_4___, s)
 s_4 = H(s_4_, s_4___)
 
-s_ = J(s_, s_4*.01, d=-5)
+s_ = J(s_, s_4, d=-5)
+
+s_OK2 = s_[:]
 
 ## D.1.1
 # Only one voice remains, maybe static or stops walking
@@ -330,8 +427,11 @@ s_5___ = s_5_+s_5__
 L_ = M.utils.L_
 fade0 = L_(d=[6.75], dev=[0], method=['lin'])
 
-s_5____ = n.array(( s_5___*fade0, s_5___*(1-fade0) ))
-s_ = J_(s_,0, s_5___,-6.75, s_5____,-6.75)
+# s_5____ = n.array(( s_5___*fade0, s_5___*(1-fade0) ))
+s_5____ = n.array(( s_5___*fade0, s_5___ ))
+s_ = J_(s_,0, s_5___,-6.75, s_5____,-0.01)
+
+s_PROBE0 = s_.copy()
 
 fade1 = L_(nsamples=[len(s_5_)],
     dev=[-80, 0], method=['lin']*2)
@@ -589,59 +689,6 @@ s_ = H(s_, silence, s9)
 M.utils.WS(s_, '02walk_foo2.wav')
 
 pr = M.utils.profile(locals().copy())
-def profile(adict):
-    """
-    Notes
-    -----
-    Should return a dictionary with the following structure:
-      d['type']['scalar'] should return all the names of scalar variables
-      as strings.
-      scalar: all names in numeric, string, float, integer, 
-      collections: all names in dict, list, set, ndarray
-
-      d['analyses']['ndarray'] should return a general analysis of the ndarrays,
-      including size in seconds of each considering fs.
-      mean and mean square values to have an idea of whats there.
-      RMS values in different scales and the overal RMS standard deviation 
-      on a scale is helpful in grasping disconttinuities.
-      The overal RMS mean of a scale is a hint of whether the variable
-      is meant to be used (or usable as) PCM samples or parametrization.
-      E.g.
-        * Large arrays, i.e. with many elements, are usable as PCM samples.
-        If the mean is zero, and they are bound to [-1,1] or to some power
-        of 2, specially [-2**15, 2**15-1], it is probably PCM samples
-        synthesized or sampled or derivatives.
-        If it has more than one or two dimensions where the many samples are,
-        it might be a collection of audio samples with the sample size
-
-        * Arrays with an offset (abs(mean) << 0) and small number of elements
-        are good candidates for parametrization.
-        They might be used for repetition, yielding a clear rhythm.
-        They might also be used to derive more ellaborate patterns,
-        such as by using the values of more then one arrays,
-        and using them simultaneously, often creating patterns
-        because of the different sizes of each array.
-
-        * Values in the order of hundreds and thousands are
-        candidates for frequency.
-        Values within zero and 150 are candidates for decibels,
-        and for absolute pitch or pitch interval through MIDI notes
-        and semitones count, respectively.
-        If the values are integers of very close to them,
-        or have many consecutive values deviating less then
-        10, it is more likely to be related to pitches.
-        If the consecutive values deviate by tens to about a hundred,
-        it is kin to decibels notation.
-
-    """
-    for key in adict:
-        avar = adict[key]
-        if type(sonic_vector) == n.ndarray:
-        elif type(sonic_vector) == list:
-        elif n.isscalar(avar):
-        else:
-            print('unrecognized type, implement dealing with it')
-
 ## D.1.2
 # while the voice goes on on solo
 # other voices start at positions given by HRTF

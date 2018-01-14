@@ -1,3 +1,5 @@
+
+
 Urgent:
 * Better discuss Midi notation, translation between midi and Hz
 * make V() that oscilattes and in the pan
@@ -11,6 +13,10 @@ Music package
 
 
 pieces:
+* Make thematic music: Christmas, anniversary, hollowing, wedding,
+  newborn, new job, relationship anniversary or arbitrary
+  commemoration. Referecess:
+  https://www.youtube.com/watch?v=GPATUFiWoTI
 * final suite as planned
 * one or two routines for synthesizing albums:
   - with no parametrization
@@ -196,6 +202,46 @@ from uncollored things (black and white).
 * Testing the limits of a code for bugs is a source of musical creativity
 because one often achieves unexpected sounds, both because of bugs,
 and because of the limits employed.
+
+##### 0 - Intro
+# brown noise fades in.
+# It oscilates L-R is cycles of 6s
+# 3s-3s
+# each compass (6 4) = six quarter notes of 1s each,
+# beat = 3s
+
+##### 1 - Presentation of the material
+# sine or saw enters, very blended with the brown noise,
+# a little lower on the right
+# cycle is 1 compass.
+# another voice enters, higher,
+# with a cycle of three beats,
+# which implies a cycle of 6 beats = three compass.
+
+# Make three compass in 0-Intro when first voice enters,
+# or play with cycles of 2 and 3 compass
+
+##### 2 - Development
+# harmonies are developed by many notes at the same time,
+# and that don't oscilate as much as the brown noise and voices.
+
+#### 3 - Development
+# morph the brown noise.
+# introduce slower and faster oscilations
+# and static voices.
+# Melodies and harmonies of voices and noises,
+# imitations, hichups.
+
+#### 4 - Recaptulation
+# Make the scene stable again, as a soundscape
+# Sounds and structures are changed, but they comunicate
+# the same overall aspect.
+
+#### 5 - Coda
+# In some cycles a voice or noise is missing.
+# Sounds get rare and the music ends.
+# Maybe finish with a note + noise chord.
+
   
     
 
