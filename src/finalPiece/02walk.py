@@ -412,7 +412,7 @@ s_4 = H(s_4_, s_4___)
 
 s_ = J(s_, s_4, d=-5)
 
-s_OK2 = s_[:]
+s_OK2 = s_.copy()
 
 ## D.1.1
 # Only one voice remains, maybe static or stops walking
@@ -437,7 +437,7 @@ fade1 = L_(nsamples=[len(s_5_)],
     dev=[-80, 0], method=['lin']*2)
 s_5 = s_5_*fade1 + s_5__*(1-fade1)
 s_5b = n.array(( n.zeros(s_5.shape[0]), s_5 ))
-s_ = H(s_, s_5b*3)
+s_ = H(s_, s_5b*2)
 
 M.utils.WS(s_, '02walk_foo.wav')
 
