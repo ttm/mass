@@ -461,15 +461,61 @@ center3 = step*len(perms)/2
 perms = i6.rotations
 step = 0
 s6_____ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1])
-s6______ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1*(i+1) for i in range(5)])
+s6______ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=sg2, perms=perms, step=step, rhy=[.1*(i+1) for i in range(5)], tabs=[T.sine, T.square])
 s6_______ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=scale_grid, perms=perms, step=step, rhy=[.1*(i+1) for i in range(5)])
 
 step = 2
-s6________ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=scale_grid, perms=perms, step=step, rhy=[.7+.12*(i) for i in range(5)])
+s6________ = walk2(pivots_m[-2]+center+center2+center3, 0, scale_grid=scale_grid, perms=perms[:len(perms)//2], step=step, rhy=[.1+.05*(i) for i in range(5)], tabs=[T.saw])
 center4 = step*len(perms)/2
-s6 = H(s6, s6__, s6___, s6____,
-        s6_____, s6______, s6________, s6________)
-s_ = H(s_, s6)
+def m2s(sv, c=0):
+    if c == 0:
+        return n.array( (sv, n.zeros(sv.shape[0])) )
+    else:
+        return n.array( (n.zeros(sv.shape[0]), sv) )
+s6 = H(m2s(s6,1), m2s(s6__, 1), m2s(s6___, 0), m2s(s6____, 1), m2s(s6_____, 1),
+         m2s(s6______, 1), m2s(s6________, 0), m2s(s6________, 1))
+# def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
+#         dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9]],
+#             taba=[[S,S,S],[Tr,Tr,Tr,S]],
+#         nsamples=0, sonic_vector=0, fs=44100):
+
+d = [
+     [7,3,2,7,3,2,7,3,2,5.5], # tremolo 0 pivots
+     [6]*6, # tremolo 1 pivots
+     [8]*4 # tremolo 2 pivots
+    ]
+
+fa = [
+        [.2, 1, 5]*3+[.2],
+        [15,30]*3,
+        [200,300]*2
+     ]
+dB = [
+        [10]*10,
+        [5,15]*3,
+        [5,15]*2
+     ]
+alpha = [
+          [1]*10,
+          [1]*6,
+          [1]*4
+        ]
+taba = [
+        [T.sine]*10,
+        [T.triangle]*6,
+        [T.sine]*4
+       ]
+
+T_ = M.utils.T_
+env6 = T_(d, fa, dB, alpha, taba)
+
+env_ = env6[:s6.shape[-1]]
+s6_e = env_*s6
+# d = 
+# def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
+#         nsamples=0, sonic_vector=0, fs=44100):
+s_ = H(s_, s6_e*.1)
+M.utils.WS(s_, '02walk_foo_.wav')
 
 center = pivots_m[-2]+center+center2+center3+center4
 # P = M.utils.panTransitions
@@ -487,11 +533,13 @@ s7MI = walk2(center+24, 0, scale_grid=scale_grid, perms=perms, step=0, rhy=[.15]
 s7_ = n.array(( n.zeros(len(s7M)), s7M ))
 P = M.utils.panTransitions
 pantrans = P(p=[(0, 1), (1, 0)], d=[4], method=['lin'], fs=fs)
-s7__ = J(s7, pantrans)[:44100*4]
+# s7__ = J(s7, pantrans)[:44100*4]
+s7__ = s7[:pantrans.shape[-1]]*pantrans
 s7___ = n.array(( s7M, n.zeros(len(s7M)) ))
 s7b = H( s7_, s7__, s7___ )
 
 s_ = H(s_, s7b)
+
 
 # silence,
 # two almost equal deep and heavy
