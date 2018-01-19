@@ -106,7 +106,6 @@ def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='sw
         pointer = step
     swap = False
     domain_ = domain[:]
-    count = 0
     for perm in perms:
         if swap:
             if step >= 0:
@@ -114,13 +113,11 @@ def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='sw
             else:
                 domain_[domain_.index(max(domain_))] = pointer
             v_ = perm(domain_)
-            if i % count == 0:
-                pointer += step
+            pointer += step
         else:
             v_ = domain_[:]
             swap = True
         values_.append(v_)
-        count += 1
     values__ = []
     values_m = []
     values_f = []
