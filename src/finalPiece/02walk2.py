@@ -113,10 +113,10 @@ class Being:
                 domain = self.grid[self.pointer : self.pointer + self.seqsize]
             else:
                 domain = self.domain
-            nel = self.perms[0].size  # should match self.seqsize ?
+            # nel = self.perms[0].size  # should match self.seqsize ?
             count = 0
             while len(sequence) < n:
-                perm = self.perms[count % nel]
+                perm = self.perms[count % len(self.perms)]
                 seq = perm(domain)
                 sequence.extend(seq)
                 count += 1
@@ -144,7 +144,7 @@ class Being:
         if fn:
             if type(fn) != str:
                 fn = 'abeing.wav'
-            if fn[-4] != '.wav':
+            if fn[-4:] != '.wav':
                 fn += '.wav'
             M.utils.W(H(*notes), fn)
         else:
@@ -230,17 +230,264 @@ s2 = bb2_[:fs*7]
 ss = H(s0, s1, s2+s0_+s1_)
 M.utils.W(ss, 'borotega.wav')
 
+### Yes 1
 bp=Being() # simple for permutation
 bp.perms = M.structures.peals.PlainChanges(3).peal_direct
 # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
 bp.domain = [200, 200*2**(4/12), 200*2**(8/12)]
 bp.f_ = []
+bp.fv_ = [3,10,100]
+bp.d_ = [1/4, 1/4, 1/2]
 bp.curseq = 'f_'
 bp.stay(21)
 bp.render(21, 'permBaby.wav')
+tr1 = bp.render(21)
 
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(3).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [400, 400*2**(4/12), 400*2**(8/12)]
+bp.f_ = []
+bp.fv_ = [200, 20, 6]
+bp.d_ = [1/2, 1/4, 1/4]
+bp.curseq = 'f_'
+bp.stay(21)
+bp.render(21, 'permBaby_.wav')
+tr2 = bp.render(21)
+
+tr = tr1 + tr2
+M.utils.W(H(*tr1, *tr2, H(*tr1) + H(*tr2)), 'bbperm.wav')
+
+### Yes 2
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(3/12), 200*2**(6/12), 200*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [3,10,50, 100]
+bp.d_ = [1/6, 1/6, 1/6, 1/2]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4.wav')
+qd1 = bp.render(nnotes)
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(3/12), 100*2**(6/12), 100*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [200, 100, 20, 10] # [3,10,50, 100]
+bp.d_ = [1/2, 1/6, 1/6, 1/6]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4_.wav')
+qd2 = bp.render(nnotes)
+
+qd = qd1 + qd2
+
+M.utils.W(H(*qd1, *qd2, H(*qd1) + H(*qd2)), 'bbpermX4.wav')
+
+
+### Yes 2b
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(3/12), 200*2**(6/12), 200*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [3,10,50, 100]
+bp.nu_ = [3,10,50]
+bp.d_ = [1/6, 1/6, 1/6, 1/2]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4b.wav')
+qd1 = bp.render(nnotes)
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(3/12), 100*2**(6/12), 100*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [200, 100, 20, 10] # [3,10,50, 100]
+bp.nu_ = [1,5,10]
+bp.d_ = [1/2, 1/6, 1/6, 1/6]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4b_.wav')
+qd2 = bp.render(nnotes)
+
+qd = qd1 + qd2
+
+# M.utils.W(H(*qd1, *qd2, H(*qd1) + H(*qd2)), 'bbpermX4.wav')
+M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4b.wav')
+
+M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_E.wav')
+
+# import sys
+# sys.stop()
+
+### Yes 3
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(2/12), 200*2**(4/12), 200*2**(6/12), 200*2**(8/12), 200*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [3,10,50, 100, 200, 500]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6.wav')
+sx1 = bp.render(nnotes)
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [3,10,50, 100, 200, 500]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6_100.wav')
+sx100 = bp.render(nnotes)
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [.1, .5, 3, 10, 50, 100,]
+bp.nu_ = [.1, .5, 3, 10, 50]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6_100b.wav')
+sx100b = bp.render(nnotes)
+
+
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6_.wav')
+sx2 = bp.render(nnotes)
+
+sx = sx1 + sx2
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [100, 30, 15, 7, 3, 1, .5] # [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+bp.nu_ = [100, 30, 15, 7, 3, 1]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6_b.wav')
+sx2b = bp.render(nnotes)
+
+
+
+
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(2/12), 200*2**(4/12), 200*2**(6/12), 200*2**(8/12), 200*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX6_200.wav')
+sx200 = bp.render(nnotes)
+
+M.utils.W(H(*sx1, *sx2, H(*sx1) + H(*sx2)), 'bbpermX6b.wav')
+M.utils.W(H(H(*sx1) + H(*sx2)), 'bbpermX6b_.wav')
+# M.utils.W(H(*sx1, *sx2, H(*sx1) + H(*sx2)), 'bbpermX6.wav')
+M.utils.WS((H(*sx1), H(*sx2)), 'bbpermX6b_E.wav')
+
+M.utils.WS((H(*sx1) + H(*sx200)), 'bbpermX6_200.wav')
+M.utils.WS((H(*sx1), H(*sx200)), 'bbpermX6_200_E.wav')
+
+M.utils.WS((H(*sx100) + H(*sx2)), 'bbpermX6_100.wav')
+M.utils.WS((H(*sx100), H(*sx2)), 'bbpermX6_100_E.wav')
+
+M.utils.WS((H(*sx100b) + H(*sx2b)), 'bbpermX6_100b.wav')
+M.utils.WS((H(*sx100b), H(*sx2b)), 'bbpermX6_100b_E.wav')
+
+#### Ow Yeah (work on it!)
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(3/12), 200*2**(6/12), 200*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [1,2,3,4]
+bp.nu_ = [3,10,50]
+bp.d_ = [1/6, 1/6, 1/6, 1/2]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4bA.wav')
+qd1 = bp.render(nnotes)
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(3/12), 100*2**(6/12), 100*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [.5, .1, 3, 4] # [3,10,50, 100]
+bp.nu_ = [6,20,100]
+bp.d_ = [1/2, 1/6, 1/6, 1/6]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4b_A.wav')
+qd2 = bp.render(nnotes)
+
+qd = qd1 + qd2
+
+M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4bA.wav')
+
+M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_EA.wav')
 # Use peals on rhythms:
 # 1 = quarter note or figure (e.x. quarter, eigth, eigth)
 # 2 = half note or figure
 # 3 = eigth note or figure
 # play: 1 2 3  2 1 3  2 3 1  3 2 1  3 1 2  1 3 2  [1 2 3]
+
+# bbpermX6_.wav => first and final note of each row are the same and there is at least this unisson
+# all the notes are the same, but unisson is not garanteed for any but for first and final note of each row. (each row = each permutation, one ring of each bell)
+# This is a being species. Incapsulate it as a subclass of being.
+# Take advantage of this fact to make rhythm. And for variation: let the voices loose the sync, or follow other scales or permutation sets.
+# Make walk methods. Should they be in Being() or this subclass? (Clam()? Jerry?)
+# Make these beings evolve to fit taste of the listener.
