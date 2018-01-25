@@ -364,7 +364,7 @@ bp.stay(nnotes)
 bp.render(nnotes, 'permBabyX6_100.wav')
 sx100 = bp.render(nnotes)
 
-bp=Being() # simple for permutation
+bp=Being()
 bp.perms = M.structures.peals.PlainChanges(6).peal_direct
 # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
 # bp.domain = [1, 2, 3]
@@ -374,7 +374,7 @@ bp.fv_ = [.1, .5, 3, 10, 50, 100,]
 bp.nu_ = [.1, .5, 3, 10, 50]
 bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
 bp.curseq = 'f_'
-nnotes = 6*5*4*3*2*4
+nnotes = 6*5*4*3*2*6
 bp.stay(nnotes)
 bp.render(nnotes, 'permBabyX6_100b.wav')
 sx100b = bp.render(nnotes)
@@ -491,3 +491,6 @@ M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_EA.wav')
 # Take advantage of this fact to make rhythm. And for variation: let the voices loose the sync, or follow other scales or permutation sets.
 # Make walk methods. Should they be in Being() or this subclass? (Clam()? Jerry?)
 # Make these beings evolve to fit taste of the listener.
+
+# Hyper-vibratos and tremolos (that are not possible to be produced in non-electronic traditional instruments),
+# and meta vibratos and tremolos (simultaneous vbr and tre).
