@@ -9,6 +9,7 @@ H = M.utils.H
 V_ = M.utils.V_
 AD = M.utils.AD
 T = M.tables.Basic()
+F = M.utils.F
 
 def ADV(note_dict={}, adsr_dict={}):
     return AD(sonic_vector=V_(**note_dict), **adsr_dict)

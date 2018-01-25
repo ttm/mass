@@ -380,7 +380,6 @@ bp.render(nnotes, 'permBabyX6_100b.wav')
 sx100b = bp.render(nnotes)
 
 
-
 bp=Being() # simple for permutation
 bp.perms = M.structures.peals.PlainChanges(6).peal_direct
 # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
