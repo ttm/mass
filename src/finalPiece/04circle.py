@@ -1,20 +1,3 @@
-# scale up, down, scrambled
-# rotation clockwise and anti-clockwise
-
-# 20 notes in each octave.
-# one octave up-clock, one octave empty
-# one down-anti, one empty, up-anti empty, down-clock
-
-# Start with all of them as sinusoids, each note d=.1s
-
-# play with their absence. X octaves empty is a row for a change.
-
-# use long vibratos (low fv) to link with end of 03triSq
-
-# grains for 20note cycles
-
-
-
 import sys
 keys=tuple(sys.modules.keys())
 for key in keys:
