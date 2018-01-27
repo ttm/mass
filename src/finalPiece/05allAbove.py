@@ -247,7 +247,9 @@ ll = l(d=[5,10,5,7,3+30], dev=[1,0.01,1,100,1],alpha = [1]*5, method=['lin']*5)
 
 s_ = ss*ll + ss_*(1-ll)
 
-tt = t(d=[[3,5,2,5,5,10], [5,5,7,3,10]], fa=[[2,6,20,50,150,10],[.5,3,4,1,10]], dB=[[5,5,5,5,5,0],[20,10,7,15,0]], alpha=[[1,1,1,1,1,1],[1,1,1,1,1]], taba=[[S,S,S,S,S,S],[S,S,S,S,S]])
+s1 = s_[:]
+
+tt = t(d=[[3,5,2,5,5,10], [5,5,7,3,10]], fa=[[2,6,20,50,150,10],[.5,3,4,1,10]], dB=[[5,5,5,5,5,0],[10,10,7,15,0]], alpha=[[1,1,1,1,1,1],[1,1,1,1,1]], taba=[[S,S,S,S,S,S],[S,S,S,S,S]])
 # def T_(d=[[3,4,5],[2,3,7,4]], fa=[[2,6,20],[5,6.2,21,5]],
 #         dB=[[10,20,1],[5,7,9,2]], alpha=[[1,1,1],[1,1,1,9]],
 #             taba=[[S,S,S],[Tr,Tr,Tr,S]],
@@ -259,8 +261,8 @@ M.utils.W(s_,'ssomething.wav')
 
 fs = 44100
 ll = l(d=[10], dev=[0],alpha = [1], method=['lin'])
-s_l = s_[:]
-s_r = s_[:]
+s_l = s_.copy()
+s_r = s_.copy()
 s_l[-len(ll):] *= ll
 s_l[-len(ll):] += ss[:len(ll)]*(1-ll)
 s_l_ = H(s_l, ss[len(ll):len(ll)+fs*20])
@@ -269,16 +271,18 @@ s_r[-len(ll):] *= ll
 s_r[-len(ll):] += ss_[:len(ll)]*(1-ll)
 s_r_ = H(s_r, ss_[len(ll):len(ll)+fs*20])
 
-tl = t(d=[[3,5,2,5,5], [5,5,7,3]], fa=[[2,6,20,50,150],[.5,3,4,1]], dB=[[5,5,5,5,5],[20,10,7,15]], alpha=[[1,1,1,1,1],[1,1,1,1]], taba=[[S,T.saw,S,T.triangle,S],[S,T.square,S,T.saw]])
+tl = t(d=[[3,5,2,5,5], [5,5,7,3]], fa=[[2,6,20,50,150],[.5,3,4,1]], dB=[[5,5,5,5,5],[10,10,7,10]], alpha=[[1,1,1,1,1],[1,1,1,1]], taba=[[S,T.saw,S,T.triangle,S],[S,T.square,S,T.saw]])
 
-tr = t(d=[[10,3,5,2], [5,7,3,5]], fa=[[6,20,50,150,10],[3,4,1,10]], dB=[[7]*5,[20,10,7,15]], alpha=[[1,1,1,1,1],[1,1,1,1]], taba=[[T.saw,S,T.triangle,S,T.square],[S,S,T.square,S]])
+tr = t(d=[[10,3,5,2], [5,7,3,5]], fa=[[6,20,50,150,10],[3,4,1,10]], dB=[[7]*5,[10,10,7,10]], alpha=[[1,1,1,1,1],[1,1,1,1]], taba=[[T.saw,S,T.triangle,S,T.square],[S,S,T.square,S]])
 
 s_l_[-len(tl):] *= tl
 s_r_[-len(tr):] *= tr
 fd = F(d=10,method='lin')
 s_l_[-len(fd):] *= fd
 s_r_[-len(fd):] *= fd
-s__ = (AD(sonic_vector=s_l_, S=0), AD(sonic_vector=s_r_, S=0))
+SL = AD(sonic_vector=s_l_, S=0)
+SR = AD(sonic_vector=s_r_, S=0)
+s__ = (SL, SR)
 
 M.utils.WS(s__,'ssom.wav')
 
@@ -311,14 +315,234 @@ nnotes = 4*3*2*4
 bp.stay(nnotes)
 qd2 = H(*bp.render(nnotes))
 
-sv = H(n.array(s__)*.2, silence, F(sonic_vector=qd1, out=False, method='lin'), qd1+qd2)
+QD1 = qd1.copy()
+SS = n.array(s__)
+s1_ = n.array( ((SL[::-1]*SR)[::-1], SR[::-1]*SL))*.2*.1
+s1_[:, :fs*34] *= F(d=34, method='lin', out=False)
+
+s1_[:, :len(qd1)] += F(sonic_vector=QD1, out=False, method='lin')
+s1_[:, len(qd1):2*len(qd1)] += qd1 + qd2
+
+### Yes 2b
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(3/12), 200*2**(6/12), 200*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [3,10,50, 100]
+bp.nu_ = [3,10,50]
+bp.d_ = [1/6, 1/6, 1/6, 1/2]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+# bp.render(nnotes, 'permBabyX4b.wav')
+qd1 = bp.render(nnotes)
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(3/12), 100*2**(6/12), 100*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [200, 100, 20, 10] # [3,10,50, 100]
+bp.nu_ = [1,5,10]
+bp.d_ = [1/2, 1/6, 1/6, 1/6]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+# bp.render(nnotes, 'permBabyX4b_.wav')
+qd2 = bp.render(nnotes)
+
+qd = qd1 + qd2
+
+# M.utils.W(H(*qd1, *qd2, H(*qd1) + H(*qd2)), 'bbpermX4.wav')
+
+# M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4b.wav')
+# 
+# M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_E.wav')
+
+X4b = H(*qd1)*.5 + H(*qd2)
+X4be = n.array((H(*qd1)*.5, H(*qd2)))
+s1_[:, 2*len(QD1):2*len(QD1)+len(X4b)] += X4be*1.6
+
+sv = H(n.array(s__)*.2, silence, s1_)
 
 M.utils.WS(sv,'ssom2.wav')
 
 
+#### Ow Yeah (work on it!)
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(3/12), 200*2**(6/12), 200*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [1,2,3,4]
+bp.nu_ = [3,10,50]
+bp.d_ = [1/6, 1/6, 1/6, 1/2]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4bA.wav')
+qd1 = bp.render(nnotes)
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(4).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(3/12), 100*2**(6/12), 100*2**(9/12)]
+bp.f_ = []
+bp.fv_ = [.5, .1, 3, 4] # [3,10,50, 100]
+bp.nu_ = [6,20,100]
+bp.d_ = [1/2, 1/6, 1/6, 1/6]
+bp.curseq = 'f_'
+nnotes = 4*3*2*4
+bp.stay(nnotes)
+bp.render(nnotes, 'permBabyX4b_A.wav')
+qd2 = bp.render(nnotes)
+
+qd = qd1 + qd2
+
+M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4bA.wav')
+
+M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_EA.wav')
 
 
 
+### Yes 3
+# bp=Being() # simple for permutation
+# bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# # bp.domain = [1, 2, 3]
+# bp.domain = [200, 200*2**(2/12), 200*2**(4/12), 200*2**(6/12), 200*2**(8/12), 200*2**(10/12)]
+# bp.f_ = []
+# bp.fv_ = [3,10,50, 100, 200, 500]
+# bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+# bp.curseq = 'f_'
+# nnotes = 6*5*4*3*2*4
+# bp.stay(nnotes)
+# # bp.render(nnotes, 'permBabyX6.wav')
+# sx1 = bp.render(nnotes)
+# 
+# bp=Being() # simple for permutation
+# bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# # bp.domain = [1, 2, 3]
+# bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+# bp.f_ = []
+# bp.fv_ = [3,10,50, 100, 200, 500]
+# bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+# bp.curseq = 'f_'
+# nnotes = 6*5*4*3*2*4
+# bp.stay(nnotes)
+# # bp.render(nnotes, 'permBabyX6_100.wav')
+# sx100 = bp.render(nnotes)
+
+bp=Being()
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [.1, .5, 3, 10, 50, 100,]
+bp.nu_ = [.1, .5, 3, 10, 50]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+# bp.render(nnotes, 'permBabyX6_100b.wav')
+sx100b = bp.render(nnotes)
+
+
+# bp=Being() # simple for permutation
+# bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# # bp.domain = [1, 2, 3]
+# bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+# bp.f_ = []
+# bp.fv_ = [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+# bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+# bp.curseq = 'f_'
+# nnotes = 6*5*4*3*2*4
+# bp.stay(nnotes)
+# # bp.render(nnotes, 'permBabyX6_.wav')
+# sx2 = bp.render(nnotes)
+# 
+# sx = sx1 + sx2
+
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [100, 100*2**(2/12), 100*2**(4/12), 100*2**(6/12), 100*2**(8/12), 100*2**(10/12)]
+bp.f_ = []
+bp.fv_ = [100, 30, 15, 7, 3, 1, .5] # [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+bp.nu_ = [100, 30, 15, 7, 3, 1]
+bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+bp.curseq = 'f_'
+nnotes = 6*5*4*3*2*4
+bp.stay(nnotes)
+# bp.render(nnotes, 'permBabyX6_b.wav')
+sx2b = bp.render(nnotes)
+
+
+
+
+
+# bp=Being() # simple for permutation
+# bp.perms = M.structures.peals.PlainChanges(6).peal_direct
+# # bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# # bp.domain = [1, 2, 3]
+# bp.domain = [200, 200*2**(2/12), 200*2**(4/12), 200*2**(6/12), 200*2**(8/12), 200*2**(10/12)]
+# bp.f_ = []
+# bp.fv_ = [500, 300, 200, 40, 20, 10] # [3,10,50, 100]
+# bp.d_ = [1/6, 1/6, 1/6, 1/4, 1/4, 1/2][::-1]
+# bp.curseq = 'f_'
+# nnotes = 6*5*4*3*2*4
+# bp.stay(nnotes)
+# # bp.render(nnotes, 'permBabyX6_200.wav')
+# sx200 = bp.render(nnotes)
+
+# M.utils.W(H(*sx1, *sx2, H(*sx1) + H(*sx2)), 'bbpermX6b.wav')
+# M.utils.W(H(H(*sx1) + H(*sx2)), 'bbpermX6b_.wav')
+# # M.utils.W(H(*sx1, *sx2, H(*sx1) + H(*sx2)), 'bbpermX6.wav')
+# M.utils.WS((H(*sx1), H(*sx2)), 'bbpermX6b_E.wav')
+# 
+# M.utils.WS((H(*sx1) + H(*sx200)), 'bbpermX6_200.wav')
+# M.utils.WS((H(*sx1), H(*sx200)), 'bbpermX6_200_E.wav')
+# 
+# M.utils.WS((H(*sx100) + H(*sx2)), 'bbpermX6_100.wav')
+# M.utils.WS((H(*sx100), H(*sx2)), 'bbpermX6_100_E.wav')
+
+# M.utils.WS((H(*sx100b) + H(*sx2b)), 'bbpermX6_100b.wav')
+# M.utils.WS((H(*sx100b), H(*sx2b)), 'bbpermX6_100b_E.wav')
+
+
+ll = len(sx100b)
+sx = n.array( (H(*sx100b[ll//2:ll//2+6*60]), H(*sx2b[ll//2:ll//2+6*60])) )
+
+q1 = H(*qd1)
+q2 = H(*qd2)
+sx[0, :len(q1)] += q1*.5
+sx[1, :len(q1)] += q2
+sx[:, len(q1) : len(q1) + X4b.shape[0]] += X4b
+svx = H(sv, sx)
+
+svx[:, -fs*15:] *= F(d=15, out=True, method='lin')
+
+svx[0, -len(tt):] *= .45*tt
+svx[1, -len(tt):] *= .45*tt[::-1]
+
+M.utils.WS(svx,'ssom3.wav')
+
+
+
+
+
+######################
+# Cemitery
+import sys
+sys.exit()
 
 
 

@@ -10,7 +10,8 @@ first part: geometry, braid
 2. 02walk (02walk_foo2)
 3. triSq2.wav triang and square
 4. circled (circle)
-5. 03stay (bbperm\*)
+5. ssom3.wav (bbperm\*)
+
 
 ===
 Second part: sonic cues related through spectrum, stevens and web-fech laws
