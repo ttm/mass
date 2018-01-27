@@ -316,6 +316,7 @@ bp.stay(nnotes)
 qd2 = H(*bp.render(nnotes))
 
 QD1 = qd1.copy()
+QD2 = qd2.copy()
 SS = n.array(s__)
 s1_ = n.array( ((SL[::-1]*SR)[::-1], SR[::-1]*SL))*.2*.1
 s1_[:, :fs*34] *= F(d=34, method='lin', out=False)
@@ -355,8 +356,8 @@ bp.stay(nnotes)
 qd2 = bp.render(nnotes)
 
 qd = qd1 + qd2
-
-# M.utils.W(H(*qd1, *qd2, H(*qd1) + H(*qd2)), 'bbpermX4.wav')
+QD1b = qd2.copy()
+QD2b = qd2.copy()
 
 # M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4b.wav')
 # 
@@ -364,7 +365,7 @@ qd = qd1 + qd2
 
 X4b = H(*qd1)*.5 + H(*qd2)
 X4be = n.array((H(*qd1)*.5, H(*qd2)))
-s1_[:, 2*len(QD1):2*len(QD1)+len(X4b)] += X4be*1.6
+s1_[:, 2*len(QD1):2*len(QD1)+len(X4b)] = X4be*1.6
 
 sv = H(n.array(s__)*.2, silence, s1_)
 
@@ -536,35 +537,56 @@ svx[1, -len(tt):] *= .45*tt[::-1]
 M.utils.WS(svx,'ssom3.wav')
 
 
+### Yes 1
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(3).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [200, 200*2**(4/12), 200*2**(8/12)]
+bp.f_ = []
+bp.fv_ = [3,10,100]
+bp.d_ = [1/4, 1/4, 1/2]
+bp.curseq = 'f_'
+bp.stay(18)
+# bp.render(21, 'permBaby.wav')
+tr1 = bp.render(18)
 
+bp=Being() # simple for permutation
+bp.perms = M.structures.peals.PlainChanges(3).peal_direct
+# bp.f_ = [200, 200*2**(4/12), 200*2**(8/12)]
+# bp.domain = [1, 2, 3]
+bp.domain = [400, 400*2**(4/12), 400*2**(8/12)]
+bp.f_ = []
+bp.fv_ = [200, 20, 6]
+bp.d_ = [1/2, 1/4, 1/4]
+bp.curseq = 'f_'
+bp.stay(18)
+# bp.render(21, 'permBaby_.wav')
+tr2 = bp.render(18)
 
+tr = tr1 + tr2
+# M.utils.W(H(*tr1, *tr2, H(*tr1) + H(*tr2)), 'bbperm.wav')
 
-######################
-# Cemitery
-import sys
-sys.exit()
+TR = H(*tr1, *tr2, (H(*tr1), H(*tr2)))
+TR[:, :7*fs] *= F(d=7, out=False, method='lin')
 
+sweep = AD(sonic_vector=s_[10*fs:22*fs])
+TR[:, 6*fs:] += sweep
 
+sound = H(svx, silence[:fs*2], TR)
 
-f = [200,200.*2**(9/12)]
-d = [[30],[30]]
-fv = [[100]]
-nu = [[1]]
-alpha = [[1],[1]]
-tab = [[Tr],[S]]
-ss2 = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss2,'s200_la.wav')
+# alternate TR QD QDb in LR
 
-f = [200.*2**(9/12)]*2
-d = [[30],[30]]
-fv = [[100]]
-nu = [[1]]
-alpha = [[1],[1]]
-tab = [[Tr],[S]]
-ss2 = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss2,'sla.wav')
+l1 = ( H(*tr1,*tr2,*tr1,*tr2)+H(*QD1) + H(*tr2,*tr1,*tr2,*tr1)*H(*QD2), H(*tr2,*tr1,*tr2,*tr1)+H(*QD2) + H(*tr1,*tr2,*tr1,*tr2)*H(*QD1))
 
-
-
+sound_ = H(sound, l1)
+adur = 2
+adur2 = sound_.shape[1]/fs
+step = adur2/adur
+coda = H(sound_[:, ::step], n.zeros(fs), *[sound_[:, ::step*2],sound_[:, ::step*3],sound_[:, ::step//2],sound_[:, ::step//3]]*2)
+coda[0] = coda[0][::-1]
+sound__ = H(sound_, coda)
+sound__[:, -fs*14:] *= F(d=14, out=True, method='lin')
+M.utils.WS(sound__,'05allAbove.wav')
 
 
