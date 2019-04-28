@@ -3,6 +3,8 @@ keys=tuple(sys.modules.keys())
 for key in keys:
     if "music" in key:
         del sys.modules[key]
+# from percolation import clearImport
+# clearImport("music")
 import music as M, numpy as n
 from percolation.rdf import c
 H = M.utils.H

@@ -1,10 +1,18 @@
 Pieces
 ------
 
-Shape Suite
------------
+Half-Shape Suite
+----------------
 
-first part: geometry, braid
+
+first part: geometry, braid, tribal, aboriginal suite, tribal suite, electro-tribal dances, suite
+cyber ethnic suite
+ethnic suite
+electro-second half-shape suite
+sonic braid suite
+
+half-shape suite
+
 0. Borotega
 1. 01peal
 2. 02walk (02walk_foo2)
@@ -33,6 +41,8 @@ modulator frequencies.
 Noises (colored, etc).
 Fades, climax, rhythms, scales and chords.
 Maybe use sequences from IEFS.
+
+Check /home/renato/vimwiki/mass.wiki
 
 As example solutions, and preliminary outline of the procedures
 for the exercise, the pieces are started at:
