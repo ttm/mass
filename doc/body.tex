@@ -601,7 +601,7 @@ T^{f,\; \Delta}=\left\{t_i^f\right\}_0^{\lfloor f_s . \Delta \rfloor -1}=\left \
 \subsection{Spatialization: localization and reverberation}\label{subsec:spac}
 A musical note is always spatialized
 (i.e. it is always produced within the ordinary three dimensional physical space)
-even though it is not one of its four basic properties in canonical musical theory (duration, loudness, pitch and timbre).
+even though it is not one of its four basic properties in canonical music theory (duration, loudness, pitch and timbre).
 The consideration of this fact is the subject of the spatialization knowledge field and practice\footnote{By
 spatialization one might find both:
 1) the consideration of cues in sound that derive from the environment,
@@ -612,15 +612,15 @@ and they are obviously intermingled.}.
 A note has a source which has a three dimensional position.
 This position is the spatial localization of the sound.
 It is often (modeled as) a single point but can be a surface or a volume.
-The reverberation in the environment in which a sound occurs is another main topic of spatialization.
+The reverberation in the environment in which a sound occurs is an important topic of spatialization.
 Both concepts, spatial localization and reverberation,
 are widely valued by composers, audiophiles and the music industry~\cite{floEsp}.
 
 \subsubsection{Spatial localization}
 It is understood that the perception of sound localization occurs in our nervous system
-mainly by three cues: the delay of incoming sound (and its reflections in the surfaces) between both ears,
+mainly by three cues: the delay of the incoming sound (and its reflections in the surfaces) between both ears,
 the difference of sound intensity at each ear and the filtering performed by the human body,
-specially its chest, head and ears~\cite{Roederer, hrtf, Heeger}. 
+specially in the chest, head and ears~\cite{Roederer, hrtf, Heeger}. 
 
 \begin{figure}[h!]
     \centering
@@ -748,7 +748,7 @@ The sum of the amplitudes of $N$ sequences with same size $\Lambda$ results in t
 Figure~\ref{fig:mixagem} illustrates this overlapping process of discretized sound waves, each with 100 samples. If $f_s=44.1kHz$, the frequencies of the sawtooth, square and sine wave are, respectively: $\frac{f_s}{100/2}=882Hz$, $\frac{f_s}{100/4}=1764Hz$ and $\frac{f_s}{100/5}=2205Hz$. The duration of each sequence is very short $\frac{f_s=44.1kHz}{100} \approx 2ms$. One can complete the sequence with zeroes to sum (mix) sequences with different sizes.
 
 The mixed notes are generally separated by the ear according to the physical laws of resonance and by the nervous system~\cite{Roederer}.
-This process of mixing musical notes results in musical harmony whose intervals between frequencies and chords of simultaneous notes guide subjective and abstract aspects of music appreciation~\cite{Harmonia} and are addressed in Section~\ref{sec:notesMusic}. 
+This process of mixing musical notes results in musical harmony, where intervals between frequencies and chords of simultaneous notes guide subjective and abstract aspects of music appreciation~\cite{Harmonia} and are addressed in Section~\ref{sec:notesMusic}. 
 
 Sequences can be concatenated in time. If the sequences $\{t_{k,i}\}_0^{\Lambda_k-1}$ represent musical notes,
 their concatenation in a unique sequence $T$ is a simple melodic sequence (or melody):
@@ -759,7 +759,7 @@ T = \{t_i\}_0^{\sum\Delta_k-1}= & \{t_{l,i}\}_0^{\sum\Delta_k-1}, \;\; \\ l\text
 \end{split}
 \end{equation}
 
-This mechanism is illustrated in Figure~\ref{fig:concatenacao} with the same sequences of Figure~\ref{fig:mixagem}. Although the sequences are short for the usual sample rates, it is easy to visually observe the concatenation of sound sequences. In addition, each note has  a duration larger than $100ms$ if $f_s<1kHz$ (but need to oscillate faster to yield audible frequencies).
+This mechanism is illustrated in Figure~\ref{fig:concatenacao} with the same sequences of Figure~\ref{fig:mixagem}. Although the sequences are short for the usual sample rates, it is easy to visually observe the concatenation of sonic sequences. In addition, each note has  a duration larger than $100ms$ if $f_s<1kHz$ (but need to oscillate faster to yield audible frequencies).
 
 \begin{figure}[h!]
 {    \centering
@@ -781,7 +781,7 @@ To explore all the ways by which variations occur within a note is out of the sc
 \subsection{Lookup table}\label{subsec:lookup}
 The \emph{Lookup Table} (LUT) is an array for indexed operations which substitutes continuous and repetitive calculations.
 It is used to reduce computational complexity and for employing functions without calculating them directly, e.g. from sampled data or hand picked values.
-In music its usage transcends these applications: it simplifies many operations and enables the use a single wave period to synthesize sounds in the whole audible spectrum, with any waveform.
+In music its usage simplifies many operations and enables the use a single wave period to synthesize sounds in the whole audible spectrum, with any waveform.
 
 Let $\widetilde{\Lambda}$ be the wave period in samples and $\widetilde{L} = \left\{\, \widetilde{l}_i \,\right\}_0^{\widetilde{\Lambda} -1}$ the sample sequence with the waveform.
 A sequence $T^{f,\,\Delta}$ with samples of a sound with frequency $f$ and duration $\Delta$ can be obtained by means of $\widetilde{L}$:
@@ -825,7 +825,7 @@ Unless otherwise stated, this procedure will be used along all the following dis
 LUTs are broadly used in computational implementations for music,
 and are known also as wavetables.
 A classical usage of LUTs is known as \emph{Wavetable Synthesis},
-which generally consists of many LUTs used together to generate a quasi-periodic music note~\cite{Cook,Wavetable}.
+which generally consists of many LUTs used together to generate a quasi-periodic musical note~\cite{Cook,Wavetable}.
 
 \subsection{Incremental variations of frequency and intensity}\label{subsec:vars}
 As stated by the (Weber and) Fechner law~\cite{Weber-Fechner},
@@ -899,17 +899,17 @@ Applying the loudness transition to a sonic sequence $T$:
 It is often convenient to have $a_0=1$ to start a new sequence with the original amplitude and then progressively change it.
 If $\alpha=1$, the amplitude variation follows the exponential progression that is related to the linear variation of loudness. Figure~\ref{fig:transicao} depicts transitions between values 1 and 2 and for different values of $\alpha$, a gain of $\approx 6dB$ as given by Equation~\ref{eq:ampVol}.
 
-Special attention should be dedicated while considering $a=0$.
+Special attention should be given while considering $a=0$.
 In Equation~\ref{seqAmp}, $a_0=0$ results in a division by zero and if $a_{\Lambda-1}=0$, there will be a multiplication by zero.
 Both cases make the procedure useless, once a ratio of any number in relation to zero is not well defined for our purposes. It is possible to solve this dilemma choosing a number that is small enough like $-80dB\;\Rightarrow a=10^{\frac{-80}{20}}=10^{-4}$ as the minimum loudness for a \emph{fade in} ($a_0=10^{-4}$) or for a \emph{fade out} ($a_{\Lambda-1}=10^{-4}$). A linear fade can be used then to reach zero amplitude, if needed. Another common solution is the use of the quartic polynomial term $x^4$, as it reaches zero without these difficulties and gets reasonably close to the curve with $\alpha=1$ as it departs from zero~\cite{Cook}.
 
-Using Equations~\ref{ampDec} and~\ref{transAmp} specifying a transition of $V_{dB}$ decibels:
+Using Equations~\ref{ampDec} and~\ref{transAmp} to specify a transition of $V_{dB}$ decibels:
 
 \begin{equation}\label{seqAmpDB}
 T^{'}=\left\{ t_i 10^{\frac{V_{dB}}{20}\left( \frac{i}{\Lambda-1} \right)^\alpha} \right\}_0^{\Lambda-1}
 \end{equation}
 
-\noindent for the general case of amplitude variations following a geometric progression. The greater the value of $\alpha$, the smoother the sound introduction and more intense its end. $\alpha>1$ results in loudness transitions commonly called \emph{slow fade}, while $\alpha<1$ results in \emph{fast fade}~\cite{guillaume}.
+\noindent in the general case of amplitude variations following a geometric progression. The greater the value of $\alpha$, the smoother the sound introduction and more intense its end. $\alpha>1$ results in loudness transitions commonly called \emph{slow fade}, while $\alpha<1$ results in \emph{fast fade}~\cite{guillaume}.
 
 For linear amplification -- but not linear perception -- it is sufficient to use an appropriate sequence $\{a_i\}$:
 
@@ -917,7 +917,7 @@ For linear amplification -- but not linear perception -- it is sufficient to use
 a_i=a_0 + (a_{\Lambda-1}-a_0)\frac{i}{\Lambda-1}
 \end{equation}
 
-The linear transitions will be used for AM and FM synthesis, while exponential transitions are proper tremolos and vibratos, as developed in Section~\ref{subsec:tvaf}. A non-oscillatory exploration of these variations is in the music piece \emph{ParaMeter transitions}~\cite{MASSA}.
+The linear transitions will be used for AM and FM synthesis, while exponential transitions are proper for tremolos and vibratos, as developed in Section~\ref{subsec:tvaf}. A non-oscillatory exploration of these variations is in the music piece \emph{ParaMeter transitions}~\cite{MASSA}.
 
 \subsection{Application of digital filters}\label{subsec:filtros}
 This subsection is limited to a description of sequences processing by convolution and difference equations, and immediate applications, as a thorough discussion of filtering is beyond the scope of this study\footnote{The implementation of filters encompasses an area of recognized complexity, with dedicated literature and software~\cite{Openheim,smith}.}.
@@ -935,7 +935,7 @@ Filter employment can be part of the synthesis process or made subsequently as p
 
 Filters applied by means of convolution are known by the acronym FIR (Finite Impulse Response) and are characterized by having a finite sample representation.
 This sample representation is called `impulse response' $\{h_i\}$.
-FIR filters are applied in the time domain by means of convolution of the sound with the respective impulse response of the filter
+FIR filters are applied in the time domain by means of convolution of the sound with the respective impulse response of the filter.
 For the purposes of this work, convolution of $T$ with $H$ is defined as:
 
 \begin{equation}\label{eq:conv}
@@ -955,13 +955,14 @@ especially when using a Fast Fourier Transform (FFT) routine.
 
 The impulse response can be provided by physical measurement or by pure synthesis.
 An impulse response for a reverberation, for example, can be obtained by recording the sound of the environment when someone triggers a click which resembles an impulse, or obtained by a sinusoidal sweep whose Fourier transform approximates its frequency response.
-Both are impulse responses which, properly convoluted with the sound sequence, result in the same sound with a reverberation that resembles the original environment where the measurement was made~\cite{Cook}.
+Both are impulse responses which, properly convoluted with the sonic sequence, result in the same sound with a reverberation that resembles the original environment where the measurement was made~\cite{Cook}.
 
-The inverse Fourier transform of an even and real envelope is an impulse response of a FIR filter.
+The Fourier transform of an impulse response of a FIR filter is
+an even and real envelope.
 Convoluted with a sound (in the time or frequency domain), it performs the frequency filtering specified by the envelope.
 The greater the number of samples, the higher the envelope resolution and the computational complexity, which should often be weighted, for convolution is expensive.
 
-An important property is the time shift caused by convolution with a shifted impulse. Despite being computationally expensive, it is possible to create \emph{delay lines} by means of a convolution with an impulse response that has an impulse for each re-incidence of the sound. Figure~\ref{fig:delays} shows the shift caused by convolution with an impulse. Depending on the density of the impulses, the result is perceived as rhythm (from an impulse for each couple of seconds to about 20 impulses per second) or as pitch (from about 20 impulses per second and higher densities). In the latter case, the process resembles granular synthesis, reverberation and equalization.
+An important property is the time shift caused by convolution with a shifted impulse. Despite being computationally expensive, it is possible to create \emph{delay lines} by means of a convolution with an impulse response that has an impulse for each intended re-incidence of the sound. Figure~\ref{fig:delays} shows the shift caused by convolution with an impulse. Depending on the density of the impulses, the result is perceived as rhythm (from an impulse for each couple of seconds to about 20 impulses per second) or as pitch (from about 20 impulses per second and higher densities). In the latter case, the process is considered e.g. granular synthesis, reverberation or equalization.
 
 \begin{figure*}
     \centering
@@ -983,7 +984,7 @@ Equation~\ref{eq:diferencas} is called `difference equation' because the resulti
 $\left\{t_i'\right\}$ are given by weighted differences between original samples $\{t_i\}$ 
 and previous ones in the resulting signal $\left\{t_{i-k}'\right\}$.
 
-There are many methods and tools to obtain IIR filters. The text below lists a selection for didactic purposes and as a reference. They are well behaved filters whose characteristics are described in Figure~\ref{fig:iir}. For filters of simple order, the cutoff frequency $f_c$ is where the filter performs an attenuation of $-3dB \approx 0.707 $ of the original amplitude.
+There are many methods and tools to obtain IIR filters. The text below lists a selection for didactic purposes and as a reference. They are well behaved filters and their main characteristics are described in Figure~\ref{fig:iir}. For filters of simple order, the cutoff frequency $f_c$ is where the filter performs an attenuation of $-3dB \approx 0.707 $ of the original amplitude.
 For band-pass and band-reject (or 'notch') filters, this attenuation has two specifications: $f_c$ (in this case, the `center frequency') and bandwidth $bw$. In both frequencies $f_c \pm bw$ there is an attenuation of $-3dB \approx 0.707$ of the original amplitude.
 There is sound amplification in band-pass and band-reject filters when the cutoff frequency is low and the bandwidth is large enough. In trebles, these filters present only a deviation of the expected profile, extending the envelope to the bass.
 
@@ -1052,7 +1053,7 @@ The coefficients of band-reject filter, depicted in the lower right of Figure~\r
 Sounds without an easily recognizable pitch are generally called noise~\cite{Lacerda}. They are important musical sounds, as noise is present in real notes, e.g. emitted by a violin or a piano. Furthermore, many percussion instruments do not exhibit an unequivocal pitch and their sounds are generally regarded as noise~\cite{Roederer}. In electronic music, including electro-acoustic and dance genres, noise has diverse uses and frequently characterizes the music style~\cite{Cook}. 
 
 The absence of a definite pitch is due to the lack of a perceptible harmonic organization in the sinusoidal components of the sound.
-Hence, there are many ways to generate noise. The use of random values to generate the sound sequence $T$ is a trivial method but not outstandingly useful because it tends to produce white noise with little or no variations~\cite{Cook}. Another possibility to generate noise is by using the desired spectrum, from which it is possible to perform the inverse Fourier transform. The spectral distribution should be done with care: if phases of components exhibit prominent correlation, the synthesized sound will concentrate energy in some portions of its duration.
+Hence, there are many ways to generate noise. The use of random values to generate the sound sequence $T$ is a trivial method but not outstandingly useful because it tends to produce white noise with little or no variations~\cite{Cook}. Another possibility to generate noise is by using the desired spectrum, from which it is possible to perform the inverse Fourier transform. The spectral distribution should be done with care: if phases of components present prominent correlation, the synthesized sound will concentrate energy in some portions of its duration.
 
 \begin{figure*}
 	\hspace*{-.75cm}
@@ -1125,7 +1126,7 @@ and weighted using $\alpha_i$.
  \alpha_i=(10^{-\frac{\beta}{20}})^{\log _2 \left( \frac{f_i}{f_{\text{min}}} \right )}\;\;, \quad \beta > 6
 \end{equation}
 
- \item The gray noise is defined as a white noise subject to one of the ISO-audible curves. Those curves are obtained by experiments and are imperative to obtain $\alpha_i$. An implementation of ISO 226, which is the last established revision of these curves, is in the \massa\ toolbox as an auxiliary file~\cite{MASSA}.
+ \item The gray noise is defined as a white noise subject to one of the ISO-audible curves. Such curves are obtained by experiments and are imperative to obtain $\alpha_i$. An implementation of ISO 226, which is the last established revision of these curves, is in the \massa\ toolbox as an auxiliary file~\cite{MASSA}.
 \end{itemize}
 
 This subsection discussed only noises with static spectra.
@@ -1180,12 +1181,12 @@ For the proper realization of the vibrato, it is important to pay attention to b
 It is convenient to use $\nu=\log_{2}\frac{f+\mu}{f} $ in this case because the maximum frequency increase is not equivalent to the maximum frequency decrease.
 The maximum semitone/pitch displacement is the invariant quantity
 and is called 'vibrato depth'.
-Most often, a vibrato depth is be specified in semitones or cents (one cent $= \frac{1}{100}$ of a semitone).
+Most often, a vibrato depth is specified in semitones or cents (one cent $= \frac{1}{100}$ of a semitone).
 
 Figure~\ref{fig:vibrato} is the spectrogram of an artificial vibrato in a note with $1000Hz$,
 in which the pitch deviation reaches one octave above and one below.
 Practically any waveform can be used to generate a sound and the vibrato oscillatory pattern, with virtually any oscillation frequency and pitch deviation.
-Those oscillations with precise waveforms and arbitrary amplitudes are not possible in traditional music instruments, and thus it introduces novelty in the artistic possibilities.
+Such oscillations with precise waveforms and arbitrary amplitudes are not possible in traditional music instruments, and thus it introduces novelty in the artistic possibilities.
 
 Tremolo is similar: $f'$, $\gamma_i'$ and $t_i'$ remain the same.
 The amplitude sequence to be multiplied by the original sequence $t_i$ is:
@@ -1228,7 +1229,9 @@ The proximity of $f'$ to $20Hz$ generates roughness in both tremolos and vibrato
 
 As the frequency increases further, these oscillations no longer remain noticeable individually.
 In this case, the oscillations become audible as pitch.
-Then, $f'$, $\mu$ and the waveform together change the audible spectrum of original sound $T$ in different ways for tremolos and vibratos. They are called AM (\emph{Amplitude Modulation}) and FM (\emph{Frequency Modulation}) synthesis,
+Then, $f'$,
+the depths ($\nu$ and $V_{dB}$),
+and the waveform together change the audible spectrum of original sound $T$ in different ways for tremolos and vibratos. They are called AM (\emph{Amplitude Modulation}) and FM (\emph{Frequency Modulation}) synthesis,
 respectively. These techniques are well known, with applications in
 synthesizers like \emph{Yamaha DX7}, and even with applications outside music, as in telecommunications for data transfer by means of electromagnetic waves (e.g.\ AM and FM radios).
 
@@ -1276,7 +1279,7 @@ For the amplitude modulation (AM):
 % }
 
 The resulting sound is the original one together with the
-reproduction of its spectral content below and above with a distance of $f'$.
+reproduction of its spectral content below and above with a displacement of $f'$.
 Again, this is achieved by variations in the linear scale (of the amplitude).
 The spectrum of an AM performed with oscillations in the logarithmic amplitude scale is described in Appendix D of~\cite{dissertacao}.
 The sequence $T$, with frequency $f$, called `carrier', is modulated by
@@ -1323,16 +1326,18 @@ T^{f,\,AM(f',\,\alpha)}=\left\{ t_i^{f,\,AM(f',\,\alpha)} \right\}_0^{\Lambda-1}
 At this point the musical possibilities are very wide.
 Sonic characteristics, like pitch (given by frequency),
 timbre (achieved by waveforms, filters and noise) and loudness (manipulated by intensity)
-can be considered in an absolute form or varied during the duration of a sound
+can be considered in an absolute form or varied throughout the duration of a sound
 or a musical piece.
-The following musical usages encompass a collection of possibilities with the purpose of exemplifying types of sound manipulations that result in musical material.
+The following musical usages encompass a collection of possibilities with the purpose of exemplifying types of sonic manipulations that result in musical material.
 Some of them are discussed more deeply in the next section.
 
 \subsubsection{Relations between characteristics}
-An interesting possibility is to establish relations between parameters of
-tremolos and vibratos, and of the basic note like frequency. It is possible to have a vibrato frequency proportional
-to note pitch, or a tremolo depth inversely proportional to
-pitch. Therefore, with Equations~\ref{vbrGamma},~\ref{vbrF} and~\ref{trA}, it is possible to set:
+This is a widespread procedure used to obtain musically attractive and coherent excerpts.
+A possibility is to establish relations between parameters of
+tremolos and vibratos, and of the basic note like frequency.
+Let a vibrato frequency be proportional
+to note pitch, or a tremolo depth be inversely proportional to
+pitch. Therefore, with Equations~\ref{vbrGamma},~\ref{vbrF} and~\ref{trA}:
 
 \begin{equation}\label{eq:vinculos}
 \begin{split}
@@ -1372,7 +1377,7 @@ are ideally updated at each sample of the digital signal
 As given by basic theory,
 the audio source speed $s_s$, with positive values if the source moves away from receptor,
 and receptor speed $s_r$, positive when it gets closer to audio source (one might always use $s_r=0$ for musical purposes),
-relates the fequency $f$ at the receiver
+relates the frequency $f$ as perceived by the receiver
 and the frequency $f_0$ emitted by:
 
 \begin{equation}\label{eq:fDoppler}
@@ -1381,7 +1386,7 @@ and the frequency $f_0$ emitted by:
 
 Using the coordinates as in Figure~\ref{fig:spac},
 and Equation~\ref{eq:distOuvidos},
-the speed $s_s$ can be found simply by $s_s = f_s(d_{i+1}-d{i})$.
+the speed $s_s$ can be found simply by $s_s = f_s(d_{i+1}-d_{i})$.
 One should also use IID for the intensity progression of the sound,
 and ITD to correctly start and end the sonic
 sequences related to each ear.
@@ -1395,10 +1400,10 @@ The musical piece \emph{Doppeleer} explores and exemplifies the musical use of t
 \subsubsection{Filters and noises}
 With the use of filters, the possibilities are even wider.
 Convolve a signal to have a reverberated version of it, to remove its noise, to distort or to handle
-the audio aesthetically in other ways. For example, sounds originated from an old television or telephone can be simulated with a band-pass filter, allowing only frequencies between $1kHz$ and $3kHz$. By rejecting the frequency of an electric oscillation (usually $50Hz$ or $60Hz$) and the harmonics, one can remove noises caused by audio devices connected to the power supply. A more musical application is to perform filtering in specific bands and to use those bands as an additional parameter to the notes.
+the audio aesthetically in many other ways. For example, sounds originated from an old television or telephone can be simulated with a band-pass filter, allowing only frequencies between $1kHz$ and $3kHz$. By rejecting the frequency of an electric oscillation (usually $50Hz$ or $60Hz$) and the harmonics, one can remove noises caused by audio devices connected to the power supply. A more musical application is to perform filtering in specific bands and to use those bands as an additional parameter to the notes.
 
 Inspired by traditional music instruments, it is possible to apply a
-time-dependent filter~\cite{Roederer}. Chains of these filters can perform complex and more accurate filtering routines. The musical piece \emph{Noisy band} explores filters and many kinds and noise synthesis.~\cite{MASSA}
+time-dependent filter~\cite{Roederer}. Chaining such filters can be useful for performing complex and more accurate filtering routines. The musical piece \emph{Noisy band} explores filters and many kinds and noise synthesis.~\cite{MASSA}
 
 A sound can be altered through different filtering processes and then mixed to create an effect known as \emph{chorus}. Based on what happens in a choir of singers, the sound is synthesized using small and potentially arbitrary modifications of parameters like center frequency, presence (or absence) of vibrato or tremolo and its characteristics, equalization, loudness, etc. As a final result, those versions of the original sound are mixed together (see Equation~\ref{eq:mixagem}).
 The musical piece \emph{Children choir} implements a very simple chorus
@@ -1443,7 +1448,7 @@ Finally:
 	R=\left\{r_i\right\}_0^{\Lambda_R-1}\;,\; \text{where} \; r_i=\left\{
         \begin{array}{l l}
             r_i^1\;  & \text{if }\quad 0\leq i<\Lambda_1-1 \\
-                                     r_i^2 \; & \text{se}\quad \Lambda_1 \leq i < \Lambda_R-1 \\
+                                     r_i^2 \; & \text{if}\quad \Lambda_1 \leq i < \Lambda_R-1 \\
         \end{array} \right.
 \end{equation}
 
@@ -1468,11 +1473,11 @@ The ADSR envelope with durations $\Delta_A$, $\Delta_D$ and $\Delta_R$, with tot
 \noindent with $\Lambda_X=\lfloor \Delta_X . f_s \rfloor\;\;\forall\;\; X \; \in
 (A,D,R\;)$ and $\xi$ being a small value that provides a satisfactory \emph{fade in} and \emph{fade out}, e.g.\ $\xi=10^{\frac{-80}{20}}=10^{-4}\;$.
 The lower the $\xi$, the slower the \emph{fade}, similar to the $\alpha$ illustrated in Figure~\ref{fig:transicao}.
-One might also use a linear or quartic ($x**4$) fade at the beginning of the attack and the end of the release
+One might also use a linear or quartic ($x^4$) fade at the beginning of the attack and the end of the release
 sections to reach zero amplitude (exponential fades never reach zero).
 Schematically, Figure~\ref{fig:adsr} shows the ADSR envelope in a classical implementation that supports many variations.
 For example, between attack and decay it is possible to add an extra section where the maximum amplitude remains for more than a peak.
-Another common example is the use of more elaborated outlines of attack or decay.
+Another common example is the use of more elaborated envelopes for attack or decay.
 The music piece \emph{ADa and SaRa} explores many configurations of the ADSR envelope.~\cite{MASSA}
 
 \begin{equation}\label{eq:adsrApl}
