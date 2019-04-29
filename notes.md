@@ -1,4 +1,6 @@
-
+necessary:
+- unify the mentions to scripts and musical pieces. E.g. only sec 2 starts by saying about it.
+E.g. Sec 3 mentions the musical pieces not only on the end.
 
 Urgent:
 * Better discuss Midi notation, translation between midi and Hz
