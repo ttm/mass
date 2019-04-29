@@ -25,7 +25,7 @@ and higher level musical structures (such as tunings, scales and chords, in Sect
     \centering
         \includegraphics[width=.7\textwidth]{figures/pcm_}
 	\caption{Example of PCM audio:
-	a sound wave is represented by 25 samples equally spaced in time where each sample has an amplitude specified with 4 bits.}
+	a sonic wave is represented by 25 samples equally spaced in time, where each sample has an amplitude specified with 4 bits.}
         \label{fig:PCM}
 \end{figure*}
 
@@ -43,7 +43,7 @@ Digital audio protocols often imply in quality loss (to achieve smaller files, e
 and are called \emph{lossy}~\cite{loss}.
 This is the case e.g. of MP3 and Ogg Vorbis.
 Non-lossy representations of digital audio, called \emph{lossless} protocols or formats,
-on the other hand, assures perfect reconstruction of the analog wave within any convenient precision.
+on the other hand, assure perfect reconstruction of the analog wave within any convenient precision.
 The standard paradigm of lossless audio consists of
 representing the sound with samples equally spaced
 by a duration $\delta_s$, and specifying the amplitude of each sample by a fixed number of bits.
@@ -54,7 +54,7 @@ a sampling frequency $f_s=\frac{1}{\delta_s}$ (also called e.g. sampling rate or
 which is the number of samples used for representing a second of sound;
 and a bit depth, which is the number of bits used for specifying the amplitude of each sample.
 Figure~\ref{fig:PCM} shows $25$ samples of a PCM audio with a bit depth of $4$,
-which yields $2^4=16$ possible values for the amplitude of each sample
+which enables $2^4=16$ possible values for the amplitude of each sample
 and a total of $4 \times 25= 100$ bits for representing the whole sound.
 
 The fixed sampling frequency and bit depth
@@ -117,13 +117,13 @@ there are only a few books and computer implementations that tackle the subject 
 These mainly focus on computer implementations and ways to mimic traditional instruments,
 with scattered mathematical formalisms for the basic notions.
 Articles on the topic appear to be lacking, to the best of our knowledge,
-although advanced and specialized developments are often reported.
+which contrasts with the advanced and specialized developments often reported.
 A compilation of such works and their contributions is in the Appendix G of~\cite{dissertacao}.
 Although current music software uses the analytical descriptions presented here,
 there is no concise mathematical description of them, and it is far from trivial
 to achieve the equations by analyzing the available software implementations.
 
-Accordingly, the objectives of this paper are:
+Accordingly, the objectives of this paper are to:
 \begin{enumerate}
 	\item Present a concise set of mathematical and algorithmic relations between basic musical elements and sequences of PCM audio samples.
 	\item Introduce a framework for sound and musical synthesis with control at sample level which entails potential uses in psychoacoustic experiments, data sonification and synthesis with extreme precision (recap in Section~\ref{cap:conclusao}).
@@ -273,7 +273,7 @@ A = 10^{\frac{V_{dB}}{20}}
 \noindent where $A$ is the multiplicative factor that relates the amplitudes before and after amplification.
 
 \subsection{Pitch}
-The perception sounds as 'higher' or 'lower' is usually thought in terms of pitch.
+The perception of sounds as 'higher' or 'lower' is usually thought in terms of pitch.
 An exponential progression of frequency ($f_i = f . X^i, \forall \;X > 0, i \geq 1$) yields a linear variation of the pitch,
 a fact that will be further exploited in Sections~\ref{sec:internalVar} and~\ref{sec:notesMusic}.
 Accordingly, a pitch is specified by a (fundamental) frequency $f$ whose cycle has duration $\delta=1/f$.
@@ -286,7 +286,7 @@ If $T^f$ is a sonic sequence with fundamental frequency $f$, then:
      T^f=\left\{ t_i^f \right\}=\left\{ t^f_{i+\lambda}  \right\}= \left\{ t^f_{i+\frac{f_s}{f}} \right\}
 \end{equation}
 
-In the next section, frequencies $f$ that do not divide $f_s$ will be considered. This restriction does not imply in loss of generality of this current section's content.
+In the next section, frequencies $f$ that do not divide $f_s$ will be considered. This restriction does not imply a loss of the generality of this current section's content.
 
 \subsection{Timbre}\label{sec:timbre}
 A spectrum is said harmonic if all the (sinusoidal) frequencies $f_n$ it contains are (whole number) multiples of a fundamental frequency $f_0$ (lowest frequency): $f_n=(n+1)f_0$.
@@ -294,7 +294,7 @@ From a musical perspective, it is critical to internalize that energy in a compo
 is a sinusoidal oscillation in the constitution of the sound in that frequency $f$.
 This energy, specifically concentrated on $f$,
 is separated from other frequencies by the ear for further cognitive processes 
-(this separation is performed by diverse living organisms by mechanisms similar to the human cochlea).
+(this separation is performed by diverse living organisms by mechanisms similar to what is achieved by the human cochlea).
 The sinusoidal components are responsible for timbre\footnote{The 
 timbre of a sound is a subjective and complex characteristic.
 The timbre can be considered by the temporal evolution of energy in the spectral components that 
@@ -314,10 +314,10 @@ The trajectory of the wave inside the period is the \emph{waveform} and implies 
 Sonic spectra with minimal differences can result in timbres with crucial differences and,
 consequently, distinct timbres can be produced using different waveforms.
 
-High curvatures in the waveform are clues of energy in the high frequencies.
+High curvatures in the waveform hint that there is energy in the high frequencies.
 Figure~\ref{fig:formasDeOnda} depicts a wave, labeled as ``soundscape fragment''.
 The same figure also displays a sampled period from an oboe note.
-One can notice from the curvatures: the oboe's rich spectrum at high frequencies and the greater contribution of the lower frequencies in spectrum of the soundscape fragment.
+One can notice from the curvatures: the oboe's rich spectrum at high frequencies and the greater contribution of the lower frequencies in the spectrum of the soundscape fragment.
 
 \begin{figure*}
     \centering
@@ -365,7 +365,7 @@ Let $S^f$ be a sequence whose samples $s_i^f$ describe a sinusoid with frequency
 
 Other artificial waveforms are used in music for their spectral qualities and simplicity.
 While the sinusoid is an isolated node in the spectrum, any other waveform presents a succession of harmonic components (harmonics).
-The most basic waveforms are specified by Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square}, and are illustrated in Figure~\ref{fig:formasDeOnda}.
+Standard waveforms are specified by Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square}, and are illustrated in Figure~\ref{fig:formasDeOnda}.
 These artificial waveforms are traditionally used in music for synthesis and oscillatory control of variables. They are also useful outside musical contexts~\cite{Openheim}.
 
 The sawtooth presents all the harmonics with a decreasing energy of $-6dB/octave$\footnote{In 
@@ -426,7 +426,7 @@ The isolated and exactly harmonic components of the spectra is a consequence of 
 The sinusoidal components in the discretized sound have some particularities.
 % no integral and derivatives
 Considering a signal $T$ and its corresponding Fourier decomposition 
-$\mathcal{F}\langle T\rangle=C=\{c_k\}_0^{\Lambda-1}=\left\{ \sum_{i=0}^{\Lambda-1}t_ie^{-j i (k \frac{2 \pi}{\Lambda})} \right\}_-1^{\Lambda-1}$,
+$\mathcal{F}\langle T\rangle=C=\{c_k\}_0^{\Lambda-1}=\left\{ \sum_{i=0}^{\Lambda-1}t_ie^{-j i (k \frac{2 \pi}{\Lambda})} \right\}_{0}^{\Lambda-1}$,
 the recomposition is the sum of the frequency components to yield the temporal samples\footnote{The 
 factor $\frac{1}{\Lambda}$ can be distributed among the Fourier transform and its reconstruction, as preferred.
 Note that $j$ here is the imaginary unit $j^2=-1$.}:
@@ -504,13 +504,13 @@ and phases (Equation~\ref{equivalenciasFases}):
  \begin{figure*}
      \centering
          \includegraphics[width=.7\textwidth]{figures/amostras2c___}
-	 \caption{Oscillation of 2 samples (maximum frequency for any $f_s$). The first coefficient reflects a constant detachment (called \emph{offset}, \emph{bias} or \emph{DC component}) and the second coefficient specifies the oscillation amplitude.}
+	 \caption{Oscillation of 2 samples (maximum frequency for any $f_s$). The first coefficient determines a constant detachment (called \emph{offset}, \emph{bias} or \emph{DC component}) and the second coefficient specifies the oscillation amplitude.}
          \label{fig:amostras2}
  \end{figure*}
 
 Figure~\ref{fig:amostras2} shows two samples and their spectral component. When there is only two samples, the Fourier decomposition has only one pair of coefficients $\{c_k=a_k-j.b_k\}_0^{\Lambda-1=1}$ relative to frequencies $\{f_k\}_0^1=\left\{w_k\frac{f_s}{2\pi}\right\}_0^1=\left\{k\frac{f_s}{\Lambda=2}\right\}_0^1=\left\{0,\frac{f_s}{2}=f_{\text{max}}\right\}$
 with energies $e_k=\frac{(c_k)^2}{\Lambda=2}$. The role of amplitudes $a_k$ is clearly observed with $\frac{a_0}{2}$, the fixed offset (also called \emph{bias} or \emph{DC component}), and $\frac{a_1}{2}$ for the oscillation with frequency $f_1=\frac{f_s}{\Lambda=2}$.
-This case has special relevance: at least 2 samples are necessary to represent an oscillation and it yields the Nyquist frequency $f_{\text{max}}=\frac{f_s}{2}$, which is the maximum frequency in a sound sampled with $f_s$ samples per second. In fact, any discrete-time signal has this property, not only digitized sound.
+This case has special relevance: at least 2 samples are necessary to represent an oscillation and it yields the Nyquist frequency $f_{\text{max}}=\frac{f_s}{2}$, which is the maximum frequency in a sound sampled with $f_s$ samples per second.
 
 All fixed sequences $T$ of only $3$ samples also have just $1$ frequency, since the first harmonic would have $1.5$ samples and exceeds the bottom limit of 2 samples, i.e.\ the frequency of the harmonic would exceed the Nyquist frequency:  $\; \frac{2. f_s}{3} > \frac{f_s}{2}$. 
 The coefficients $\{c_k\}_0^{\Lambda-1=2}$ are present in 3 frequency components. One is relative to frequency zero ($c_0$), and the other two ($c_1$ and $c_2$) have the same role for reconstructing a sinusoid with $f=f_s/3$.
@@ -534,7 +534,7 @@ This case is illustrated in Figure~\ref{fig:amostras3}.
 \begin{figure*}
     \centering
         \includegraphics[width=.9\textwidth]{figures/amostras4formas___}
-    \caption{Basic wave forms with 4 samples.}
+    \caption{Basic waveforms with 4 samples.}
         \label{fig:formas4}
 \end{figure*}
 
@@ -546,14 +546,14 @@ This case is illustrated in Figure~\ref{fig:amostras3}.
 \end{figure*}
 
 With 4 samples it is possible to represent 1 or 2 frequencies with independence of magnitude and phase.
-Figure~\ref{fig:amostras4} depicts contribution of each of the two (possible) components.
+Figure~\ref{fig:amostras4} depicts the contribution of each of the two (possible) components.
 The individual components sum to the original waveform and a brief inspection reveals 
 the major curvatures resulting from the higher frequency,
 while the fixed offset is captured in the component with frequency $f_0=0$.
 Figure~\ref{fig:formas4} shows the harmonics for the basic waveforms of 
 Equations~\ref{sinusoid},~\ref{sawTooth},~\ref{triangular} and~\ref{square}
 in the case of 4 samples.
-There is only 1 sinusoid for each waveform, with the exception of the sawtooth, which has even harmonics.
+There is only 1 sinusoid for each waveform, with the exception of the sawtooth, which has the even harmonics.
 
 \begin{figure*}[!h!]
     \centering
@@ -563,12 +563,12 @@ There is only 1 sinusoid for each waveform, with the exception of the sawtooth, 
 \end{figure*}
 
 Figure~\ref{fig:amostras6} exposes the sinusoidal components within 6 samples,
-while Figure~\ref{fig:formas6} presents the decomposition of the basic wave forms:
-square and triangular have the same components but with different proportions, while the sawtooth has an extra component.
+while Figure~\ref{fig:formas6} presents the decomposition of the basic waveforms:
+square and triangular have the same components but in different proportions, while the sawtooth has an extra component.
 
 
 \subsection{The basic note}\label{notaBasica}
-In a nutshell
+In a nutshell,
 a sequence $T$ of sonic samples separated by $\delta_a=1/f_s$ expresses a musical note with
 a frequency of $f$ Hertz\footnote{Let $f$ be such that it divides $f_s$.
 As mentioned before, this limitation simplifies the exposition for now
@@ -579,7 +579,7 @@ and only if, it has the periodicity $\lambda_f=f_s/f$ and size $\Lambda=\lfloor 
 T^{f,\; \Delta}=\{t_{i \, \% \lambda_f} \}_0^{\Lambda-1}= \left \{t^f_{i \; \% \left( \frac{f_s}{f} \right) } \right \}_0^{\Lambda-1}
 \end{equation}
 
-Such note still does not have timbre: it is necessary to choose a waveform for the samples $t_i$ to have a value.
+Such note still does not have a timbre: it is necessary to choose a waveform for the samples $t_i$ to have a value.
 Any waveform can be used to further specify the note,
 where $\lambda_f=\frac{f_s}{f}$ is the number of samples in each period.
 Let $L^f \in \{S^f,Q^f,T^f,D^f,R^f \}$
