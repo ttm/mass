@@ -207,8 +207,8 @@ Some of these issues are exposed when the context is convenient, such as in the 
 In diverse artistic and theoretical contexts, music is conceived as constituted by fundamental units referred to as notes, ``atoms'' that constitute music itself~\cite{Wisnick, Lovelock, Webern}.
 In a cognitive perspective, notes are understood as discernible elements that facilitate and enrich the transmission of information through music~\cite{Roederer, Lacerda}.
 Canonically, the basic characteristics of a musical note are duration, loudness, pitch and timbre~\cite{Lacerda}.
-All relations described in this section are implemented in the file \texttt{src/sections/eqs2.1.py}.
-The musical pieces \emph{5 sonic portraits} and \emph{reduced-fi} are also available online to corroborate and illustrate the concepts.
+All relations described in this section are implemented in the file \texttt{src/sections/2.py}.
+The musical pieces related to this section are on the directory~\texttt{src/pieces2/}.~\cite{MASSA}
 
 \subsection{Duration}
 The sample frequency $f_s$ is defined as the number of samples in each second of the discrete-time signal. Let $T=\{t_i\}$ be an ordered set of real samples separated by $\delta_s=1/f_s$ seconds ($f_s=44.1kHz \Rightarrow \delta_s=1/44100\approx 0.023ms$).
@@ -776,7 +776,8 @@ With the basic musical note in discrete-time audio carefully described, the next
 
 \section{Variation in the basic note}\label{sec:internalVar}\label{sec:varInternas}
 The basic digital music note defined in Section~\ref{sec:notaDisc} has the following parameters: duration, pitch, intensity (loudness) and timbre. This is a useful and paradigmatic model, but it does not exhaust all the aspects of a musical note. First of all, characteristics of the note change along the note itself~\cite{Chowning}. For example, a $3s$ piano note has intensity with an abrupt rise at the beginning and a progressive decay, has spectral variations with harmonics decaying and some others emerging along time. These variations are not mandatory, but they are used in sound synthesis for music because they reflect how sounds appear in nature. This is considered so important that there is a rule of thumb: to make a sound that incites interest by itself, arrange internal variations on it~\cite{Roederer}.
-To explore all the ways by which variations occur within a note is out of the scope of any work, given the sensibility of the human ear and the complexity of human sound cognition. In this section, primary resources are presented to produce variations in the basic note. It is worthwhile to recall that all the relations in this and other sections are implemented in Python and published in public domain. The musical pieces \emph{ParaMeter transitions}; \emph{Shakes and wiggles}; \emph{Tremolos, vibratos and frequency}; \emph{Little train of impulsive hillbillies}; \emph{Noisy band}; \emph{Bela rugosi}; \emph{Children choir}; and \emph{ADa and SaRa} were made to validate and illustrate concepts of this section. The code that synthesizes these pieces is also part of the toolbox.~\cite{MASSA}
+To explore all the ways by which variations occur within a note is out of the scope of any work, given the sensibility of the human ear and the complexity of human sound cognition. In this section, primary resources are presented to produce variations in the basic note. It is worthwhile to recall that all the relations in this and other sections are implemented in Python and published in public domain. All relations described in this section are implemented in the file \texttt{src/sections/3.py}.
+The musical pieces related to this section are on the directory~\texttt{src/pieces3/}.~\cite{MASSA}
  
 \subsection{Lookup table}\label{subsec:lookup}
 The \emph{Lookup Table} (LUT) is an array for indexed operations which substitutes continuous and repetitive calculations.
@@ -917,7 +918,7 @@ For linear amplification -- but not linear perception -- it is sufficient to use
 a_i=a_0 + (a_{\Lambda-1}-a_0)\frac{i}{\Lambda-1}
 \end{equation}
 
-The linear transitions will be used for AM and FM synthesis, while exponential transitions are proper for tremolos and vibratos, as developed in Section~\ref{subsec:tvaf}. A non-oscillatory exploration of these variations is in the music piece \emph{ParaMeter transitions}~\cite{MASSA}.
+The linear transitions will be used for AM and FM synthesis, while exponential transitions are proper for tremolos and vibratos, as developed in Section~\ref{subsec:tvaf}. A non-oscillatory exploration of these variations is in the music piece \emph{ParaMeter Transitions}~\cite{MASSA}.
 
 \subsection{Application of digital filters}\label{subsec:filtros}
 This subsection is limited to a description of sequences processing by convolution and difference equations, and immediate applications, as a thorough discussion of filtering is beyond the scope of this study\footnote{The implementation of filters encompasses an area of recognized complexity, with dedicated literature and software~\cite{Openheim,smith}.}.
@@ -1211,7 +1212,7 @@ in contrast with making a sound with a vibrato.
 
 Figure~\ref{fig:tremolo} shows the amplitude of the sequences $\{a_i\}_0^{\Lambda-1}$ and $\{t_i'\}_0^{\Lambda-1}$ for three oscillations of a tremolo with a sawtooth waveform. The curvature is due to the logarithmic progression of the intensity. The tremolo frequency is $1.5Hz$ if $f_s=44.1kHz$ because $\text{duration} = \frac{i_{\text{max}}=82000}{f_s}= 2s \; \Rightarrow \; \frac{3\text{oscillations}}{2s}=1.5$ oscillations per second.
 
-The musical piece \emph{Shakes and wiggles} explores these possibilities given by tremolos and vibratos,
+The musical piece \emph{Shakes and Wiggles} explores these possibilities given by tremolos and vibratos,
 both used in conjunction and independently (tremolos and vibratos occur many times together in a conventional music instrument),
 with different frequencies $f'$, depths ($\nu$ and $V_{dB}$),
 and progressive variations of parameters.
@@ -1395,7 +1396,7 @@ upon the crossing of source with receptor:
 the same semitones (or fraction of) that are added during the approach are decreased during the departure.
 Moreover, the transition is abrupt if source and receptor intersect with zero distance, otherwise, there is a smooth progression.
 
-The musical piece \emph{Doppeleer} explores and exemplifies the musical use of the Doppler effect.~\cite{MASSA}
+% The musical piece \emph{Doppeleer} explores and exemplifies the musical use of the Doppler effect.~\cite{MASSA}
 
 \subsubsection{Filters and noises}
 With the use of filters, the possibilities are even wider.
@@ -1452,7 +1453,8 @@ Finally:
         \end{array} \right.
 \end{equation}
 
-A sound with an artificial reverberation can be achieved by a simple convolution of $R$ (called reverberation impulse response) with the sound sequence $T$, as described in Section~\ref{subsec:filtros}. Reverberation is well known for causing great interest in listeners and to provide sonorities that are more enjoyable. Furthermore, modifications in the reverberation consist in a common technique (almost a \textit{clich\'{e}}) to surprise and attract the listener. The musical piece \emph{Re-verb} explores reverberations in various settings.~\cite{MASSA}
+A sound with an artificial reverberation can be achieved by a simple convolution of $R$ (called reverberation impulse response) with the sound sequence $T$, as described in Section~\ref{subsec:filtros}. Reverberation is well known for causing great interest in listeners and to provide sonorities that are more enjoyable. Furthermore, modifications in the reverberation consist in a common technique (almost a \textit{clich\'{e}}) to surprise and attract the listener.
+% The musical piece \emph{Re-verb} explores reverberations in various settings.~\cite{MASSA}
 
 \subsubsection{ADSR envelopes}
 The variation of loudness along the duration of a sound is crucial to our timbre perception.
@@ -1501,6 +1503,8 @@ Even so, we understand that this content is very useful for synthesizing music a
 and~\ref{sec:varInternas}.
 The concepts are given algorithmic implementations in \mass~\cite{massListings} and can be further formalized~\cite{topos},
 although at a cost of prompt intelligibility which we chose to avoid in this exposition.
+All relations described in this section are implemented in the file \texttt{src/sections/4.py}.
+The musical pieces related to this section are on the directory~\texttt{src/pieces4/}.~\cite{MASSA}
 
 The elements of $S$ can be overlapped by mixing them together, as in
 Equation~\ref{eq:mixagem} and Figure~\ref{fig:mixagem}, for building intervals and chords. This reflects the `vertical thought' in music. On the other hand, the concatenation of events
@@ -2054,7 +2058,7 @@ e.g. $d_r=1$ second, and the durations of each segment are specified by:
 See the function \texttt{rhythymToDurations} in file \texttt{src/aux/functions.py}
 for an implementation of both notations that allows the specification of tuplets
 (the use of arbitrary divisions of a reference duration).
-The music piece \emph{Poli Hit Mia} uses different metrics.~\cite{MASSA}
+The music piece \emph{Poly Hit My} uses different metrics.~\cite{MASSA}
 
 \subsection{Repetition and variation: motifs and larger units}\label{subsec:motivos}
 Given both frequential (chords and scales) and rhythmic (simple, compound and complex beat divisions and agglomerations) musical strata, it is
@@ -2385,7 +2389,7 @@ called \emph{polyrhythm}. The music piece \emph{Poli-hit my}~\cite{MASSA} explor
 Microtonal scales are important for 20th
 century music~\cite{microtonalidade} and yielded diverse remarkable results throughout history, e.g.
 fourths of a tone ($\epsilon=2^{\frac{1}{24}}$) are often used in some genres of Indian and Arabic music.
-The musical sequence \emph{Micro Tone}~\cite{MASSA} explores these possibilities,
+The musical sequence \emph{MicroTone}~\cite{MASSA} explores these possibilities,
 including microtonal melodies and harmonies
 with many pitches in a very reduced frequency bandwidth.
 
@@ -2403,13 +2407,13 @@ symmetries presented as permutations (Table~\ref{tab:change} and
 Equations~\ref{eq:groups}) can be used together. In the music piece \emph{3 trios},
 this association is performed in a systematic way in order to achieve a specific style.
 This is an instrumental piece, not included as a source code but available online~\cite{3Trios}.
-
 \emph{PPEPPS} (Pure Python EP: Project Solvent) is an EP (Extended Play) synthesized using
 resources presented in this document. With minimal parametrization, the scripts
 generate complete musical pieces, allowing easy composition of sets of
 music.~\cite{figgus} A simple script of a few lines specifies music delivered as 16 bit
 44.1kHz PCM files (WAVE). This facility and technological
 arrangement creates aesthetic possibilities for both sharing and education.
+The Half-Shape Suite consists in a collection of pieces elaborated around the ideas of symmetries on sets of small cardinalities (i.e. number of elements), composed and synthesized using the MASS framework, the ``music'' package, and found in the \texttt{/src/finalPiece/} directory.~\cite{MASSA,music,shalfSuite}
 
 \section{Conclusions and further developments}
 \label{cap:conclusao}
