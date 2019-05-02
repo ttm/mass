@@ -355,6 +355,7 @@ Computing Machinery]
   \@xsect{#3}}
 \let\@footnotemark@nolink\@footnotemark
 \let\@footnotetext@nolink\@footnotetext
+\RequirePackage{xr-hyper}
 \RequirePackage[bookmarksnumbered,unicode]{hyperref}
 \pdfstringdefDisableCommands{%
   \def\unskip{}
