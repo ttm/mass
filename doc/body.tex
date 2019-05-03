@@ -423,7 +423,7 @@ The isolated and exactly harmonic components of the spectra is a consequence of 
         \label{fig:espectroDeOndas}
 \end{figure*}
 
-This article has a Supporting Information document for exemplifying the sinusoidal components by means of these basic waveforms.
+This article has a Supporting Information document for describing the sinusoidal spectra of samples sounds and exemplifies by means of these basic waveforms~\cite{massNotesInMusic}.
 
 \subsection{The basic note}\label{notaBasica}
 In a nutshell,
@@ -1319,6 +1319,13 @@ The variation of loudness along the duration of a sound is crucial to our timbre
 The intensity envelope known as ADSR (\emph{Attack-Decay-Sustain-Release}) has many implementations in both hardware and software synthesizers. A pioneering implementation can be found in the Hammond Novachord synthesizer of 1938 and some variants are mentioned below~\cite{ADSR}. The canonical ADSR envelope is characterized by 4 parameters: attack duration (time at which the sound reaches its maximum amplitude), decay duration (follows the attack immediately), level of sustained intensity (in which the intensity remains stable after the decay) and release duration (after sustained section, this is the duration needed for amplitude to reach zero or final value).
 Note that the sustain duration is not specified because it is the difference between the total duration and the sum of the attack, decay and release durations.
 
+\begin{figure}[htp!]
+    \centering
+        \includegraphics[width=\columnwidth]{figures/adsr_}
+    \caption{An ADSR envelope (\emph{Attack, Decay, Sustain, Release}) applied to an arbitrary sound sequence. The linear variation of the amplitude is above, in blue. Below the amplitude variation is exponential.}
+        \label{fig:adsr}
+\end{figure}
+
 The ADSR envelope with durations $\Delta_A$, $\Delta_D$ and $\Delta_R$, with total duration $\Delta$ and sustain level $a_S$, given as the fraction of the maximum amplitude, to be applied to any sound sequence $T=\{t_i\}$ (ideally also with duration $\Delta$), can be expressed as:
 
 \begin{equation}\label{eq:adsr}
@@ -1344,13 +1351,6 @@ The music piece \emph{ADa and SaRa} explores many configurations of the ADSR env
 \left\{t_i^{ADSR}\right\}_0^{\Lambda-1} =\{t_i . a_i\}_0^{\Lambda-1}
 \end{equation}
 
-\begin{figure}[htp!]
-    \centering
-        \includegraphics[width=\columnwidth]{figures/adsr_}
-    \caption{An ADSR envelope (\emph{Attack, Decay, Sustain, Release}) applied to an arbitrary sound sequence. The linear variation of the amplitude is above, in blue. Below the amplitude variation is exponential.}
-        \label{fig:adsr}
-\end{figure}
-
 \section{Conclusions and further developments}
 \label{cap:conclusao}
 In our understanding,
@@ -1364,6 +1364,7 @@ Moreover, this didactic report and the supplied open source scripts should facil
 One of the Supporting Information documents~\cite{massListings} holds listings of sections, equations, figures, tables, scripts and other documents.
 Another Supporting Information document~\cite{massCode} holds a PDF presentation of the code related to each section
 because many readers might not find it easy to browse source code files.
+Most importantly, an extension of the preceding sections to encompass the organization of notes in music, as managed by canonical music theory, is yet in another Supporting Information document~\cite{massNotesInMusic}.
 
 The possibilities provided by this exposition pour from both the organization of knowledge and the ability to achieve sounds which are extremely true to the models.
 For example, one can produce noises with an arbitrary resolution of the spectrum and a musical note can be synthesized with the parameters (e.g. of a vibrato) updated sample-by-sample.
