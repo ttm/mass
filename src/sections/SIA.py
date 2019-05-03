@@ -52,7 +52,7 @@ def v(f=200, d=1., tab=S_i, fv=2., nu=2., tabv=S_i):
     return tab[Gamma_i % int(Lt)]  # looking for indexes in table
 
 
-############## Sec. 4.1 Tuning, intervals, scales and chords
+############## Sec. S-M-1.1 Tuning, intervals, scales and chords
 just_ratios = [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/3, 2]
 pythagorean_ratios = [1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128, 2]
 equal_temperament_ratios = [2**(i/12) for i in range(13)]
@@ -89,7 +89,7 @@ factors = [epslon_**i for i in s2]
 scale = H([v(f*i) for i in factors])
 __s(scale, "octave_sevenths.wav")
 
-### Eq. 81 relating note grids
+### Eq. S-M-1 relating note grids
 # expressing octave sevenths in the quarter tone grid:
 s2_ = [i*24/7 for i in s2]
 
@@ -135,14 +135,14 @@ def intervaloHarmonico(f, I):
 def intervaloMelodico(f, I):
     return n.hstack((v(f), v(f*2.**(I/12.))))
 
-### Eq. 82 Symmetric scales
+### Eq. SI-A-2 Symmetric scales
 Ec = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11.]
 Ewt = [0., 2., 4., 6., 8., 10.]
 Etm = [0., 3., 6., 9.]
 EtM = [0., 4., 8.]
 Ett = [0., 6.]
 
-### Eq. 83 Diatonic scales
+### Eq. SI-A-3 Diatonic scales
 Em = [0., 2., 3., 5., 7., 8., 10.]
 Emlo = [1., 3., 5., 6., 8., 10.]
 EM = [0., 2., 4., 5., 7., 9., 11.]
@@ -151,22 +151,22 @@ Emf = [0., 1., 3., 5., 7., 8., 10.]
 Eml = [0., 2., 4., 6., 7., 9., 11.]
 Emmi = [0., 2., 4., 5., 7., 8., 10.]
 
-### Eq. 84 Diatonic pattern
+### Eq. SI-A-4 Diatonic pattern
 E_ = n.roll(n.array([2.,2.,1.,2.,2.,2.,1.]), n.random.randint(7.))
 E = n.cumsum(E_)-E_[0.]
 
-### Eq. 85 Harmonic and melodic minor scales
+### Eq. SI-A-5 Harmonic and melodic minor scales
 Em = [0., 2., 3., 5., 7., 8., 10.]
 Emh = [0., 2., 3., 5., 7., 8., 11.]
 Emm = [0.,2.,3.,5.,7.,9.,11.,12.,10.,8.,7.,5.,3.,2.,0.]
 
-### Eq. 86 Harmonic series
+### Eq. SI-A-6 Harmonic series
 H = [ 0, 12, 19+0.02, 24, 28-0.14, 31+0.2, 34-0.31,
       36, 38+0.04, 40-0.14, 42-0.49, 43+0.02,
       44+0.41, 46-0.31, 47-0.12,
       48, 49+0.05, 50+0.04, 51-0.02, 52-0.14 ]
 
-### Eq. 86 Triads
+### Eq. SI-A-7 Triads
 AM = [0., 4., 7.]
 Am = [0., 3., 7.]
 Ad = [0., 3., 6.]
@@ -176,8 +176,8 @@ def withMinorSeventh(A): return A+[10.]
 def withMajorSeventh(A): return A+[11.]
 
 
-############## Sec. 4.2 Atonal and tonal harmonies, harmonic expansion and modulation
-### Table 2.23
+############## Sec. SI-A-2 Atonal and tonal harmonies, harmonic expansion and modulation
+### Table SI-A-2
 def dominant(TT):
     """
     Returns the dominant chord of another chord
@@ -283,7 +283,7 @@ dominant = [2., 7., 11.]
 Vm = [2., 7., 10.]  # minor chord is not dominant
 
 
-############## Sec. 4.3 Counterpoint
+############## Sec. SI-A-3 Counterpoint
 def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
                                      5,4,4,4,0,2,4,5,5,5]):
     """Returns a melody given input melody
@@ -352,11 +352,11 @@ def contraNotaNotaSup(alturas=[0,2,4,5,5,0,2,0,2,2,2,0,7,\
     return contra
 
 
-############## Sec. 4.4 Rhythm
+############## Sec. SI-A-4 Rhythm
 ### See Poli Hit Mia musical piece
 
 
-############## Sec 4.5 Repetition and variation: motifs and larger units
+############## Sec SI-A-5 Repetition and variation: motifs and larger units
 ### Ubiquitous concepts
 # examples
 S = [1, 2, 1.5, 3]  # a sequence of parameters, e.g. durations
@@ -370,10 +370,10 @@ S5 = [i+7 for i in S]  # transposition
 S6 = [i-12 for i in S]  # interval inversion
 
 
-############## Sec 4.6 Directional structures
+############## Sec SI-A-6 Directional structures
 ### See Dirracional musical piece
 
 
-############## Sec. 4.7 Cyclic structures
+############## Sec. SI-A-7 Cyclic structures
 ### See 3 Trios musical pieces
 ### and the PPEPPS

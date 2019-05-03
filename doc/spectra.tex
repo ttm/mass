@@ -17,6 +17,10 @@
 \IncMargin{-\parindent}
 \setcounter{tocdepth}{4}
 
+\def\thesection{SI-B-\arabic{section}}
+\def\thefigure{SI-B-\arabic{figure}}
+\def\theequation{SI-B-\arabic{equation}}
+
 
 % Metadata Information
 \acmJournal{CSUR}
@@ -55,7 +59,7 @@
 % Document starts
 \begin{document}
 % Title portion. Note the short title for running heads 
-\title[Music in digital audio]{Musical elements in the discrete-time representation of sound}  
+\title[Spectra of sampled sounds]{Spectra of sampled sounds}  
 \author{Renato Fabbri}
 % \orcid{1234-5678-9012-3456}
 \affiliation{%
@@ -104,27 +108,7 @@
   }
 
 \begin{abstract}
-The representation of basic elements of music in terms of discrete audio
-signals is often used in software for musical creation and design.
-Nevertheless, there is no unified approach that relates these elements to the discrete samples of digitized sound.
-In this article, each musical element is related by equations and algorithms to the discrete-time samples of sounds,
-and each of these relations are implemented in scripts within a software toolbox,
-referred to as MASS (Music and Audio in Sample Sequences).
-The fundamental element, the musical note with duration, volume, pitch and timbre,
-is related quantitatively to characteristics of the digital signal.
-Internal variations of a note, such as tremolos, vibratos and spectral fluctuations,
-are also considered, which enables the synthesis of notes inspired by real instruments and new sonorities.
-With this representation of notes, resources are provided for the generation of higher level musical structures,
-such as rhythmic meter, pitch intervals and cycles.
-This framework enables precise and trustful scientific experiments, data sonification and is useful for education and art.
-The efficacy of MASS is confirmed by the synthesis of small musical pieces using basic notes,
-elaborated notes and notes in music, which reflects the organization of the toolbox and thus of this article.
-It is possible to synthesize whole albums through collage of the scripts and settings specified by the user.
-With the open source paradigm, the toolbox can be promptly scrutinized,
-expanded in co-authorship processes and used with freedom by musicians, engineers and other interested parties.
-In fact, MASS has already been employed for diverse purposes which include music production,
-artistic presentations, psychoacoustic experiments and computer language diffusion where
-the appeal of audiovisual artifacts is exploited for education.
+  This Supporting Information document holds an extension of the exposition in the main document to illustrate the spectra os sampled sounds through the components of traditional waveforms with few samples.
 \end{abstract}
 
 %
@@ -178,7 +162,6 @@ the appeal of audiovisual artifacts is exploited for education.
 % The default list of authors is too long for headers}
 \renewcommand{\shortauthors}{R. Fabbri et al.}
 
-\section{Spectra of sampled sounds}
 The sinusoidal components in the discretized sound have some particularities.
 % no integral and derivatives
 Considering a signal $T$ and its corresponding Fourier decomposition 

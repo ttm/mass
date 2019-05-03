@@ -13,7 +13,7 @@
 
 \lstset{
   extendedchars=\true,
-  inputencoding=utf8x,
+  inputencoding=utf8,
   language=Python,
   %showstringspaces=false,
   formfeed=\newpage,
@@ -67,6 +67,9 @@
  \subsubsection*{#1}
  \lstinputlisting{#2}
 }
+\def\thesection{SI-D-\arabic{section}}
+\def\thefigure{SI-D-\arabic{figure}}
+\def\theequation{SI-D-\arabic{equation}}
 
 \begin{document}
 
@@ -74,7 +77,7 @@
 \author{\\\\\\ Renato Fabbri (USP),\\
 Vilson Vieira da Silva Junior (Cod.ai),\\
 Ant\^onio Carlos Silvano Pessotti (Unimep),\\
-D\'ebora Cristina Corr\^ea,\\
+D\'ebora Cristina Corr\^ea (UWA),\\
 Osvaldo N. Oliveira Jr. (USP)
 }
 
@@ -99,7 +102,7 @@ Here is the code related to each section of the MASS article~\cite{massArticle}.
 \code{Python implementation of equations in Section 3}{../src/sections/3.py}
 
 \clearpage
-\code{Python implementation of equations in Section 4}{../src/sections/4.py}
+\code{Python implementation of equations in the ``Organization of notes in music'' Supporting Information~\cite{massNotesInMusic}}{../src/sections/SIA.py}
 
 \clearpage
 \section{Musical pieces}
@@ -129,16 +132,27 @@ This document should be available at~\cite{massCode}.
 
 \begin{thebibliography}{9}
     \bibitem{massRepo}
-    Fabbri (2017). M\'usica no \'audio digital : descri\c{c}\~ao psicof\'isica e caixa de ferramentas. MSc dissertation. Available at: \url{http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf}
+    R. Fabbri (2019). M\'usica no \'audio digital : descri\c{c}\~ao psicof\'isica e caixa de ferramentas. MSc dissertation. Available at: \url{http://www.teses.usp.br/teses/disponiveis/76/76132/tde-19042013-095445/publico/RenatoFabbri_ME_corrigida.pdf}
 
 \bibitem{massArticle}
-    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+  R. Fabbri et al.
+  Musical elements in the discrete-time representation of sound. 2019.
+    \url{https://github.com/ttm/mass/raw/master/doc/article.pdf}
 
 \bibitem{massListings}
-    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+  R. Fabbri et al.
+  Equations, scripts, figures, tables and documents in the MASS framework. 2019.
+    \url{https://github.com/ttm/mass/raw/master/doc/listings.pdf}
 
 \bibitem{massCode}
-    ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+  R. Fabbri et al.
+  PDF presentation of the Python implementations in the MASS framework. 2019.
+    \url{https://github.com/ttm/mass/raw/master/doc/code.pdf}.
+
+\bibitem{massNotesInMusic}
+  R. Fabbri et al.
+  Organization of notes in music - Supporting Information document for the MASS framework. 2019.
+    \url{https://github.com/ttm/mass/raw/master/doc/notesInMusic.pdf}
 \end{thebibliography}
 
 \end{document}

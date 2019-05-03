@@ -17,8 +17,10 @@
 \IncMargin{-\parindent}
 \setcounter{tocdepth}{4}
 
-\def\thesection{SI-M-\arabic{section}}
-\def\thefigure{SI-M-\arabic{figure}}
+\def\thesection{SI-A-\arabic{section}}
+\def\thefigure{SI-A-\arabic{figure}}
+\def\theequation{SI-A-\arabic{equation}}
+\def\thetable{SI-A-\arabic{table}}
 
 % Metadata Information
 \acmJournal{CSUR}
@@ -172,7 +174,7 @@ Even so, we understand that this content is very useful for synthesizing music a
 and~\ref{sec:varInternas}.
 The concepts are given algorithmic implementations in \mass~\cite{massListings} and can be further formalized~\cite{topos},
 although at a cost of prompt intelligibility which we chose to avoid in this exposition.
-All relations described in this section are implemented in the file \texttt{src/sections/4.py}.
+All relations described in this section are implemented in the file \texttt{src/sections/SIA.py}.
 The musical pieces related to this section are on the directory~\texttt{src/pieces4/}.~\cite{MASSA}
 
 The elements of $S$ can be overlapped by mixing them together, as in
