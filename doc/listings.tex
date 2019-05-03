@@ -4,6 +4,8 @@
 
 \usepackage{xr}
 \externaldocument{article}
+\externaldocument{notesInMusic}
+\externaldocument{spectra}
 \usepackage{ucs}
 \usepackage[utf8x]{inputenc}
 \usepackage{textcomp}
@@ -39,7 +41,9 @@
 	{\NoHyper\ref{#1}\endNoHyper}%
 	  }
 
-\def\thesection{SI-B-\arabic{section}}
+\def\thesection{SI-C-\arabic{section}}
+\def\thefigure{SI-C-\arabic{figure}}
+\def\theequation{SI-C-\arabic{equation}}
 \setcounter{tocdepth}{4}
 
 \begin{document}
@@ -51,7 +55,7 @@ sound}' and of the scripts in the MASS toolbox}
 \author{\\\\\\ Renato Fabbri (USP),\\
 Vilson Vieira da Silva Junior (Cod.ai),\\
 Ant\^onio Carlos Silvano Pessotti (Unimep),\\
-D\'ebora Cristina Corr\^ea,\\
+D\'ebora Cristina Corr\^ea (UWA),\\
 Osvaldo N. Oliveira Jr. (USP)
 }
 
@@ -173,8 +177,8 @@ All these equations are implemented in file \texttt{src/sections/3.py}.}
    Number & Description \\\hline
  \reff{eq:vinculos} & an example of bonds between musical characteristics \\
  \reff{eq:fDoppler} & relation between frequencies and speed in the Doppler effect \\
- \reff{eq:aDoppler} & relation between position, speed and amplitude in the Doppler effect \\
- \reff{eq:ffDoppler} & relation between position, speed and amplitude in the Doppler effect \\
+% \reff{eq:aDoppler} & relation between position, speed and amplitude in the Doppler effect \\
+% \reff{eq:ffDoppler} & relation between position, speed and amplitude in the Doppler effect \\
  \reff{eq:p1rev} & samples of a FIR filter for the first period of a reverberation \\
  \reff{eq:p2rev} & samples of a FIR filter for the second period of a reverberation \\
  \reff{eq:rev} & samples of the FIR filter for a reverberation (considering both first and second periods) \\
@@ -265,7 +269,7 @@ All these equations are implemented in files \texttt{src/aux/*}.}
    Filename & Description \\\hline
   \texttt{src/sections/2.py} & implementation of all the equations for the basic note in PCM audio in Section~\ref{sec:discNote} \\
   \texttt{src/sections/3.py} & implementation of all the equations for variations within a note described in Section~\ref{sec:varInternas} \\
-  \texttt{src/sections/4.py} & implementation of techniques for assembling notes into music described in Section~\ref{sec:notesMusic} \\
+  \texttt{src/sections/SIA.py} & implementation of techniques for assembling notes into music described in the Supporting Information dedicated to the organization of notes in music~\cite{massNotesInMusic} \\
 \end{tabular}
 \end{table*}
 
@@ -300,7 +304,7 @@ All these equations are implemented in files \texttt{src/aux/*}.}
 
 \begin{table*}[htp!]
 \centering
-\caption{Piece names, script files and the concepts they exemplify from Section~\ref{sec:notesMusic}. All files are in the directory \texttt{src/pieces4/}.}
+\caption{Piece names, script files and the concepts they exemplify the Supporting Information dedicated to the organization of notes in music~\cite{massNotesInMusic}. All files are in the directory \texttt{src/piecesSIA/}.}
 \begin{tabular}{ p{5cm} | p{3.5cm} | p{6.2cm} }
    Name & Filename & Description \\\hline
  Acorde cedo & \texttt{acordeCedo.py} & chord successions and modulation \\
@@ -336,5 +340,11 @@ The article is largely based on the MSc dissertation~\cite{dissertacao}.
 
 \bibitem{iso226}
     ISO: 226. (2003). Normal Equal-Loudness Level Contours.
+
+\bibitem{massNotesInMusic}
+  R. Fabbri et al.
+  Organization of notes in music - Supporting Information document for the MASS framework. 2019.
+    \url{https://github.com/ttm/mass/raw/master/doc/notesInMusic.pdf}
+
 \end{thebibliography}
 \end{document}
