@@ -19,7 +19,7 @@ which decomposes them into their sinusoidal spectra and delivers to the nervous 
 The sinusoidal components are crucial to musical phenomena,
 as one can recognize in the constitution of sounds of musical interest
 (such as harmonic sounds and noises, discussed in Sections~\ref{sec:discNote} and~\ref{sec:internalVar}),
-and higher level musical structures (such as tunings, scales and chords, in Section~\ref{sec:notesMusic}).~\cite{Roederer}
+and higher level musical structures (such as tunings, scales and chords, in the Supporting Information document~\cite{massNotesInMusic}).~\cite{Roederer}
 
 \begin{figure*}[!h]
     \centering
@@ -90,7 +90,7 @@ only in the last century~\cite{Wisnick}.}.
 Notes are also convenient for another reason:
 the average listener -- and a considerable part of the specialists --
 presupposes rhythmic and pitch organization 
-(made explicit in Section~\ref{sec:notesMusic})
+(made explicit in the Supporting Information document~\cite{massNotesInMusic})
 as fundamental musical properties,
 and these are developed in traditional musical theory in terms of notes.
 Thereafter, in this article we describe musical notes in PCM audio through equations
@@ -150,7 +150,7 @@ Accordingly, the objectives of this paper are to:
 The reminder of this article is organized as follows:
 Section~\ref{sec:discNote} characterizes the basic musical note;
 Section~\ref{sec:internalVar} develops internal dynamics of musical notes;
-Section~\ref{sec:notesMusic} tackles the organization of musical notes into
+the Supporting Information document~\cite{massNotesInMusic} tackles the organization of musical notes into
 higher level musical structures~\cite{Wisnick,Webern,Lerdahl,Cook,Lacerda,Zamacois,Schoenberg,microsound}.
 As these descriptions require knowledge on topics such as psychoacoustics, cultural traditions,
 and mathematical formalisms, the text points to external complements as needed
@@ -277,7 +277,7 @@ A = 10^{\frac{V_{dB}}{20}}
 \subsection{Pitch}
 The perception of sounds as 'higher' or 'lower' is usually thought in terms of pitch.
 An exponential progression of frequency ($f_i = f . X^i, \forall \;X > 0, i \geq 1$) yields a linear variation of the pitch,
-a fact that will be further exploited in Sections~\ref{sec:internalVar} and~\ref{sec:notesMusic}.
+a fact that will be further exploited in Sections~\ref{sec:internalVar} and the Supporting Information document~\cite{massNotesInMusic}.
 Accordingly, a pitch is specified by a (fundamental) frequency $f$ whose cycle has duration $\delta=1/f$.
 This duration, multiplied by the sampling frequency $f_s$, yields the number of samples per cycle:
 $\lambda=f_s . \delta =f_s/f$.
@@ -606,7 +606,7 @@ The sum of the amplitudes of $N$ sequences with same size $\Lambda$ results in t
 Figure~\ref{fig:mixagem} illustrates this overlapping process of discretized sound waves, each with 100 samples. If $f_s=44.1kHz$, the frequencies of the sawtooth, square and sine wave are, respectively: $\frac{f_s}{100/2}=882Hz$, $\frac{f_s}{100/4}=1764Hz$ and $\frac{f_s}{100/5}=2205Hz$. The duration of each sequence is very short $\frac{f_s=44.1kHz}{100} \approx 2ms$. One can complete the sequence with zeroes to sum (mix) sequences with different sizes.
 
 The mixed notes are generally separated by the ear according to the physical laws of resonance and by the nervous system~\cite{Roederer}.
-This process of mixing musical notes results in musical harmony, where intervals between frequencies and chords of simultaneous notes guide subjective and abstract aspects of music appreciation~\cite{Harmonia} and are addressed in Section~\ref{sec:notesMusic}. 
+This process of mixing musical notes results in musical harmony, where intervals between frequencies and chords of simultaneous notes guide subjective and abstract aspects of music appreciation~\cite{Harmonia} and are addressed in the Supporting Information document~\cite{massNotesInMusic}. 
 
 Sequences can be concatenated in time. If the sequences $\{t_{k,i}\}_0^{\Lambda_k-1}$ represent musical notes,
 their concatenation in a unique sequence $T$ is a simple melodic sequence (or melody):
