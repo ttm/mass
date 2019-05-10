@@ -736,7 +736,7 @@ s9 = M.utils.mix2([s9]+gs, offset=[0,0,4,5, 11,16])
 
 
 s_ = H(s_, silence, s9)
-M.core.WS(s_, '02walk_foo2.wav')
+M.core.WS(s_, '02walk.wav')
 
 ## D.1.2
 # while the voice goes on on solo

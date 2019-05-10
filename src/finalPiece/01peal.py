@@ -43,7 +43,7 @@ M.utils.write(M.H(*sounds), "./apeal.wav")
 # grave e agudo
 f0_ = f0/4
 notes_ = [f0_, f0_*semi**4, f0_*semi**8]
-silence = n.zeros(44100*2/3)
+silence = n.zeros(int(44100*2/3))
 bass = []
 count = 0
 sy = M.synths.CanonicalSynth()
@@ -67,7 +67,7 @@ notes = [f2*semi, f2, (f2/2)/semi, f2/2]
 # 2 notes per compass: anacruze
 treble = []
 sy.duration=2/3
-silence = n.zeros((1- sy.duration)*44100)
+silence = n.zeros(int((1- sy.duration)*44100))
 count = 0
 sy.table = sy.tables.triangle
 for i in range(6):
@@ -107,7 +107,7 @@ isynth.table = isynth.tables.triangle
 f0 = 110*2
 notes = [f0, f0*semi**4, f0*semi**8]
 notes_ = [f0_, f0_*semi**4, f0_*semi**8]
-silence = n.zeros(44100*2*sub)
+silence = n.zeros(int(44100*2*sub))
 
 sy = M.synths.CanonicalSynth()
 sy.table = sy.tables.square
@@ -170,7 +170,7 @@ f = notes * 9  # 36 seconds = 2 seconds * 3 compass * 6 comp setting
 tables = M.tables.Basic(1024*16)
 Tr = tables.triangle
 S = tables.sine
-treble = M.utils.D_(f=f+[f[-1]],
+treble = M.core.D_(f=f+[f[-1]],
         d=[[1]*36, [2,5,6], [10,5,5,5,5], [4,6,2]*3],
         fv=[[2,6,1], [.5,15,2,6,3]], nu=[[2,1, 5], [4,3,7,10,3]],
         alpha=[[1]*36 , [1,1,1], [1,1,1,1,1], [1,1,1]*3],
@@ -179,9 +179,9 @@ treble = M.utils.D_(f=f+[f[-1]],
 
 treble = treble[:,:len(apeal_sec)]   
 music_ = [apeal_sec+treble[0], apeal_sec+treble[1]]
-M.utils.WS(music_, 'apealSec_.wav')
+M.core.WS(music_, 'apealSec_.wav')
 music__ = M.H([music,music], music_)
-M.utils.WS(music_, 'apealSec__.wav')
+M.core.WS(music_, 'apealSec__.wav')
 
 # alternate the sequences of presence and absence
 # Presence: 1 0 0, 0 1 0, 0 0 1
@@ -290,10 +290,10 @@ sound += [
 #################
 ## coda
 coda = [
-        M.utils.F(sonic_vector=M.utils.AM(sonic_vector=music__[0],fm=55), d=24, method='linear'),
-        M.utils.F(sonic_vector=M.utils.AM(sonic_vector=music__[1],fm=55), d=24, method='linear')]
+        M.core.F(sonic_vector=M.core.AM(sonic_vector=music__[0],fm=55), d=24, method='linear'),
+        M.core.F(sonic_vector=M.core.AM(sonic_vector=music__[1],fm=55), d=24, method='linear')]
 
-mfade = M.utils.F(sonic_vector=music, out=False, d=24, method='linear') 
+mfade = M.core.F(sonic_vector=music, out=False, d=24, method='linear') 
 coda_ = S(mfade,coda, end=True)
 music___ = M.H(music__, *sound, coda_) 
 m = music___
@@ -348,7 +348,7 @@ def sequenceOfStretches(x, s=[1,4,8,12], fs=44100):
     sound_ = H(*sound)
     return sound_
     
-final_sound = M.H(m[:,::168], m[:,::168//2], m[:,::168//6.], m[:,::168//12])
+final_sound = M.H(m[:,::168], m[:,::int(168//2)], m[:,::int(168//6)], m[:,::int(168//12)])
 final_sound_ = M.synths.sequenceOfStretches(music___, [1,2,6,12])
 final_sound2_ = M.synths.sequenceOfStretches(music___, [21])
 final_sound__ = final_sound_ + final_sound2_
@@ -369,14 +369,14 @@ final_sound___ = M.H(final_sound___,
         final_sound3_[:, foo*2+alen: foo*2+alen+codal]
         )
 music____ = M.H(music___, final_sound___*.8) # DEPRECATED
-music____[:, -44100*4:] *= M.utils.F(d=4)  # method = 'lin')
+music____[:, -44100*4:] *= M.core.F(d=4)  # method = 'lin')
 music_____ = M.utils.CF(music___, final_sound___*.6, 400, 'lin')
-music_____[:, -44100*4:] *= M.utils.F(d=4, method='lin')  # method = 'lin')
-M.utils.WS(music_____, '01peal.wav')
-M.utils.WS(final_sound,  'final.wav')
-M.utils.WS(final_sound_, 'final_.wav')
-M.utils.WS(final_sound__, 'final__.wav')
-M.utils.WS(final_sound___, 'final___.wav')
+music_____[:, -44100*4:] *= M.core.F(d=4, method='lin')  # method = 'lin')
+M.core.WS(music_____, '01peal.wav')
+M.core.WS(final_sound,  'final.wav')
+M.core.WS(final_sound_, 'final_.wav')
+M.core.WS(final_sound__, 'final__.wav')
+M.core.WS(final_sound___, 'final___.wav')
 
 # for perm in peal.peal_direct:
 #     isynth.fundamental_frequency_sequence.extend(perm(notes))
