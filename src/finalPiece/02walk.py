@@ -3,7 +3,7 @@ keys=tuple(sys.modules.keys())
 for key in keys:
     if "music" in key:
         del sys.modules[key]
-import music as M, numpy as n, sounddevice as sd
+import music as M, numpy as n
 from percolation.rdf import c
 H = M.H
 T = M.tables.Basic()
@@ -114,8 +114,7 @@ def walk(p1=57, p2=0, scale_grid=scale_grid, perms=peal3.peal_direct, method='sw
             else:
                 domain_[domain_.index(max(domain_))] = pointer
             v_ = perm(domain_)
-            if i % count == 0:
-                pointer += step
+            pointer += step
         else:
             v_ = domain_[:]
             swap = True
@@ -216,7 +215,7 @@ sti4_ = H(*sti4['values_m'])
 sti3_ = H(*sti3['values_m'])
 sti2_ = H(*sti2['values_m'])
 
-D = M.utils.AD
+D = M.core.AD
 def v(m,**kargs):
     """
     Synthesizes a note.
@@ -225,7 +224,7 @@ def v(m,**kargs):
     and an ADSR envelope.
 
     """
-    return D(sonic_vector=M.utils.V_(M.utils.midi2Hz(m), **kargs), R=30)
+    return D(sonic_vector=M.core.V(M.utils.midi2Hz(m), **kargs), R=30)
 
 def v_(m_, size=36, **kargs):
     """
@@ -283,7 +282,7 @@ c('finished 1s per note')
 J = M.utils.J # a simple mixer (mix2 is better)
 
 ### 01 - Opening:
-s1_0 = M.utils.F( sonic_vector = s1_[0][:len(s1_[1])],
+s1_0 = M.core.F( sonic_vector = s1_[0][:len(s1_[1])],
           out = False,
           method = 'lin')
 s_ = J(s1_[1]+s1_0, s0125_[4], d=7)
@@ -351,7 +350,7 @@ for t in treble_m:
 s_2__ = trebles_[0][:44100*3] + trebles_[1][:44100*3] + trebles_[2][:44100*3]
 
 s_2_c = H(s_2_, s_2_, s_2__)
-s_2_c[-44100*4:] *= M.utils.F(d=4, method='lin')
+s_2_c[-44100*4:] *= M.core.F(d=4, method='lin')
 
 s_ = H(s_, J(s_2, s_2_c, d=7))
 
@@ -372,7 +371,7 @@ s_3_m = H(*s_3['values_m'])
 s_3 = H(*v__(s_3_m, d_=rhy, t_=[tabs[count]]))
 # s_3B = s_3.copy()
 
-s_3[:44100*8] *= M.utils.F(d=8, method='lin', out=False)
+s_3[:44100*8] *= M.core.F(d=8, method='lin', out=False)
 
 s_3_ = walk2(treble_m[0], 0, scale_grids[count], perms[count], step=steps[count],rhy=rhy)
 
@@ -395,10 +394,10 @@ s_ = H(s_, s_3_c)
 # the timbre starts to toggle in all the patterns at the same time
 # at the same time, various timbre qualities are spread in the voices
 s_4_ = s_3_c
-A = M.utils.AM
-D = M.utils.AD
+A = M.core.AM
+D = M.core.AD
 s_4_[3*44100:4*44100] *= D(d=1, S=0)*A(d=1)
-s_4_[6*44100:7.5*44100] *= D(d=1.5, S=0)*A(d=1.5, fm=150)
+s_4_[6*44100:int(7.5*44100)] *= D(d=1.5, S=0)*A(d=1.5, fm=150)
 s_4_[10*44100:12*44100] *= D(d=2, S=0)*A(d=2, fm=350,a=.7)
 s_4__ = [A(sonic_vector=s_3___),
         A(sonic_vector=s_3____,fm=150),
@@ -427,7 +426,7 @@ s_5_ = A(sonic_vector=s_3____,fm=150)
 s_5__ = s_3____
 s_5___ = s_5_+s_5__
 
-L_ = M.utils.L_
+L_ = M.core.L_
 fade0 = L_(d=[6.75], dev=[0], method=['lin'])
 
 # s_5____ = n.array(( s_5___*fade0, s_5___*(1-fade0) ))
@@ -442,7 +441,7 @@ s_5 = s_5_*fade1 + s_5__*(1-fade1)
 s_5b = n.array(( n.zeros(s_5.shape[0]), s_5 ))
 s_ = H(s_, s_5b*2)
 
-M.utils.WS(s_, '02walk_foo.wav')
+M.core.WS(s_, '02walk_foo.wav')
 
 s6 = n.zeros(2*fs)
 s6_ = walk2(pivots_m[-2], 0, scale_grid=sg2, perms=i6.rotations, step=0, rhy=[.15])
@@ -509,7 +508,7 @@ taba = [
         [T.sine]*4
        ]
 
-T_ = M.utils.T_
+T_ = M.core.T_
 env6 = T_(d, fa, dB, alpha, taba)
 
 env_ = env6[:s6.shape[-1]]
@@ -518,7 +517,7 @@ s6_e = env_*s6
 # def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
 #         nsamples=0, sonic_vector=0, fs=44100):
 s_ = H(s_, s6_e*.1)
-M.utils.WS(s_, '02walk_foo_.wav')
+M.core.WS(s_, '02walk_foo_.wav')
 
 center = pivots_m[-2]+center+center2+center3+center4
 # P = M.utils.panTransitions
@@ -620,7 +619,7 @@ env = D(d=.5)
 
 i = 0
 while i*fs < len(s8):
-    s8[:, i*fs:(i+.5)*fs] += s8___[i*fs:(i+.5)*fs]*env
+    s8[:, i*fs:int((i+.5)*fs)] += s8___[i*fs:int((i+.5)*fs)]*env
     i += 1
 
 s_ = H(s_, s8)
@@ -710,7 +709,7 @@ i=0
 while i*fs < s9.shape[1]:
     indices = n.arange(i*fs, (i+.5)*fs)
     ii = indices % len(s9I)
-    s9[:, i*fs:(i+.5)*fs] += s9___[i*fs:(i+.5)*fs]*env
+    s9[:, i*fs:int((i+.5)*fs)] += s9___[i*fs:int((i+.5)*fs)]*env
     i += 1
 
 
@@ -729,7 +728,7 @@ tab = [T.sine, T.triangle, T.square, T.saw, T.sine]
 
 gs = []
 for ff_, fv_, nu_, tab_ in zip(ff,fv,nu,tab):
-    gg = M.utils.PV(ff_[0], ff_[1], d=2, fv=fv_,
+    gg = M.core.PV(ff_[0], ff_[1], d=2, fv=fv_,
             nu=nu_)
     gs.append(gg)
 
@@ -737,9 +736,8 @@ s9 = M.utils.mix2([s9]+gs, offset=[0,0,4,5, 11,16])
 
 
 s_ = H(s_, silence, s9)
-M.utils.WS(s_, '02walk_foo2.wav')
+M.core.WS(s_, '02walk_foo2.wav')
 
-pr = M.utils.profile(locals().copy())
 ## D.1.2
 # while the voice goes on on solo
 # other voices start at positions given by HRTF
