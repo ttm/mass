@@ -5,11 +5,11 @@ for key in keys:
         del sys.modules[key]
 import music as M, numpy as n
 from percolation.rdf import c
-H = M.utils.H
-V_ = M.utils.V_
-AD = M.utils.AD
+def H(*x): return M.core.H((x))
+V_ = M.core.V
+AD = M.core.AD
 T = M.tables.Basic()
-F = M.utils.F
+F = M.core.F
 
 def ADV(note_dict={}, adsr_dict={}):
     return AD(sonic_vector=V_(**note_dict), **adsr_dict)
@@ -121,7 +121,7 @@ class Being:
                 fn = 'abeing.wav'
             if fn[-4:] != '.wav':
                 fn += '.wav'
-            M.utils.W(H(*notes), fn)
+            M.core.W(H(*notes), fn)
         else:
             return notes
 
@@ -201,7 +201,7 @@ compl1 = H(*bp_c.render(12))*.4
 
 s = H(rot1, rhy1, rhy1+H(rot1, rot1, rot1), *[compl1]*3,H(*[compl1]*3)+rhy1, H(*[compl1]*3)+H(*[rot1]*3)+rhy1[::-1])
 # s = H(rot1, rhy1, rhy1+H(rot1, rot1, rot1), H(*[compl1]*3)+H(*[rot1]*3)+rhy1[::-1])
-M.utils.W(s, 'triSq1.wav')
+M.core.W(s, 'triSq1.wav')
 
 #######################
 
@@ -228,10 +228,10 @@ s_ = H(s, *[rot2]*3, rhy2, H(*[rot2]*3)[:len(rhy2)] + rhy2, *[compl2]*3,H(*[comp
 
 dur = s_.shape[0]/44100
 durf = 10
-pace = dur/durf
+pace = int(dur/durf)
 coda = s_[::pace]
 s_ = H(s_, coda)
-M.utils.W(s_, 'triSq1_.wav')
+M.core.W(s_, 'triSq1_.wav')
 
 
 
@@ -267,7 +267,7 @@ bp_c3.nu_ = [2,20,100]
 compl3 = H(*bp_c3.render(16))*.4
 
 s_ = H(s_, rot3, rhy3, H(*[rot3]*3) + rhy3, *[compl3]*3, H(*[compl3]*3) + rhy3, H(*[compl3]*3) + H(*[rot3]*3) + rhy3[::-1])
-M.utils.W(s_, 'triSq1_.wav')
+M.core.W(s_, 'triSq1_.wav')
 
 ##########################
 # silence 4 s note 4s, silence 2s, note 2s
@@ -318,7 +318,7 @@ s2 = H(silence, note, silence2, note2, H(*[rot4_dev]*3) + H(*[rot3_dev]*4))
 s_ = H(s_, s2)
 
 def sc(start, dur):
-    return AD(sonic_vector=coda[ start*fs : (start+dur)*fs ], R=10)
+    return AD(sonic_vector=coda[ int(start*fs) : int((start+dur)*fs) ], R=10)
 
 
 bpp=Being()
@@ -400,12 +400,12 @@ bp_n.fv_ = [.3]
 nnotes = 1
 note_steady = H(*bp_n.render(nnotes))*.5
 
-F = M.utils.F
+F = M.core.F
 sf = H( H(*[compl3F]*13, n.zeros(fs))[:len(note_funky)] + F(sonic_vector=rhy2F,out=True, method='lin') + note_funky + F(sonic_vector=note_steady, out=False, method='lin')[:len(note_funky)])
 
 s_ = H(s_, sf)
 
-M.utils.W(s_, 'triSq2.wav')
+M.core.W(s_, 'triSq2.wav')
 
 
 

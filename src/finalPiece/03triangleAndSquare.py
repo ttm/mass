@@ -5,9 +5,9 @@ for key in keys:
         del sys.modules[key]
 import music as M, numpy as n
 from percolation.rdf import c
-H = M.utils.H
-V_ = M.utils.V_
-AD = M.utils.AD
+def H(*x): return M.core.H((x))
+V_ = M.core.V
+AD = M.core.AD
 T = M.tables.Basic()
 
 def ADV(note_dict={}, adsr_dict={}):
@@ -117,7 +117,7 @@ class Being:
                 fn = 'abeing.wav'
             if fn[-4:] != '.wav':
                 fn += '.wav'
-            M.utils.W(H(*notes), fn)
+            M.core.W(H(*notes), fn)
         else:
             return notes
 
@@ -176,7 +176,7 @@ bb.f_ = [f1, f2]
 bb3_ = H(*bb.render(12))
 
 ss1 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss1, 'firstTri.wav')
+M.core.W(ss1, 'firstTri.wav')
         
 
 ###############
@@ -202,10 +202,10 @@ bb.f_ = [f1, f2, f2]
 bb3_b = H(*bb.render(12))
 
 ss2 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss2, 'secondTri.wav')
+M.core.W(ss2, 'secondTri.wav')
         
 ss2_b = H(bb1_, bb2_b, bb3_b)
-M.utils.W(ss2_b, 'secondTri_b.wav')
+M.core.W(ss2_b, 'secondTri_b.wav')
 
 ###############
 f2b = 220*2**(3/12)
@@ -231,10 +231,10 @@ bb.f_ = [f1, f2, f2, f2]
 bb3_b = H(*bb.render(8))
 
 ss3 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss3, 'firstSqua.wav')
+M.core.W(ss3, 'firstSqua.wav')
         
 ss3_b = H(bb1_, bb2_b, bb3_b)
-M.utils.W(ss3_b, 'firstSqua_b.wav')
+M.core.W(ss3_b, 'firstSqua_b.wav')
 
 ###############
 bb.d_ = [1/2, 1/4, 1/4]
@@ -256,10 +256,10 @@ bb.f_ = [f1, f2, f2, f2]
 bb3_b = H(*bb.render(12))
 
 ss4 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss4, 'secondSqua.wav')
+M.core.W(ss4, 'secondSqua.wav')
         
 ss4_b = H(bb1_, bb2_b, bb3_b)
-M.utils.W(ss4_b, 'secondSqua_b.wav')
+M.core.W(ss4_b, 'secondSqua_b.wav')
 
 ###############
 bb.d_ = [1/2, 1/6, 1/6, 1/6]
@@ -275,7 +275,7 @@ bb.f_ = [f1, f2]
 bb3_ = H(*bb.render(16))
 
 ss5 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss5, 'firstSquaB.wav')
+M.core.W(ss5, 'firstSquaB.wav')
         
 
 ###############
@@ -298,15 +298,15 @@ bb.f_ = [f1, f2, f2]
 bb3_b = H(*bb.render(48))
 
 ss6 = H(bb1_, bb2_, bb3_)
-M.utils.W(ss6, 'secondSquaB.wav')
+M.core.W(ss6, 'secondSquaB.wav')
 
 ss6_b = H(bb1_, bb2_b, bb3_b)
-M.utils.W(ss6_b, 'secondSquaB_b.wav')
+M.core.W(ss6_b, 'secondSquaB_b.wav')
 
 #######################
         
 final = H(ss1, ss2, ss2_b, ss3, ss3_b, ss4, ss4_b, ss5, ss6, ss6_b)
-M.utils.W(final, 'triSq0.wav')
+M.core.W(final, 'triSq0.wav')
 
 
 #############################
@@ -337,7 +337,7 @@ bb.d_ = [1/3]
 bb3_S = H(*bb.render(12))
 
 ss1 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss1, 'firstTriV.wav')
+M.core.W(ss1, 'firstTriV.wav')
         
 
 ###############
@@ -360,7 +360,7 @@ bb.d_ = [1/3]
 bb3_S = H(*bb.render(12))
 
 ss2 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss2, 'secondTriV.wav')
+M.core.W(ss2, 'secondTriV.wav')
         
 
 ###############
@@ -383,7 +383,7 @@ bb.d_ = [1/4]
 bb3_S = H(*bb.render(16))
 
 ss3 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss3, 'firstSquaV.wav')
+M.core.W(ss3, 'firstSquaV.wav')
         
 
 ###############
@@ -406,7 +406,7 @@ bb.d_ = [1/4]
 bb3_S = H(*bb.render(16))
 
 ss4 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss4, 'secondSquaV.wav')
+M.core.W(ss4, 'secondSquaV.wav')
         
 
 ###############
@@ -429,7 +429,7 @@ bb.d_ = [1/4]
 bb3_S = H(*bb.render(16))
 
 ss5 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss5, 'firstSquaBV.wav')
+M.core.W(ss5, 'firstSquaBV.wav')
         
 
 ###############
@@ -452,12 +452,12 @@ bb.d_ = [1/4]
 bb3_S = H(*bb.render(16))
 
 ss6 = H(bb1_, bb2_, bb3_, bb3_S)
-M.utils.W(ss6, 'secondSquaBV.wav')
+M.core.W(ss6, 'secondSquaBV.wav')
 
 #######################
         
 final = H(ss1, ss2, ss3, ss4, ss5, ss6)
-M.utils.W(final, 'triSq0V.wav')
+M.core.W(final, 'triSq0V.wav')
 
 import itertools
 # lst = range(1,5)
@@ -466,5 +466,5 @@ def rep(xx, n):
     return list(itertools.chain.from_iterable(itertools.repeat(x, n) for x in xx))
 
 final = H(*rep([ss1, ss2, ss3, ss4, ss5, ss6], 4))
-M.utils.W(final, 'triSq0V_.wav')
+M.core.W(final, 'triSq0V_.wav')
 
