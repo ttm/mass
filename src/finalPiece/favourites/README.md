@@ -1,6 +1,8 @@
 Pieces
 ------
 
+Random notes. Kept here for artistic use.
+
 Half-Shape Suite
 ----------------
 
