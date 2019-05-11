@@ -8,10 +8,10 @@ for key in keys:
 import music as M, numpy as n
 from percolation.rdf import c
 H = M.utils.H
-V_ = M.utils.V_
-AD = M.utils.AD
-ADS = M.utils.ADS
-F = M.utils.F
+V_ = M.core.V
+AD = M.core.AD
+ADS = M.core.ADS
+F = M.core.F
 T = M.tables.Basic()
 n_ = n
 
@@ -129,7 +129,7 @@ class Being:
                 fn = 'abeing.wav'
             if fn[-4:] != '.wav':
                 fn += '.wav'
-            M.utils.W(H(*notes), fn)
+            M.core.W(H(*notes), fn)
         else:
             return notes
 
@@ -188,9 +188,9 @@ class Being:
 # bp.render(21, 'permBaby.wav')
 # tr1 = bp.render(21)
 
-s = M.utils.PV_
-t = M.utils.T_
-l = M.utils.L_
+s = M.core.PV_
+t = M.core.T_
+l = M.core.L_
 Tr = T.triangle
 S = T.sine
 
@@ -199,7 +199,7 @@ ss = s(f=[220, 440, 330], d=[[2,3],[2,5], [2,5,6,1]],
       alpha=[[1, 1] , [1, 1], [1, 1, 1, 1]],
       tab=[[Tr,Tr], [S,Tr,S], [S,S,S,S,S]], nsamples=0, fs=44100)
 
-M.utils.W(ss,'metav.wav')
+M.core.W(ss,'metav.wav')
 
 f = [200,200.]
 d = [[30],[3.]]
@@ -208,7 +208,7 @@ nu = [[0,10.]]
 alpha = [[1],[1]]
 tab = [[Tr],[S]]
 ss2 = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss2,'metav0.wav')
+M.core.W(ss2,'metav0.wav')
 
 
 
@@ -219,7 +219,7 @@ nu = [[10,10]]
 alpha = [[1],[1,1]]
 tab = [[Tr],[S,S]]
 ss2 = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss2,'test.wav')
+M.core.W(ss2,'test.wav')
 
 
 ############ 
@@ -232,7 +232,7 @@ nu = [[5]]
 alpha = [[1],[1]]
 tab = [[Tr],[S]]
 ss = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss,'s200.wav')
+M.core.W(ss,'s200.wav')
 
 f = [203.,4030.]*2
 d = [[60],[60]]
@@ -241,7 +241,7 @@ nu = [[.4]]
 alpha = [[1],[1]]
 tab = [[Tr],[S]]
 ss_ = s(f=f, d=d, fv=fv, nu=nu, alpha=alpha, tab=tab)
-M.utils.W(ss_,'s200_.wav')
+M.core.W(ss_,'s200_.wav')
 
 ll = l(d=[5,10,5,7,3+30], dev=[1,0.01,1,100,1],alpha = [1]*5, method=['lin']*5)
 # def L_(d=[2,4,2], dev=[5,-10,20], alpha=[1,.5, 20], method=["exp", "exp", "exp"],
@@ -259,7 +259,7 @@ tt = t(d=[[3,5,2,5,5,10], [5,5,7,3,10]], fa=[[2,6,20,50,150,10],[.5,3,4,1,10]], 
 
 s_[-len(tt):] *= tt
 
-M.utils.W(s_,'ssomething.wav')
+M.core.W(s_,'ssomething.wav')
 
 fs = 44100
 ll = l(d=[10], dev=[0],alpha = [1], method=['lin'])
@@ -286,7 +286,7 @@ SL = AD(sonic_vector=s_l_, S=0)
 SR = AD(sonic_vector=s_r_, S=0)
 s__ = (SL, SR)
 
-M.utils.WS(s__,'ssom.wav')
+M.core.WS(s__,'ssom.wav')
 
 bp=Being() # simple for permutation
 bp.perms = M.structures.peals.PlainChanges(4).peal_direct
@@ -371,7 +371,7 @@ s1_[:, 2*len(QD1):2*len(QD1)+len(X4b)] = X4be*1.6
 
 sv = H(n.array(s__)*.2, silence, s1_)
 
-M.utils.WS(sv,'ssom2.wav')
+M.core.WS(sv,'ssom2.wav')
 
 
 #### Ow Yeah (work on it!)
@@ -406,9 +406,9 @@ qd2 = bp.render(nnotes)
 
 qd = qd1 + qd2
 
-M.utils.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4bA.wav')
+M.core.W(H(*qd1)*.5 + H(*qd2), 'bbpermX4bA.wav')
 
-M.utils.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_EA.wav')
+M.core.WS((H(*qd1)*.5, H(*qd2)), 'bbpermX4b_EA.wav')
 
 
 
@@ -536,7 +536,7 @@ svx[:, -fs*15:] *= F(d=15, out=True, method='lin')
 svx[0, -len(tt):] *= .45*tt
 svx[1, -len(tt):] *= .45*tt[::-1]
 
-M.utils.WS(svx,'ssom3.wav')
+M.core.WS(svx,'ssom3.wav')
 
 
 ### Yes 1
@@ -585,10 +585,10 @@ sound_ = H(sound, l1)
 adur = 2
 adur2 = sound_.shape[1]/fs
 step = adur2/adur
-coda = H(sound_[:, ::step], n.zeros(fs), *[sound_[:, ::step*2],sound_[:, ::step*3],sound_[:, ::step//2],sound_[:, ::step//3]]*2)
+coda = H(sound_[:, ::int(step)], n.zeros(fs), *[sound_[:, ::int(step*2)],sound_[:, ::int(step*3)],sound_[:, ::int(step//2)],sound_[:, ::int(step//3)]]*2)
 coda[0] = coda[0][::-1]
 sound__ = H(sound_, coda)
 sound__[:, -fs*14:] *= F(d=14, out=True, method='lin')
-M.utils.WS(sound__,'05allAbove.wav')
+M.core.WS(sound__,'05allAbove.wav')
 
 

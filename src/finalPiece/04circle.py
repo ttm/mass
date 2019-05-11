@@ -6,9 +6,9 @@ for key in keys:
 import music as M, numpy as n
 from percolation.rdf import c
 H = M.utils.H
-V_ = M.utils.V_
-AD = M.utils.AD
-F = M.utils.F
+V_ = M.core.V
+AD = M.core.AD
+F = M.core.F
 T = M.tables.Basic()
 n_ = n
 
@@ -233,7 +233,7 @@ opening = H(c1_, c1A_, c1C_+c1_, c1C_)
 
 # b.render(nnotes, "circle0.wav")
 
-M.utils.W(opening, "circle0_.wav")
+M.core.W(opening, "circle0_.wav")
 
 ################
 b.tab_ = [T.square,T.saw]
@@ -279,7 +279,7 @@ op1 = H(
         )
 
 
-M.utils.W(H(opening, op1), "circle0b.wav")
+M.core.W(H(opening, op1), "circle0b.wav")
 
 
 b.tab_ = [T.square]
@@ -320,7 +320,7 @@ dev1 = H(
         )
 
 s_ = H(opening, op1, dev1)
-M.utils.WS(s_, "circle0c.wav")
+M.core.WS(s_, "circle0c.wav")
 
 
 N=25
@@ -413,8 +413,8 @@ b2.f_ = []
 b2.stay(nnotes)
 b2.tab_ = [T.square]
 cc2_ = H(*b2.render(nnotes))
-cc_ = AD(sonic_vector=cc_[len(cc_)/2:])
-cc2_ = AD(sonic_vector=cc2_[len(cc2_)/2:])
+cc_ = AD(sonic_vector=cc_[int(len(cc_)/2):])
+cc2_ = AD(sonic_vector=cc2_[int(len(cc2_)/2):])
 
 nnotes = N*6
 l=list(range(N))
@@ -444,6 +444,6 @@ ss = H(
     )
 
 s_ = H(s_, ss)
-M.utils.WS(s_, "circled.wav")
+M.core.WS(s_, "04circle.wav")
 
-M.utils.WS(ss, "circlec.wav")
+M.core.WS(ss, "circlec.wav")
